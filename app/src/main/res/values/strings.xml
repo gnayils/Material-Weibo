@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Obiew</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="register_activity_title">手机号注册</string>
+
+    <string name="weibo_app_key">2980324701</string>
+    <string name="weibo_redirect_url">https://api.weibo.com/oauth2/default.html</string>
+    <string name="weibo_scope">email,direct_messages_read,direct_messages_write,friendships_groups_read,friendships_groups_write,statuses_to_me_read,follow_app_official_microblog,invitation_write</string>
+
+</resources>
