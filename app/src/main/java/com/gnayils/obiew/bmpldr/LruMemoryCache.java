@@ -1,5 +1,7 @@
 package com.gnayils.obiew.bmpldr;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.graphics.Bitmap;
 
 import java.util.Collection;
@@ -13,14 +15,14 @@ import java.util.Map;
 public class LruMemoryCache {
 
     private final LinkedHashMap<String, Bitmap> map;
-    private final int maxSize;
-    private int size;
+    private final int cacheSize;
+    private int currentSize;
 
-    public LruMemoryCache(int maxSize) {
-        if(maxSize <= 0) {
-            throw new IllegalArgumentException("maxSize <= 0");
+    private LruMemoryCache(int cacheSize) {
+        if(cacheSize <= 0) {
+            throw new IllegalArgumentException("cacheSize <= 0");
         }
-        this.maxSize = maxSize;
+        this.cacheSize = cacheSize;
         this.map = new LinkedHashMap<String, Bitmap>(0, 0.75f, true);
     }
 
@@ -38,13 +40,13 @@ public class LruMemoryCache {
             throw new NullPointerException("key == null || value == null");
         }
         synchronized (this) {
-            size += sizeOf(key, value);
+            currentSize += sizeOf(key, value);
             Bitmap previous = map.put(key, value);
             if(previous != null) {
-                size -= sizeOf(key, previous);
+                currentSize -= sizeOf(key, previous);
             }
         }
-        trimToSize(maxSize);
+        trimToSize(cacheSize);
     }
 
     public void remove(String key) {
@@ -54,7 +56,7 @@ public class LruMemoryCache {
         synchronized (this) {
             Bitmap previous = map.remove(key);
             if(previous != null) {
-                size -= sizeOf(key, previous);
+                currentSize -= sizeOf(key, previous);
                 previous.recycle();
             }
         }
@@ -73,10 +75,10 @@ public class LruMemoryCache {
     private void trimToSize(int sizeTrimTo) {
         while(true) {
             synchronized (this) {
-                if(this.size < 0 || (map.isEmpty() && this.size != 0)) {
+                if(this.currentSize < 0 || (map.isEmpty() && this.currentSize != 0)) {
                     throw new IllegalStateException("trimToSize() reporting inconsistent results");
                 }
-                if(this.size <= sizeTrimTo || map.isEmpty()) {
+                if(this.currentSize <= sizeTrimTo || map.isEmpty()) {
                     break;
                 }
                 Map.Entry<String, Bitmap> toEvict = map.entrySet().iterator().next();
@@ -88,8 +90,17 @@ public class LruMemoryCache {
         }
     }
 
-    private int sizeOf(String key, Bitmap value) {
-        return value.getRowBytes() * value.getHeight();
+    private int sizeOf(String key, Bitmap bitmap) {
+        return bitmap.getRowBytes() * bitmap.getHeight();
+    }
+
+    public static LruMemoryCache create(Context context, int cacheSize) {
+        if(cacheSize == 0) {
+            ActivityManager activitymanager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+            int memoryClass = activitymanager.getMemoryClass();
+            cacheSize = memoryClass * 1024 * 1024 / 8;
+        }
+        return new LruMemoryCache(cacheSize);
     }
 
 }

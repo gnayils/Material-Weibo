@@ -1,5 +1,6 @@
 package com.gnayils.obiew.bmpldr;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -22,18 +23,18 @@ public class LruDiskCache {
 
     private final LinkedHashMap<String, File> map;
     private final File cacheDirectory;
-    private final int maxSize;
-    private int size;
+    private final long cacheSize;
+    private long currentSize;
 
-    public LruDiskCache(File cacheDirectory, int maxSize) throws IllegalAccessException {
-        if(maxSize <= 0) {
+    private LruDiskCache(File cacheDirectory, long cacheSize) throws IllegalAccessException {
+        if(cacheSize <= 0) {
             throw new IllegalStateException("max <= 0");
         }
         if(!cacheDirectory.exists() && !cacheDirectory.mkdirs()) {
             throw new IllegalAccessException("cache directory not exists");
         }
         this.cacheDirectory = cacheDirectory;
-        this.maxSize = maxSize;
+        this.cacheSize = cacheSize;
         this.map = new LinkedHashMap<String, File>(0, 0.75f, true);
     }
 
@@ -60,7 +61,7 @@ public class LruDiskCache {
                 boolean successful = bitmap.compress(DEFAULT_COMPRESS_FORMAT, DEFAULT_COMPRESS_QUALITY, outputStream);
                 if (successful) {
                     map.put(key, file);
-                    size += file.length();
+                    currentSize += file.length();
                 }
             } finally {
                 if (outputStream != null) {
@@ -72,7 +73,7 @@ public class LruDiskCache {
                 }
             }
         }
-        trimToSize(maxSize);
+        trimToSize(cacheSize);
     }
 
     public void remove(String key) {
@@ -82,7 +83,7 @@ public class LruDiskCache {
         synchronized (this) {
             File file = map.remove(key);
             if(file != null) {
-                size -= file.length();
+                currentSize -= file.length();
                 if(file.exists()) {
                     throw new IllegalStateException("file that is going to remove cannot be non－exists");
                 }
@@ -95,13 +96,13 @@ public class LruDiskCache {
         trimToSize(-1);
     }
 
-    private void trimToSize(int sizeTrimTo) {
+    private void trimToSize(long sizeTrimTo) {
         while(true) {
             synchronized (this) {
-                if(size < 0 || (map.isEmpty() && size != 0)) {
+                if(currentSize < 0 || (map.isEmpty() && currentSize != 0)) {
                     throw new IllegalStateException("trimToSize() reporting inconsistent results");
                 }
-                if(size <= sizeTrimTo || map.isEmpty()) {
+                if(currentSize <= sizeTrimTo || map.isEmpty()) {
                     break;
                 }
                 Map.Entry<String, File> toEvict = map.entrySet().iterator().next();
@@ -113,4 +114,15 @@ public class LruDiskCache {
         }
     }
 
+    public static LruDiskCache create(Context context, int cacheSize) throws IllegalAccessException {
+        File cacheDirectory = context.getCacheDir();
+        if(cacheDirectory == null) {
+            String cacheDirectoryPath = "/data/data/" + context.getPackageName() + "/cache/";
+            cacheDirectory = new File(cacheDirectoryPath);
+        }
+        if(cacheSize == 0) {
+          cacheSize = 1024 * 1024 * 50;
+        }
+        return new LruDiskCache(cacheDirectory, cacheSize);
+    }
 }
