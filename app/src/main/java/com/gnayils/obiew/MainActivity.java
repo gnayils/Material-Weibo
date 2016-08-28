@@ -20,14 +20,18 @@ import android.widget.Toast;
 
 import com.gnayils.obiew.user.LoginHandler;
 import com.gnayils.obiew.user.LoginView;
+import com.sina.weibo.sdk.openapi.models.User;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, LoginView {
 
 
     private Button loginButton;
     private Button signupButton;
-    private LoginHandler loginHandler = new LoginHandler(this);
+    private TextView weiboNumberTextView;
+    private TextView followNumberTextView;
+    private TextView followerNumberTextView;
 
+    private LoginHandler loginHandler = new LoginHandler(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +57,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        weiboNumberTextView = (TextView) findViewById(R.id.text_view_weibo_number);
+        followNumberTextView = (TextView) findViewById(R.id.text_view_follow_number);
+        followerNumberTextView = (TextView) findViewById(R.id.text_view_follower_number);
 
         loginButton = (Button) findViewById(R.id.button_login);
         signupButton = (Button) findViewById(R.id.button_signup);
@@ -124,5 +132,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void updateUser(User user) {
+        weiboNumberTextView.setText(String.valueOf(user.statuses_count));
+        followNumberTextView.setText(String.valueOf(user.friends_count));
+        followerNumberTextView.setText(String.valueOf(user.followers_count));
+
     }
 }

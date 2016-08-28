@@ -16,6 +16,7 @@ import com.sina.weibo.sdk.exception.WeiboException;
 import com.sina.weibo.sdk.net.RequestListener;
 import com.sina.weibo.sdk.openapi.UsersAPI;
 import com.sina.weibo.sdk.openapi.models.Tag;
+import com.sina.weibo.sdk.openapi.models.User;
 
 import java.text.SimpleDateFormat;
 
@@ -62,6 +63,8 @@ public class LoginHandler {
                 usersApi.show(Long.parseLong(accessToken.getUid()), new RequestListener() {
                     @Override
                     public void onComplete(String s) {
+                        User user = User.parse(s);
+                        loginView.updateUser(user);
                         Log.i(TAG, s);
                     }
 
