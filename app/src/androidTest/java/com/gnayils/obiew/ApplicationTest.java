@@ -12,6 +12,7 @@ import android.util.Log;
 public class ApplicationTest extends ApplicationTestCase<Application> {
 
     private final String TAG = this.getClass().getSimpleName();
+
     public ApplicationTest() {
         super(Application.class);
 
@@ -21,6 +22,10 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
         ActivityManager am = (ActivityManager) this.getContext().getSystemService(Context.ACTIVITY_SERVICE);
         Log.v(TAG, "Memory class: " + am.getMemoryClass());
         Log.v(TAG, "Large Memory class: " + am.getLargeMemoryClass());
+    }
+
+    public void testRound() {
+        Log.v(TAG, Math.floor(0.523) + "");
     }
 
 }

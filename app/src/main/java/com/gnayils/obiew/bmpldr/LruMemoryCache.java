@@ -12,13 +12,13 @@ import java.util.Map;
 /**
  * Created by Gnayils on 8/21/16.
  */
-public class LruMemoryCache {
+public class LRUMemoryCache {
 
     private final LinkedHashMap<String, Bitmap> map;
     private final int cacheSize;
     private int currentSize;
 
-    private LruMemoryCache(int cacheSize) {
+    private LRUMemoryCache(int cacheSize) {
         if(cacheSize <= 0) {
             throw new IllegalArgumentException("cacheSize <= 0");
         }
@@ -94,13 +94,13 @@ public class LruMemoryCache {
         return bitmap.getRowBytes() * bitmap.getHeight();
     }
 
-    public static LruMemoryCache create(Context context, int cacheSize) {
+    public static LRUMemoryCache create(Context context, int cacheSize) {
         if(cacheSize == 0) {
             ActivityManager activitymanager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
             int memoryClass = activitymanager.getMemoryClass();
             cacheSize = memoryClass * 1024 * 1024 / 8;
         }
-        return new LruMemoryCache(cacheSize);
+        return new LRUMemoryCache(cacheSize);
     }
 
 }

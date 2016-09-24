@@ -44,6 +44,5 @@ public class CircleImageView extends ImageView {
         backgroundDrawable.setShape(GradientDrawable.OVAL);
         setBackground(backgroundDrawable);
         setClipToOutline(true);
-        setScaleType(ScaleType.CENTER);
     }
 }

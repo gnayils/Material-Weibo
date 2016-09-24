@@ -3,8 +3,10 @@ package com.gnayils.obiew;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.util.DisplayMetrics;
 
+import com.gnayils.obiew.bmpldr.BitmapLoader;
 import com.gnayils.obiew.util.ViewHelper;
 
 /**
@@ -20,6 +22,7 @@ public class App extends Application {
         super.onCreate();
         INSTANCE = this;
         APP_KEY = getString(R.string.weibo_app_key);
+        BitmapLoader.initialize();
     }
 
     public static Context context() {

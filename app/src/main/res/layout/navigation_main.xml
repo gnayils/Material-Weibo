@@ -46,6 +46,7 @@
                         android:background="@drawable/bg_avatar_border">
 
                         <com.gnayils.obiew.view.CircleImageView
+                            android:id="@+id/circle_image_view_avatar"
                             android:layout_width="56dp"
                             android:layout_height="56dp"
                             android:layout_gravity="center"

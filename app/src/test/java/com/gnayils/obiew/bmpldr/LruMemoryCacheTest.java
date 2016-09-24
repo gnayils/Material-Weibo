@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 /**
  * Created by Gnayils on 8/28/16.
  */
-public class LruMemoryCacheTest  {
+public class LRUMemoryCacheTest {
 
     @Test
     public void testFileLength() throws IOException {

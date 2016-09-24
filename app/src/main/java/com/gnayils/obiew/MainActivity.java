@@ -1,6 +1,7 @@
 package com.gnayils.obiew;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -18,8 +19,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gnayils.obiew.bmpldr.BitmapLoader;
 import com.gnayils.obiew.user.LoginHandler;
 import com.gnayils.obiew.user.LoginView;
+import com.gnayils.obiew.view.CircleImageView;
 import com.sina.weibo.sdk.openapi.models.User;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, LoginView {
@@ -30,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextView weiboNumberTextView;
     private TextView followNumberTextView;
     private TextView followerNumberTextView;
+    private CircleImageView avatarCircleImageView;
 
     private LoginHandler loginHandler = new LoginHandler(this);
 
@@ -61,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         weiboNumberTextView = (TextView) findViewById(R.id.text_view_weibo_number);
         followNumberTextView = (TextView) findViewById(R.id.text_view_follow_number);
         followerNumberTextView = (TextView) findViewById(R.id.text_view_follower_number);
+        avatarCircleImageView = (CircleImageView) findViewById(R.id.circle_image_view_avatar);
 
         loginButton = (Button) findViewById(R.id.button_login);
         signupButton = (Button) findViewById(R.id.button_signup);
@@ -139,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         weiboNumberTextView.setText(String.valueOf(user.statuses_count));
         followNumberTextView.setText(String.valueOf(user.friends_count));
         followerNumberTextView.setText(String.valueOf(user.followers_count));
+        BitmapLoader.getInstance().display(user.avatar_large, avatarCircleImageView);
 
     }
 }
