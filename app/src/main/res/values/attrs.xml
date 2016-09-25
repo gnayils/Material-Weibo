@@ -6,4 +6,11 @@
         <attr name="content" format="reference"/>
     </declare-styleable>
 
+    <declare-styleable name="ItemView">
+        <attr name="icon" format="reference"/>
+        <attr name="title" format="string"/>
+        <attr name="description" format="string"/>
+        <attr name="moreIcon" format="reference"/>
+    </declare-styleable>
+
 </resources>

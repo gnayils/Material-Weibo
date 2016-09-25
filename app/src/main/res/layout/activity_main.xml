@@ -1,15 +1,326 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <include layout="@layout/content_main" />
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </android.support.design.widget.AppBarLayout>
 
 
-    <include layout="@layout/navigation_main"/>
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-</android.support.v4.widget.DrawerLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/button_sso_authorises"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:text="SSO Authorise" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="@dimen/fab_margin"
+                android:src="@android:drawable/ic_dialog_email" />
+
+        </FrameLayout>
+
+        <android.support.design.widget.NavigationView
+            android:id="@+id/nav_view"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start">
+
+            <com.gnayils.obiew.view.OverScrollView
+                android:id="@+id/over_scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:content="@+id/content"
+                app:header="@+id/header">
+
+                <FrameLayout
+                    android:id="@id/header"
+                    android:layout_width="match_parent"
+                    android:layout_height="140dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/bg_cover_default" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="bottom"
+                        android:orientation="vertical"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:paddingTop="16dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="62dp">
+
+                            <FrameLayout
+                                android:id="@+id/frame_layout_avatar"
+                                android:layout_width="62dp"
+                                android:layout_height="62dp"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:background="@drawable/bg_avatar_border">
+
+                                <com.gnayils.obiew.view.CircleImageView
+                                    android:id="@+id/circle_image_view_avatar"
+                                    android:layout_width="56dp"
+                                    android:layout_height="56dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_avatar_default" />
+
+                                <ImageView
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_gravity="bottom|right"
+                                    android:layout_marginBottom="2dp"
+                                    android:layout_marginRight="2dp" />
+
+                            </FrameLayout>
+
+                            <TextView
+                                android:id="@+id/text_view_username"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_toRightOf="@id/frame_layout_avatar"
+                                android:shadowColor="#75000000"
+                                android:shadowDy="1"
+                                android:shadowRadius="1"
+                                android:text="未登录"
+                                android:textColor="@android:color/white"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/text_view_about_me"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentBottom="true"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginLeft="8dp"
+                                android:layout_toRightOf="@id/frame_layout_avatar"
+                                android:shadowColor="#75000000"
+                                android:shadowDy="1"
+                                android:shadowRadius="1"
+                                android:text="暂无介绍"
+                                android:textColor="@android:color/white"
+                                android:textSize="12sp" />
+
+                        </RelativeLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:gravity="center"
+                            android:padding="4dp">
+
+                            <TextView
+                                android:id="@+id/text_view_weibo_number"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentLeft="true"
+                                android:layout_weight="1"
+                                android:background="@drawable/bg_ripple_mask"
+                                android:clickable="true"
+                                android:gravity="center"
+                                android:text="0\n微博"
+                                android:shadowColor="#75000000"
+                                android:shadowDy="1"
+                                android:shadowRadius="1"
+                                android:textColor="@android:color/white"/>
+
+                            <TextView
+                                android:id="@+id/text_view_follow_number"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentLeft="true"
+                                android:layout_weight="1"
+                                android:background="@drawable/bg_ripple_mask"
+                                android:clickable="true"
+                                android:gravity="center"
+                                android:text="0\n关注"
+                                android:shadowColor="#75000000"
+                                android:shadowDy="1"
+                                android:shadowRadius="1"
+                                android:textColor="@android:color/white"/>
+
+                            <TextView
+                                android:id="@+id/text_view_follower_number"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentLeft="true"
+                                android:layout_weight="1"
+                                android:background="@drawable/bg_ripple_mask"
+                                android:clickable="true"
+                                android:gravity="center"
+                                android:text="0\n粉丝"
+                                android:shadowColor="#75000000"
+                                android:shadowDy="1"
+                                android:shadowRadius="1"
+                                android:textColor="@android:color/white"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@id/content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:id="@+id/linear_layout_login"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="16dp"
+                            android:gravity="center"
+                            android:singleLine="false"
+                            android:text="登录后，你的微博，相册，个人资料会显示在这里，展示他人"
+                            android:textColor="@color/colorGrayTranslucent" />
+
+                        <Button
+                            android:id="@+id/button_signup"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginBottom="4dp"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="16dp"
+                            android:layout_marginTop="4dp"
+                            android:background="@drawable/bg_ripple"
+                            android:text="注册"
+                            android:textColor="@color/colorGreenDark"
+                            android:textSize="18sp" />
+
+                        <Button
+                            android:id="@+id/button_login"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="16dp"
+                            android:layout_marginTop="4dp"
+                            android:background="@drawable/bg_ripple"
+                            android:text="登录"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="18sp" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:visibility="invisible"
+                        android:id="@+id/linear_layout_user_center"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <Space
+                            android:layout_width="match_parent"
+                            android:layout_height="8dp" />
+
+                        <com.gnayils.obiew.view.ItemView
+                            android:layout_width="match_parent"
+                            android:layout_height="44dp"
+                            app:icon="@drawable/ic_friends"
+                            app:title="新的好友"
+                            app:moreIcon="@drawable/ic_arrow_right"/>
+
+                        <Space
+                            android:layout_width="match_parent"
+                            android:layout_height="8dp" />
+
+                        <com.gnayils.obiew.view.ItemView
+                            android:layout_width="match_parent"
+                            android:layout_height="44dp"
+                            app:icon="@drawable/ic_album"
+                            app:title="我的相册"
+                            app:moreIcon="@drawable/ic_arrow_right"/>
+
+                        <Space
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp" />
+
+                        <com.gnayils.obiew.view.ItemView
+                            android:layout_width="match_parent"
+                            android:layout_height="44dp"
+                            app:icon="@drawable/ic_collection"
+                            app:title="我的收藏"
+                            app:moreIcon="@drawable/ic_arrow_right"/>
+
+                        <Space
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp" />
+
+                        <com.gnayils.obiew.view.ItemView
+                            android:layout_width="match_parent"
+                            android:layout_height="44dp"
+                            app:icon="@drawable/ic_like"
+                            app:title="我的赞"
+                            app:moreIcon="@drawable/ic_arrow_right"/>
+
+                        <Space
+                            android:layout_width="match_parent"
+                            android:layout_height="8dp" />
+
+                        <com.gnayils.obiew.view.ItemView
+                            android:layout_width="match_parent"
+                            android:layout_height="44dp"
+                            app:icon="@drawable/ic_draft_box"
+                            app:title="草稿箱"
+                            app:moreIcon="@drawable/ic_arrow_right"/>
+
+                    </LinearLayout>
+
+                </FrameLayout>
+
+            </com.gnayils.obiew.view.OverScrollView>
+
+        </android.support.design.widget.NavigationView>
+
+    </android.support.v4.widget.DrawerLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>

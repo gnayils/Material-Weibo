@@ -23,22 +23,19 @@ import android.widget.ImageView;
 public class CircleImageView extends ImageView {
 
     public CircleImageView(Context context) {
-        super(context);
-        initialize(context, null, 0);
+        this(context, null);
     }
 
     public CircleImageView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        initialize(context, attrs, 0);
+        this(context, attrs, 0);
     }
 
     public CircleImageView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        initialize(context, attrs, defStyle);
+        this(context, attrs, defStyle, 0);
     }
 
-
-    private void initialize(Context context, AttributeSet attrs, int defStyle) {
+    public CircleImageView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
         GradientDrawable backgroundDrawable = new GradientDrawable();
         backgroundDrawable.setColor(Color.TRANSPARENT);
         backgroundDrawable.setShape(GradientDrawable.OVAL);

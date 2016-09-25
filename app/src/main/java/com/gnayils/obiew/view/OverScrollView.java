@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,11 +37,13 @@ public class OverScrollView extends LinearLayout {
     private float lastMotionY;
 
     private boolean isBeingDragged = false;
+    private boolean isBeingScrolled = false;
 
     private Scroller scroller;
 
     private int headerId;
     private View headerView;
+
     private int contentId;
     private View contentView;
 
@@ -61,7 +64,7 @@ public class OverScrollView extends LinearLayout {
         setOrientation(LinearLayout.VERTICAL);
         scroller = new Scroller(getContext());
         touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
-        if(attrs != null) {
+        if (attrs != null) {
             TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.OverScrollView, defStyleAttr, defStyleRes);
             headerId = typedArray.getResourceId(R.styleable.OverScrollView_header, 0);
             if (headerId == 0) {
@@ -92,16 +95,19 @@ public class OverScrollView extends LinearLayout {
         }
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if(!isBeingDragged && !isBeingScrolled) {
+            headerView.setMinimumHeight(headerView.getMeasuredHeight());
+        }
+        int offset = headerView.getLayoutParams().height - headerView.getMinimumHeight();
+        super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec) + offset, MeasureSpec.getMode(heightMeasureSpec)));
+    }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        if(!headerView.isLaidOut() && !contentView.isLaidOut()) {
-            headerView.layout(l, t, r, headerView.getMeasuredHeight());
-            contentView.layout(l, headerView.getMeasuredHeight(), r, headerView.getMeasuredHeight() + contentView.getMeasuredHeight());
-        } else {
-            int offset = headerView.getLayoutParams().height - headerView.getHeight();
-            headerView.layout(headerView.getLeft(), headerView.getTop() - offset, headerView.getRight(), headerView.getBottom());
-        }
+        headerView.layout(l, t, r, headerView.getLayoutParams().height);
+        contentView.layout(l, headerView.getLayoutParams().height, r, b);
     }
 
     @Override
@@ -111,9 +117,9 @@ public class OverScrollView extends LinearLayout {
                 lastMotionY = ev.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
-                if(Math.abs(ev.getY() - lastMotionY) > touchSlop) {
+                if (Math.abs(ev.getY() - lastMotionY) > touchSlop) {
                     ViewParent parent = getParent();
-                    if(parent != null) {
+                    if (parent != null) {
                         parent.requestDisallowInterceptTouchEvent(true);
                     }
                     isBeingDragged = true;
@@ -134,29 +140,24 @@ public class OverScrollView extends LinearLayout {
             case MotionEvent.ACTION_DOWN:
                 break;
             case MotionEvent.ACTION_MOVE:
-                if(!isBeingDragged && Math.abs(ev.getY() - lastMotionY) > touchSlop) {
+                if (!isBeingDragged && Math.abs(ev.getY() - lastMotionY) > touchSlop) {
                     ViewParent parent = getParent();
-                    if(parent != null) {
+                    if (parent != null) {
                         parent.requestDisallowInterceptTouchEvent(true);
                     }
                     isBeingDragged = true;
                 }
-                if(isBeingDragged) {
-                    int deltaY = (int) (lastMotionY - ev.getY());
-                    if (getScrollY() + deltaY < 0) {
-                        if (deltaY < 0) {
-                            scrollYBy(deltaY *= 0.3f);
-                        } else {
-                            scrollYBy(deltaY);
-                        }
-                    }
+                if (isBeingDragged) {
+                    int deltaY = (int) (ev.getY() - lastMotionY);
+                    scrollYBy(deltaY *= deltaY > 0 ? 0.3f : 0.1f);
                     lastMotionY = ev.getY();
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
                 isBeingDragged = false;
-                scroller.startScroll(0, getScrollY(), 0, 0 - getScrollY());
+                isBeingScrolled = true;
+                scroller.startScroll(0, headerView.getLayoutParams().height, 0, headerView.getMinimumHeight() - headerView.getLayoutParams().height);
                 invalidate();
                 break;
         }
@@ -165,17 +166,18 @@ public class OverScrollView extends LinearLayout {
 
     @Override
     public void computeScroll() {
-        if(scroller.computeScrollOffset()) {
-            int deltaY = scroller.getCurrY() - getScrollY();
+        if (scroller.computeScrollOffset()) {
+            int deltaY = scroller.getCurrY() - headerView.getLayoutParams().height;
             scrollYBy(deltaY);
+        } else {
+            isBeingScrolled = false;
         }
     }
 
 
     private void scrollYBy(int deltaY) {
-        scrollBy(0, deltaY);
         ViewGroup.LayoutParams layoutParams = headerView.getLayoutParams();
-        layoutParams.height += (0 - deltaY);
+        layoutParams.height += deltaY;
         headerView.setLayoutParams(layoutParams);
     }
 }

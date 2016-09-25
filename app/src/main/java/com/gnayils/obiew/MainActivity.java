@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.text.method.ScrollingMovementMethod;
+import android.view.MotionEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +25,7 @@ import com.gnayils.obiew.bmpldr.BitmapLoader;
 import com.gnayils.obiew.user.LoginHandler;
 import com.gnayils.obiew.user.LoginView;
 import com.gnayils.obiew.view.CircleImageView;
+import com.gnayils.obiew.view.OverScrollView;
 import com.sina.weibo.sdk.openapi.models.User;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, LoginView {
@@ -33,7 +36,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TextView weiboNumberTextView;
     private TextView followNumberTextView;
     private TextView followerNumberTextView;
+    private TextView usernameTextView;
+    private TextView aboutMeTextView;
     private CircleImageView avatarCircleImageView;
+
+    private ViewGroup linearLayoutLogin;
+    private ViewGroup linearLayoutUserCenter;
+
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+
 
     private LoginHandler loginHandler = new LoginHandler(this);
 
@@ -53,19 +65,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-            this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+            this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         weiboNumberTextView = (TextView) findViewById(R.id.text_view_weibo_number);
         followNumberTextView = (TextView) findViewById(R.id.text_view_follow_number);
         followerNumberTextView = (TextView) findViewById(R.id.text_view_follower_number);
+        usernameTextView = (TextView) findViewById(R.id.text_view_username);
+        aboutMeTextView = (TextView) findViewById(R.id.text_view_about_me);
         avatarCircleImageView = (CircleImageView) findViewById(R.id.circle_image_view_avatar);
+
+        linearLayoutLogin = (ViewGroup) findViewById(R.id.linear_layout_login);
+        linearLayoutUserCenter = (ViewGroup) findViewById(R.id.linear_layout_user_center);
 
         loginButton = (Button) findViewById(R.id.button_login);
         signupButton = (Button) findViewById(R.id.button_signup);
@@ -141,10 +158,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void updateUser(User user) {
-        weiboNumberTextView.setText(String.valueOf(user.statuses_count));
-        followNumberTextView.setText(String.valueOf(user.friends_count));
-        followerNumberTextView.setText(String.valueOf(user.followers_count));
+        weiboNumberTextView.setText(String.valueOf(user.statuses_count) + "\n微博");
+        followNumberTextView.setText(String.valueOf(user.friends_count) + "\n关注");
+        followerNumberTextView.setText(String.valueOf(user.followers_count) + "\n粉丝");
+        usernameTextView.setText(user.screen_name);
+        aboutMeTextView.setText(user.description == null || user.description.isEmpty() ? "暂无介绍" : user.description);
         BitmapLoader.getInstance().display(user.avatar_large, avatarCircleImageView);
 
+        linearLayoutLogin.setVisibility(View.INVISIBLE);
+        linearLayoutUserCenter.setVisibility(View.VISIBLE);
     }
 }
