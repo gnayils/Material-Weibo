@@ -279,8 +279,10 @@
                             app:title="我的相册"
                             app:moreIcon="@drawable/ic_arrow_right"/>
 
-                        <Space
+                        <com.gnayils.obiew.view.DividingLine
                             android:layout_width="match_parent"
+                            android:paddingLeft="44dp"
+                            app:paddingColor="#fffefefe"
                             android:layout_height="1dp" />
 
                         <com.gnayils.obiew.view.ItemView
@@ -290,8 +292,10 @@
                             app:title="我的收藏"
                             app:moreIcon="@drawable/ic_arrow_right"/>
 
-                        <Space
+                        <com.gnayils.obiew.view.DividingLine
                             android:layout_width="match_parent"
+                            android:paddingLeft="44dp"
+                            app:paddingColor="#fffefefe"
                             android:layout_height="1dp" />
 
                         <com.gnayils.obiew.view.ItemView

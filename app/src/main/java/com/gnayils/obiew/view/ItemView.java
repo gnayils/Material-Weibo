@@ -67,7 +67,7 @@ public class ItemView extends RelativeLayout {
         ImageView moreIconImageView = new ImageView(context);
         moreIconImageView.setId(View.generateViewId());
         moreIconImageView.setImageDrawable(moreIcon);
-        layoutParams = new LayoutParams(dp2px(16), dp2px(16));
+        layoutParams = new LayoutParams(dp2px(12), dp2px(12));
         layoutParams.setMargins(0, 0, dp2px(8), 0);
         layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);

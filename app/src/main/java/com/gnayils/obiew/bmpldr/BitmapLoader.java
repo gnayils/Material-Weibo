@@ -7,7 +7,6 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.gnayils.obiew.App;
-import com.sina.weibo.sdk.openapi.models.Tag;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +28,7 @@ public class BitmapLoader {
     private LRUMemoryCache memoryCache;
     private LRUDiskCache diskCache;
 
-    private static BitmapLoader BITMAP_LOADER;
+    private static BitmapLoader bitmapLoader;
 
     private BitmapLoader() throws IllegalAccessException {
         memoryCache = LRUMemoryCache.create(App.context(), 0);
@@ -58,11 +57,11 @@ public class BitmapLoader {
     }
 
     public static BitmapLoader getInstance() {
-        if(BITMAP_LOADER == null) {
+        if(bitmapLoader == null) {
             throw new IllegalStateException("BitmapLoader is not initialized");
 
         }
-        return BITMAP_LOADER;
+        return bitmapLoader;
     }
 
     private String generateMD5Key(String text) {
@@ -80,7 +79,7 @@ public class BitmapLoader {
 
     public static void initialize() {
         try {
-            BITMAP_LOADER = new BitmapLoader();
+            bitmapLoader = new BitmapLoader();
         } catch (IllegalAccessException e) {
             Log.e(TAG, "BitmapLoader initialize failed", e);
         }
@@ -88,7 +87,7 @@ public class BitmapLoader {
 
     private class LoadImageTask extends AsyncTask<String, Integer, Bitmap> {
 
-        public final String TAG = LoadImageTask.class.getSimpleName();
+        public final String tag = LoadImageTask.class.getSimpleName();
 
         private String url;
         private String urlKey;
@@ -126,18 +125,18 @@ public class BitmapLoader {
                             return false;
                         }
                     });
-                    Log.d(TAG, "get bitmap from internet: " + url);
+                    Log.d(tag, "get bitmap from internet: " + url);
                     file =  diskCache.get(urlKey);
                 } catch (IOException e) {
-                    Log.e(TAG, "task failed during load image from [" + url + "] failed", e);
+                    Log.e(tag, "task failed during load image from [" + url + "] failed", e);
                 }
             } else {
-                Log.d(TAG, "get bitmap from disk cache: " + url);
+                Log.d(tag, "get bitmap from disk cache: " + url);
             }
             try {
                 return decodeImage(file);
             } catch (IOException e) {
-                Log.e(TAG, "task failed during decode image from [" + file.getAbsolutePath() + "]", e);
+                Log.e(tag, "task failed during decode image from [" + file.getAbsolutePath() + "]", e);
                 return null;
             }
         }
@@ -176,7 +175,7 @@ public class BitmapLoader {
                     inputStream.reset();
                 }
             } catch(Exception e) {
-                Log.e(TAG, "reset input stream failed", e);
+                Log.e(tag, "reset input stream failed", e);
                 inputStream.close();
                 inputStream = downloader.getInputStream(file);
             }

@@ -1,12 +1,9 @@
 package com.gnayils.obiew;
 
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.text.method.ScrollingMovementMethod;
-import android.view.MotionEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,13 +16,11 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.gnayils.obiew.bmpldr.BitmapLoader;
 import com.gnayils.obiew.user.LoginHandler;
 import com.gnayils.obiew.user.LoginView;
 import com.gnayils.obiew.view.CircleImageView;
-import com.gnayils.obiew.view.OverScrollView;
 import com.sina.weibo.sdk.openapi.models.User;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, LoginView {

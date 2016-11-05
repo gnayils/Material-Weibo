@@ -32,7 +32,7 @@ public class TokenKeeper {
     private static final String KEY_EXPIRES_IN = "expires_in";
     private static final String KEY_REFRESH_TOKEN = "refresh_token";
 
-    private static Oauth2AccessToken TOKEN;
+    private static Oauth2AccessToken token;
 
     public static void writeToken(Oauth2AccessToken token) {
         SharedPreferences pref = App.context().getSharedPreferences(PREFERENCES_NAME, Context.MODE_APPEND);
@@ -42,24 +42,24 @@ public class TokenKeeper {
         editor.putString(KEY_REFRESH_TOKEN, token.getRefreshToken());
         editor.putLong(KEY_EXPIRES_IN, token.getExpiresTime());
         editor.commit();
-        TOKEN = token;
+        TokenKeeper.token = token;
     }
 
     public static Oauth2AccessToken readToken() {
-        TOKEN = new Oauth2AccessToken();
+        token = new Oauth2AccessToken();
         SharedPreferences pref = App.context().getSharedPreferences(PREFERENCES_NAME, Context.MODE_APPEND);
-        TOKEN.setUid(pref.getString(KEY_UID, ""));
-        TOKEN.setToken(pref.getString(KEY_ACCESS_TOKEN, ""));
-        TOKEN.setRefreshToken(pref.getString(KEY_REFRESH_TOKEN, ""));
-        TOKEN.setExpiresTime(pref.getLong(KEY_EXPIRES_IN, 0));
-        return TOKEN;
+        token.setUid(pref.getString(KEY_UID, ""));
+        token.setToken(pref.getString(KEY_ACCESS_TOKEN, ""));
+        token.setRefreshToken(pref.getString(KEY_REFRESH_TOKEN, ""));
+        token.setExpiresTime(pref.getLong(KEY_EXPIRES_IN, 0));
+        return token;
     }
 
     public static Oauth2AccessToken getToken() {
-        if(TOKEN == null) {
+        if(token == null) {
             readToken();
         }
-        return TOKEN;
+        return token;
     }
 
     public static void clear() {
@@ -67,6 +67,6 @@ public class TokenKeeper {
         Editor editor = pref.edit();
         editor.clear();
         editor.commit();
-        TOKEN = null;
+        token = null;
     }
 }

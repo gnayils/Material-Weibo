@@ -13,4 +13,8 @@
         <attr name="moreIcon" format="reference"/>
     </declare-styleable>
 
+    <declare-styleable name="DividingLine">
+        <attr name="lineColor" format="color" />
+        <attr name="paddingColor" format="color"/>
+    </declare-styleable>
 </resources>

@@ -58,6 +58,7 @@ public class LoginHandler {
         public void onComplete(Bundle values) {
             Oauth2AccessToken accessToken = Oauth2AccessToken.parseAccessToken(values);
             if (accessToken.isSessionValid()) {
+                Log.i(TAG, "access token: " + accessToken.getToken());
                 TokenKeeper.writeToken(accessToken);
                 UsersAPI usersApi = new UsersAPI(App.context(), App.getAppKey(), accessToken);
                 usersApi.show(Long.parseLong(accessToken.getUid()), new RequestListener() {
