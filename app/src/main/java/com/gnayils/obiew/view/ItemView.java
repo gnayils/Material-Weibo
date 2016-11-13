@@ -11,8 +11,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.util.ViewHelper;
-import static com.gnayils.obiew.util.ViewHelper.*;
+
+import static com.gnayils.obiew.util.ViewUtils.*;
 
 /**
  * Created by Gnayils on 9/25/16.

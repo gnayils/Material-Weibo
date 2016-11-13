@@ -2,30 +2,16 @@ package com.gnayils.obiew.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v4.view.PagerAdapter;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.view.ViewTreeObserver;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.OverScroller;
-import android.widget.ScrollView;
 import android.widget.Scroller;
-import android.widget.SlidingDrawer;
 
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.util.ViewHelper;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 /**
  * Created by Administrator on 8/13/2016.

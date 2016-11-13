@@ -12,13 +12,11 @@ import com.gnayils.obiew.bmpldr.BitmapLoader;
 public class App extends Application {
 
     private static Application application;
-    private static String appKey;
 
     @Override
     public void onCreate() {
         super.onCreate();
         application = this;
-        appKey = getString(R.string.weibo_app_key);
         BitmapLoader.initialize();
     }
 
@@ -28,10 +26,6 @@ public class App extends Application {
 
     public static Resources resources() {
         return context().getResources();
-    }
-
-    public static String getAppKey() {
-        return appKey;
     }
 
 }

@@ -8,7 +8,7 @@ import com.gnayils.obiew.App;
 /**
  * Created by Administrator on 8/13/2016.
  */
-public class ViewHelper {
+public class ViewUtils {
 
     public static int adjustColor(int color, float offsetFactor) {
         float[] hsv = new float[3];
