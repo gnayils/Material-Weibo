@@ -35,8 +35,8 @@ public class ContentLengthInputStream extends InputStream{
     }
 
     @Override
-    public void mark(int readlimit) {
-        inputStream.mark(readlimit);
+    public void mark(int readLimit) {
+        inputStream.mark(readLimit);
     }
 
     @Override

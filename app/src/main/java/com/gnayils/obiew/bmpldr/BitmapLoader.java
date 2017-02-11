@@ -4,9 +4,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import com.gnayils.obiew.App;
+import com.gnayils.obiew.R;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,30 +39,13 @@ public class BitmapLoader {
         downloader = URLDownloader.create();
     }
 
-    public void display(String url, final ImageView imageView) {
-        String urlKey = generateMD5Key(url);
-        Bitmap bitmap = memoryCache.get(urlKey);
-        if(bitmap != null) {
-            Log.d(TAG, "get bitmap from memory cache: " + url);
-            imageView.setImageBitmap(bitmap);
-        } else {
-            LoadImageTask task = new LoadImageTask(url, imageView.getWidth(), imageView.getHeight(),
-                    new LoadImageTaskEventListener(){
-
-                @Override
-                public void onPostExecute(Bitmap bitmap) {
-                    imageView.setImageBitmap(bitmap);
-                }
-
-            });
-            task.execute();
-        }
+    public void loadBitmap(String url, ImageView imageView) {
+        new LoadImageTask(url, imageView).execute();
     }
 
     public static BitmapLoader getInstance() {
         if(bitmapLoader == null) {
             throw new IllegalStateException("BitmapLoader is not initialized");
-
         }
         return bitmapLoader;
     }
@@ -85,31 +71,42 @@ public class BitmapLoader {
         }
     }
 
-    private class LoadImageTask extends AsyncTask<String, Integer, Bitmap> {
+    public class LoadImageTask extends AsyncTask<String, Integer, Bitmap> {
 
-        public final String tag = LoadImageTask.class.getSimpleName();
+        public final String TAG = LoadImageTask.class.getSimpleName();
 
         private String url;
         private String urlKey;
-        private int targetWidth;
-        private int targetHeight;
+        private ImageView imageView;
         private LoadImageTaskEventListener listener;
 
-        private LoadImageTask(String url, int targetWidth, int targetHeight, LoadImageTaskEventListener listener) {
+        private LoadImageTask(String url, ImageView imageView) {
             this.url = url;
             this.urlKey = generateMD5Key(url);
-            this.targetWidth = targetWidth;
-            this.targetHeight = targetHeight;
-            this.listener = listener;
+            this.imageView = imageView;
+            this.listener = new LoadImageTaskEventListener() {
+                @Override
+                public void onPostExecute(Bitmap bitmap) {
+                    LoadImageTask.this.imageView.setImageBitmap(bitmap);
+                }
+            };
         }
 
         @Override
         protected void onPreExecute() {
-            listener.onPreExecute();
+            if(listener != null) {
+                listener.onPreExecute();
+            }
         }
 
         @Override
         protected Bitmap doInBackground(String... params) {
+            Bitmap bitmap = memoryCache.get(urlKey);
+            if(bitmap != null) {
+                Log.d(BitmapLoader.TAG, "get bitmap from memory cache: " + url);
+                return bitmap;
+            }
+
             File file = diskCache.get(urlKey);
             if(file == null) {
                 try {
@@ -125,25 +122,30 @@ public class BitmapLoader {
                             return false;
                         }
                     });
-                    Log.d(tag, "get bitmap from internet: " + url);
+                    Log.d(TAG, "get bitmap from internet: " + url);
                     file =  diskCache.get(urlKey);
                 } catch (IOException e) {
-                    Log.e(tag, "task failed during load image from [" + url + "] failed", e);
+                    Log.e(TAG, "task failed during load image from [" + url + "] failed", e);
                 }
             } else {
-                Log.d(tag, "get bitmap from disk cache: " + url);
+                Log.d(TAG, "get bitmap from disk cache: " + url);
             }
             try {
                 return decodeImage(file);
             } catch (IOException e) {
-                Log.e(tag, "task failed during decode image from [" + file.getAbsolutePath() + "]", e);
+                Log.e(TAG, "task failed during decode image from [" + file.getAbsolutePath() + "]", e);
+                return null;
+            } catch (InterruptedException e) {
+                Log.e(TAG, "task failed during decode image from [" + file.getAbsolutePath() + "]", e);
                 return null;
             }
         }
 
         @Override
         protected void onProgressUpdate(Integer... values) {
-            listener.onProgressUpdate(values);
+            if(listener != null) {
+                listener.onProgressUpdate(values);
+            }
         }
 
         @Override
@@ -151,31 +153,40 @@ public class BitmapLoader {
             if(bitmap != null) {
                 memoryCache.put(urlKey, bitmap);
             }
-            listener.onPostExecute(bitmap);
+            if(listener != null) {
+                listener.onPostExecute(bitmap);
+            }
         }
 
         @Override
         protected void onCancelled() {
-            listener.onCancelled();
+            if(listener != null) {
+                listener.onCancelled();
+            }
         }
 
-        private Bitmap decodeImage(File file) throws IOException {
+        private Bitmap decodeImage(File file) throws IOException, InterruptedException {
             InputStream inputStream = downloader.getInputStream(file);
             Options options = new Options();
             options.inJustDecodeBounds = true;
             inputStream.mark((int)file.length());
             BitmapFactory.decodeStream(inputStream, null, options);
 
-            int scale = Math.round(Math.min(options.outWidth / 1.0f / targetWidth, options.outHeight / 1.0f / targetHeight));
             options = new Options();
-            options.inSampleSize = Math.max(scale, 1);
+            if(imageView.isLaidOut()) {
+                int scale = Math.round(Math.min((float) options.outWidth / imageView.getWidth(), (float) options.outHeight / imageView.getHeight()));
+                options.inSampleSize = Math.max(scale, 1);
+            }
 
             try {
                 if(inputStream.markSupported()) {
                     inputStream.reset();
+                } else {
+                    inputStream.close();
+                    inputStream = downloader.getInputStream(file);
                 }
             } catch(Exception e) {
-                Log.e(tag, "reset input stream failed", e);
+                Log.e(TAG, "reset input stream failed", e) ;
                 inputStream.close();
                 inputStream = downloader.getInputStream(file);
             }
@@ -183,26 +194,6 @@ public class BitmapLoader {
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, options);
             inputStream.close();
             return bitmap;
-        }
-    }
-
-    private class LoadImageTaskEventListener {
-
-        public void onPreExecute() {
-
-        }
-
-        public void onProgressUpdate(Integer... values) {
-
-        }
-
-        public void onPostExecute(Bitmap bitmap) {
-
-
-        }
-
-        public void onCancelled() {
-
         }
     }
 

@@ -26,26 +26,11 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <FrameLayout
+        <fragment
+            android:id="@+id/fragment_status_timeline"
+            android:name="com.gnayils.obiew.user.StatusTimelineFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <Button
-                android:id="@+id/button_sso_authorises"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:text="SSO Authorise" />
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_margin="@dimen/fab_margin"
-                android:src="@android:drawable/ic_dialog_email" />
-
-        </FrameLayout>
+            android:layout_height="match_parent"/>
 
         <android.support.design.widget.NavigationView
             android:id="@+id/nav_view"
@@ -53,8 +38,9 @@
             android:layout_height="match_parent"
             android:layout_gravity="start">
 
-            <FrameLayout
+            <fragment
                 android:id="@+id/fragment_user_profile"
+                android:name="com.gnayils.obiew.user.UserProfileFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 

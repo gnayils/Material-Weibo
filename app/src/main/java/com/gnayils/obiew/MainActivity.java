@@ -2,9 +2,6 @@ package com.gnayils.obiew;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -15,9 +12,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.gnayils.obiew.event.AuthorizeCallBackEvent;
+import com.gnayils.obiew.user.StatusTimelineFragment;
 import com.gnayils.obiew.user.UserProfileFragment;
-import com.gnayils.obiew.user.UserProfilePresenter;
-import com.gnayils.obiew.util.ActivityUtils;
+import com.gnayils.obiew.user.UserPresenter;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -31,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Bind(R.id.nav_view)
     protected NavigationView navigationView;
 
-    private UserProfilePresenter userProfilePresenter;
+    private UserPresenter userPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,14 +37,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new ProfileView.OnClickListener() {
+//            @Override
+//            public void onClick(ProfileView view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.setDrawerListener(toggle);
@@ -55,11 +52,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         UserProfileFragment userProfileFragment = (UserProfileFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_user_profile);
-        if (userProfileFragment == null) {
-            userProfileFragment = new UserProfileFragment();
-            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), userProfileFragment, R.id.fragment_user_profile);
-        }
-        userProfilePresenter = new UserProfilePresenter(userProfileFragment);
+        StatusTimelineFragment statusTimelineFragment = (StatusTimelineFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_status_timeline);
+        userPresenter = new UserPresenter(userProfileFragment, statusTimelineFragment);
     }
 
     @Override

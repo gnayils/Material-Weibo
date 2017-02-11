@@ -33,29 +33,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="62dp">
 
-                <FrameLayout
-                    android:id="@+id/frame_layout_avatar"
+                <com.gnayils.obiew.view.AvatarView
+                    android:id="@+id/avatar_view_user"
                     android:layout_width="62dp"
-                    android:layout_height="62dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:background="@drawable/bg_avatar_border">
-
-                    <com.gnayils.obiew.view.CircleImageView
-                        android:id="@+id/circle_image_view_avatar"
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_avatar_default" />
-
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_gravity="bottom|right"
-                        android:layout_marginBottom="2dp"
-                        android:layout_marginRight="2dp" />
-
-                </FrameLayout>
+                    android:layout_height="62dp"/>
 
                 <TextView
                     android:id="@+id/text_view_username"
@@ -64,7 +45,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="8dp"
-                    android:layout_toRightOf="@id/frame_layout_avatar"
+                    android:layout_toRightOf="@id/avatar_view_user"
                     android:shadowColor="#75000000"
                     android:shadowDy="1"
                     android:shadowRadius="1"
@@ -80,7 +61,7 @@
                     android:layout_alignParentBottom="true"
                     android:layout_marginBottom="8dp"
                     android:layout_marginLeft="8dp"
-                    android:layout_toRightOf="@id/frame_layout_avatar"
+                    android:layout_toRightOf="@id/avatar_view_user"
                     android:shadowColor="#75000000"
                     android:shadowDy="1"
                     android:shadowRadius="1"

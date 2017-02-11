@@ -17,4 +17,9 @@
         <attr name="lineColor" format="color" />
         <attr name="paddingColor" format="color"/>
     </declare-styleable>
+
+    <declare-styleable name="AvatarView">
+        <attr name="avatarImage" format="reference" />
+        <attr name="verifiedIcon" format="reference"/>
+    </declare-styleable>
 </resources>

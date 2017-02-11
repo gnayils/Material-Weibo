@@ -37,12 +37,11 @@ public class ItemView extends RelativeLayout {
         setBackground(getResources().getDrawable(R.drawable.bg_ripple, context.getTheme()));
         setClickable(true);
 
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ItemView);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ItemView, defStyleAttr, defStyleRes);
         Drawable icon = typedArray.getDrawable(R.styleable.ItemView_icon);
         String title = typedArray.getString(R.styleable.ItemView_title);
         String description = typedArray.getString(R.styleable.ItemView_description);
         Drawable moreIcon = typedArray.getDrawable(R.styleable.ItemView_moreIcon);
-
 
         ImageView iconImageView = new ImageView(context);
         iconImageView.setId(View.generateViewId());

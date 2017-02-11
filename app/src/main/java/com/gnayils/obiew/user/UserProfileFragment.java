@@ -1,6 +1,5 @@
 package com.gnayils.obiew.user;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,11 +10,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.gnayils.obiew.R;
+import com.gnayils.obiew.bean.User;
 import com.gnayils.obiew.bmpldr.BitmapLoader;
-import com.gnayils.obiew.view.CircleImageView;
-import com.sina.weibo.sdk.openapi.models.User;
-
-import org.greenrobot.eventbus.EventBus;
+import com.gnayils.obiew.view.AvatarView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -24,7 +21,7 @@ import butterknife.ButterKnife;
  * Created by Gnayils on 12/11/2016.
  */
 
-public class UserProfileFragment extends Fragment implements UserProfileInterface.View{
+public class UserProfileFragment extends Fragment implements UserInterface.ProfileView {
 
     @Bind(R.id.button_login)
     protected Button loginButton;
@@ -40,14 +37,14 @@ public class UserProfileFragment extends Fragment implements UserProfileInterfac
     protected TextView usernameTextView;
     @Bind(R.id.text_view_about_me)
     protected TextView aboutMeTextView;
-    @Bind(R.id.circle_image_view_avatar)
-    protected CircleImageView avatarCircleImageView;
+    @Bind(R.id.avatar_view_user)
+    protected AvatarView userAvatarView;
     @Bind(R.id.linear_layout_login)
     protected ViewGroup linearLayoutLogin;
     @Bind(R.id.linear_layout_user_profile)
     protected ViewGroup linearLayoutUserCenter;
 
-    private UserProfileInterface.Presenter userProfilePresenter;
+    private UserInterface.Presenter userPresenter;
 
     @Nullable
     @Override
@@ -57,14 +54,14 @@ public class UserProfileFragment extends Fragment implements UserProfileInterfac
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userProfilePresenter.requestLogin(getActivity());
+                userPresenter.requestLogin(getActivity());
             }
         });
         signupButton.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
-                userProfilePresenter.requestSignup(getActivity());
+                userPresenter.requestSignUp(getActivity());
             }
         });
         return userProfileView;
@@ -77,15 +74,15 @@ public class UserProfileFragment extends Fragment implements UserProfileInterfac
         followerNumberTextView.setText(String.valueOf(user.followers_count) + "\n粉丝");
         usernameTextView.setText(user.screen_name);
         aboutMeTextView.setText(user.description == null || user.description.isEmpty() ? "暂无介绍" : user.description);
-        BitmapLoader.getInstance().display(user.avatar_large, avatarCircleImageView);
+        BitmapLoader.getInstance().loadBitmap(user.avatar_large, userAvatarView.avatarCircleImageView);
 
         linearLayoutLogin.setVisibility(View.INVISIBLE);
         linearLayoutUserCenter.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void setPresenter(UserProfileInterface.Presenter presenter) {
-        userProfilePresenter = presenter;
+    public void setPresenter(UserInterface.Presenter presenter) {
+        userPresenter = presenter;
     }
 
     @Override

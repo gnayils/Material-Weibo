@@ -1,5 +1,6 @@
 package com.gnayils.obiew.util;
 
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.util.DisplayMetrics;
 
@@ -18,12 +19,18 @@ public class ViewUtils {
     }
 
     public static int dp2px(int dp) {
-        DisplayMetrics metrics = App.resources().getDisplayMetrics();
-        return (int) (dp * ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT));
+        return dp2px(App.resources().getDisplayMetrics(), dp);
     }
 
     public static int px2dp(int px) {
-        DisplayMetrics metrics = App.resources().getDisplayMetrics();
-        return (int) (px / ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT));
+        return px2dp(App.resources().getDisplayMetrics(), px);
+    }
+
+    public static int dp2px(DisplayMetrics displayMetrics, int dp) {
+        return (int) (dp * ((float) displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT));
+    }
+
+    public static int px2dp(DisplayMetrics displayMetrics, int px) {
+        return (int) (px / ((float) displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 }

@@ -1,18 +1,41 @@
 package com.gnayils.obiew.user;
 
-import com.gnayils.obiew.App;
+import android.app.Activity;
+
+import com.gnayils.obiew.BasePresenter;
+import com.gnayils.obiew.BaseView;
+import com.gnayils.obiew.bean.Timeline;
 import com.gnayils.obiew.bean.User;
 
-import retrofit2.http.GET;
-import retrofit2.http.Query;
-import rx.Observable;
-
 /**
- * Created by Gnayils on 13/11/2016.
+ * Created by Gnayils on 12/11/2016.
  */
 
 public interface UserInterface {
 
-    @GET("users/show.json")
-    Observable<User> getUser(@Query("access_token") String accessToken, @Query("uid") String uid);
+
+    interface ProfileView extends BaseView<Presenter>{
+
+        void updateUser(User user);
+
+    }
+
+    interface StatusTimelineView extends BaseView<Presenter> {
+
+        void showStatusTimeline(Timeline timeline);
+
+        void showLoadingIndicator(boolean refreshing);
+
+    }
+
+
+    interface Presenter extends BasePresenter {
+
+        void requestLogin(Activity activity);
+
+        void requestSignUp(Activity activity);
+
+        void loadStatusTimeline();
+
+    }
 }
