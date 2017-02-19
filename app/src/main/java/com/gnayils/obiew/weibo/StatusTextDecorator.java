@@ -6,21 +6,27 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.Browser;
 import android.provider.ContactsContract;
+import android.text.Layout;
+import android.text.Selection;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
 import android.text.style.StyleSpan;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
 import android.util.Patterns;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import com.gnayils.obiew.App;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.bmpldr.BitmapLoader;
+import com.gnayils.obiew.view.CenteredImageSpan;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +86,7 @@ public class StatusTextDecorator {
             if(bitmap == null) {
                 continue;
             } else {
-                spannableString.setSpan(new ImageSpan(App.context(), bitmap, ImageSpan.ALIGN_BOTTOM), emotionKeyMatcher.start(), emotionKeyMatcher.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannableString.setSpan(new CenteredImageSpan(App.context(), bitmap), emotionKeyMatcher.start(), emotionKeyMatcher.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
     }
@@ -97,7 +103,7 @@ public class StatusTextDecorator {
         return spannable;
     }
 
-    public static class LinkSpan extends ClickableSpan {
+    public static class LinkSpan extends TouchableSpan {
 
         public String url;
         public int start;
@@ -105,6 +111,7 @@ public class StatusTextDecorator {
         public int flag = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 
         public LinkSpan(String url, int start, int end) {
+            super(App.resources().getColor(R.color.colorLink), App.resources().getColor(R.color.colorLink), App.resources().getColor(R.color.colorLinkBackground));
             this.url = url;
             this.start = start;
             this.end = end;
@@ -125,13 +132,6 @@ public class StatusTextDecorator {
                 intent.putExtra(Browser.EXTRA_APPLICATION_ID, context.getPackageName());
                 context.startActivity(intent);
             }
-        }
-
-        @Override
-        public void updateDrawState(TextPaint tp) {
-            super.updateDrawState(tp);
-            tp.setUnderlineText(false);
-            tp.setColor(App.resources().getColor(R.color.colorLink));
         }
     }
 }

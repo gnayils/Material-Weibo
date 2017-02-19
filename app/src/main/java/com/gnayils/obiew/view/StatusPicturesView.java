@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -41,9 +42,9 @@ public class StatusPicturesView extends ViewGroup {
         super(context, attrs, defStyleAttr, defStyleRes);
         for (int i = 0; i < 9; i++) {
             ImageView imageView = new ImageView(getContext());
-//            imageView.setImageDrawable(getResources().getDrawable(R.drawable.bg_cover_default, getContext().getTheme()));
+            //imageView.setImageDrawable(getResources().getDrawable(R.drawable.bg_cover_default, getContext().getTheme()));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setBackground(getResources().getDrawable(R.drawable.bg_status_thumbnail, getContext().getTheme()));
+            imageView.setBackground(ViewUtils.createRippleDrawable(R.color.colorThumbnailBg, ViewUtils.dp2px(2)));
             imageView.setClipToOutline(true);
             addView(imageView);
         }
@@ -65,7 +66,9 @@ public class StatusPicturesView extends ViewGroup {
             if(i < picUrlsList.size()) {
                 Status.PicUrls picUrls = picUrlsList.get(i);
                 child.setVisibility(View.VISIBLE);
-                BitmapLoader.getInstance().loadBitmap(picUrls.thumbnail_pic, (ImageView) child);
+                //replace("thumbnail", "large");
+                //replace("thumbnail", "bmiddle");
+                BitmapLoader.getInstance().loadBitmap(picUrls.thumbnail_pic.replace("/thumbnail/", "/bmiddle/"), (ImageView) child);
             }
         }
 
@@ -83,22 +86,23 @@ public class StatusPicturesView extends ViewGroup {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
-        int imageSize = (MeasureSpec.getSize(widthMeasureSpec) - MARGIN_IN_IMAGES * 2) / 3;
+        int imageSize = (MeasureSpec.getSize(widthMeasureSpec) - MARGIN_IN_IMAGES * 2 - getPaddingLeft() - getPaddingRight()) / 3 ;
 
         if(imageViewVisibleCount > 0) {
             for (int i = 0; i < imageViewVisibleCount; i++) {
                 View child = getChildAt(i);
-//                if(imageViewVisibleCount == 1) {
-//                    child.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-//                } else {
+                if(imageViewVisibleCount == 1) {
+                    child.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+                } else {
                     child.setLayoutParams(new LayoutParams(imageSize, imageSize));
-//                }
+                }
                 measureChildWithMargins(child, widthMeasureSpec, 0, heightMeasureSpec, 0);
+
             }
 
             int rows = (int) Math.ceil(imageViewVisibleCount / 3d);
             View child = getChildAt(0);
-            setMeasuredDimension(widthMeasureSpec, resolveSizeAndState(child.getMeasuredHeight() * rows + (rows - 1) * MARGIN_IN_IMAGES, heightMeasureSpec, child.getMeasuredState()));
+            setMeasuredDimension(widthMeasureSpec, resolveSizeAndState(child.getMeasuredHeight() * rows + (rows - 1) * MARGIN_IN_IMAGES + getPaddingTop() + getPaddingBottom(), heightMeasureSpec, child.getMeasuredState()));
         } else {
             super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.EXACTLY));
         }
@@ -107,21 +111,21 @@ public class StatusPicturesView extends ViewGroup {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
 
-        int childLeft = 0;
-        int childTop = 0;
+        int childLeft =  getPaddingLeft();
+        int childTop = getPaddingTop();
 
-        for (int i = 0; i < getChildCount(); i++) {
+        for (int i = 0; i < imageViewVisibleCount; i++) {
 
             View child = getChildAt(i);
             child.layout(childLeft, childTop, childLeft + child.getMeasuredWidth(), childTop + child.getMeasuredHeight());
             childLeft = child.getRight() + MARGIN_IN_IMAGES;
             childTop = child.getTop();
 
-            if(getChildCount() == 4 && i == 1) {
-                childLeft = 0;
+            if(imageViewVisibleCount == 4 && i == 1) {
+                childLeft = getPaddingLeft();
                 childTop = child.getBottom() + MARGIN_IN_IMAGES;
-            } else if(5 <= getChildCount() && getChildCount() <= 9 && (i == 2 || i == 5)) {
-                childLeft = 0;
+            } else if(5 <= imageViewVisibleCount && imageViewVisibleCount <= 9 && (i == 2 || i == 5)) {
+                childLeft = getPaddingLeft();
                 childTop = child.getBottom() + MARGIN_IN_IMAGES;
             }
         }

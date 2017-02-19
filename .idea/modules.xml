@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/obiew.iml" filepath="$PROJECT_DIR$/obiew.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swipyrefreshlayout/swipyrefreshlayout.iml" filepath="$PROJECT_DIR$/swipyrefreshlayout/swipyrefreshlayout.iml" />
       <module fileurl="file://$PROJECT_DIR$/weiboSDK/weiboSDK.iml" filepath="$PROJECT_DIR$/weiboSDK/weiboSDK.iml" />
     </modules>
   </component>

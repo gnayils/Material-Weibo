@@ -1,12 +1,16 @@
 package com.gnayils.obiew.bean;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Gnayils on 16/11/2016.
  */
 
-public class Status {
+public class Status implements Comparable<Status> {
 
     public String created_at;
     public long id;
@@ -74,5 +78,35 @@ public class Status {
 
     public static class Annotations {
         public String client_mblogid;
+    }
+
+    /**********************************************************************/
+
+    public static final DateFormat DATE_FORMAT = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy", Locale.ENGLISH);
+
+    @Override
+    public boolean equals(Object another) {
+        if (another == this) {
+            return true;
+        }else if (!(another instanceof Status)) {
+            return false;
+        }
+        Status anotherStatus = (Status) another;
+        return id == anotherStatus.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (id ^ (id >>> 32));
+    }
+
+    @Override
+    public int compareTo(Status another) {
+        try {
+            return (int) (DATE_FORMAT.parse(another.created_at).getTime() - DATE_FORMAT.parse(created_at).getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 }

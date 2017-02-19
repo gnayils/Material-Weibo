@@ -17,7 +17,7 @@ import com.gnayils.obiew.R;
 public class AvatarView extends FrameLayout {
 
     public static final float AVATAR_CIRCLE_IMAGE_VIEW_SIZE_RATIO = 56f / 62f;
-    public static final float VERIFIED_ICON_IMAGE_VIEW_SIZE_RATIO = 16f / 62f;
+    public static final float VERIFIED_ICON_IMAGE_VIEW_SIZE_RATIO = 20f / 62f;
     public static final float VERIFIED_ICON_IMAGE_VIEW_MARGIN_RATIO = 2f / 62f;
 
     public CircleImageView avatarCircleImageView;

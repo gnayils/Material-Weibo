@@ -35,7 +35,6 @@ public interface UserInterface {
 
         void requestSignUp(Activity activity);
 
-        void loadStatusTimeline();
-
+        void loadStatusTimeline(boolean latest);
     }
 }

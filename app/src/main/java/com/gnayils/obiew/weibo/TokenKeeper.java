@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.gnayils.obiew.util;
+package com.gnayils.obiew.weibo;
 
 import android.content.Context;
 import android.content.SharedPreferences;

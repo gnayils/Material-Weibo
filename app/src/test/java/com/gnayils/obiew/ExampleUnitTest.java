@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,8 +33,9 @@ public class ExampleUnitTest {
 
     @Test
     public void parseStringToDateWithoutException() throws ParseException {
-        DateFormat dateFormat = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy");
-        Date date = dateFormat.parse("Wed Feb 01 15:59:42 +0800 2017");
+        DateFormat dateFormat = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy", Locale.ENGLISH);
+        System.out.println(dateFormat.parse("Sat Feb 04 13:48:00 +0800 2017").getTime());
+
     }
 
     @Test
@@ -84,6 +86,16 @@ public class ExampleUnitTest {
 
         public static final int resId = 1234567;
 
+    }
+
+    @Test
+    public void operand() {
+        long id = 4071426909192703L;
+        System.out.println(id);
+        System.out.println(5^2);
+        System.out.println(Integer.toBinaryString(5));
+        System.out.println(Integer.toBinaryString(7));
+        System.out.println((int)(id ^ (id >>> 32)));
     }
     
 }

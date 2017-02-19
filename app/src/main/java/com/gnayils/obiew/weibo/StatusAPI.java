@@ -16,5 +16,5 @@ import rx.Observable;
 public interface StatusAPI {
 
     @GET("statuses/home_timeline.json")
-    Observable<Timeline> homeTimeline(@Query("access_token") String accessToken);
+    Observable<Timeline> homeTimeline(@Query("access_token") String accessToken, @Query("max_id")long maxId, @Query("since_id")long sinceId);
 }

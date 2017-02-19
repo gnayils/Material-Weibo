@@ -8,7 +8,7 @@ import com.gnayils.obiew.App;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.event.AuthorizeCallBackEvent;
 import com.gnayils.obiew.event.AuthorizeResultEvent;
-import com.gnayils.obiew.util.TokenKeeper;
+import com.gnayils.obiew.weibo.TokenKeeper;
 import com.sina.weibo.sdk.auth.AuthInfo;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WeiboAuthListener;

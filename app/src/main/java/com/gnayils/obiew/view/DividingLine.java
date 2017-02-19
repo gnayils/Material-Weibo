@@ -56,6 +56,10 @@ public class DividingLine extends View {
         paint.setStrokeWidth(h * 2);
     }
 
+    public void setLineColor(int color) {
+        this.lineColor = color;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);

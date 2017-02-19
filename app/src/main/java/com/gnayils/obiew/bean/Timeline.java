@@ -11,7 +11,7 @@ import java.util.List;
 public class Timeline {
 
     public boolean hasvisible;
-    public int previous_cursor;
+    public long previous_cursor;
     public long next_cursor;
     public int total_number;
     public int interval;

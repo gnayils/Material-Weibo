@@ -4,12 +4,13 @@ import android.app.Activity;
 import android.util.Log;
 
 import com.gnayils.obiew.bean.Timeline;
+import com.gnayils.obiew.util.Popup;
 import com.gnayils.obiew.weibo.StatusAPI;
 import com.gnayils.obiew.weibo.UserAPI;
 import com.gnayils.obiew.weibo.WeiboAPI;
 import com.gnayils.obiew.bean.User;
 import com.gnayils.obiew.event.AuthorizeResultEvent;
-import com.gnayils.obiew.util.TokenKeeper;
+import com.gnayils.obiew.weibo.TokenKeeper;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -19,7 +20,6 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -36,6 +36,8 @@ public class UserPresenter implements UserInterface.Presenter {
     private UserAuthorizeHandler userAuthorizeHandler;
 
     private CompositeSubscription compositeSubscription;
+
+    private long timelineSinceId = 0;
 
     public UserPresenter(UserInterface.ProfileView userProfileProfileView, UserInterface.StatusTimelineView statusTimelineView) {
         this.userProfileProfileView = userProfileProfileView;
@@ -99,9 +101,9 @@ public class UserPresenter implements UserInterface.Presenter {
     }
 
     @Override
-    public void loadStatusTimeline() {
+    public void loadStatusTimeline(boolean latest) {
         compositeSubscription.clear();
-        Subscription subscription = WeiboAPI.get(StatusAPI.class).homeTimeline(TokenKeeper.getToken().getToken())
+        Subscription subscription = WeiboAPI.get(StatusAPI.class).homeTimeline(TokenKeeper.getToken().getToken(), latest ? 0L : this.timelineSinceId, 0L)
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
@@ -118,14 +120,17 @@ public class UserPresenter implements UserInterface.Presenter {
 
                     @Override
                     public void onError(Throwable e) {
+                        statusTimelineView.showLoadingIndicator(false);
                         Log.e(TAG, "update time line failed: ", e);
                     }
 
                     @Override
                     public void onNext(Timeline timeline) {
+                        UserPresenter.this.timelineSinceId = timeline.max_id;
                         statusTimelineView.showStatusTimeline(timeline);
                     }
                 });
         compositeSubscription.add(subscription);
+
     }
 }
