@@ -1,14 +1,18 @@
 package com.gnayils.obiew.util;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.util.DisplayMetrics;
 
 import com.gnayils.obiew.App;
+import com.gnayils.obiew.R;
 
 /**
  * Created by Administrator on 8/13/2016.
@@ -38,6 +42,14 @@ public class ViewUtils {
         return (int) (px / ((float) displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
+    public static Drawable getDrawableWithAttribute(Context themeContext, int attrId) {
+        int[] attributes = new int[] { attrId };
+        TypedArray typedArray = themeContext.obtainStyledAttributes(attributes);
+        Drawable drawable = typedArray.getDrawable(0);
+        typedArray.recycle();
+        return drawable;
+    }
+
     public static RippleDrawable createRippleDrawable(int normalColor, float cornerRadius) {
         int pressedColor = adjustColor(normalColor, 0.85f);
         GradientDrawable gradientDrawable = new GradientDrawable();
@@ -54,7 +66,8 @@ public class ViewUtils {
                         pressedColor,
                         pressedColor,
                         pressedColor,
-                        normalColor }
+                        normalColor
+                }
         ), gradientDrawable, null);
         return rippleDrawable;
     }

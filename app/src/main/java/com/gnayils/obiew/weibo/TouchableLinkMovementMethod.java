@@ -3,9 +3,12 @@ package com.gnayils.obiew.weibo;
 import android.text.Layout;
 import android.text.Selection;
 import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannedString;
 import android.text.method.LinkMovementMethod;
 import android.text.method.MovementMethod;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.TextView;
 
 /**
@@ -14,7 +17,8 @@ import android.widget.TextView;
 
 public class TouchableLinkMovementMethod extends LinkMovementMethod {
 
-    private static LinkMovementMethod instance;
+    private static LinkMovementMethod instance = new TouchableLinkMovementMethod();
+    private static TouchListener listener = new TouchListener();
 
     private TouchableSpan pressedSpan;
 
@@ -29,14 +33,18 @@ public class TouchableLinkMovementMethod extends LinkMovementMethod {
             if (pressedSpan != null) {
                 pressedSpan.setPressed(true);
                 Selection.setSelection(spannable, spannable.getSpanStart(pressedSpan), spannable.getSpanEnd(pressedSpan));
+                return true;
             }
+            return false;
         } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
             TouchableSpan touchedSpan = getPressedSpan(textView, spannable, event);
             if (pressedSpan != null && touchedSpan != pressedSpan) {
                 pressedSpan.setPressed(false);
                 pressedSpan = null;
                 Selection.removeSelection(spannable);
+                return false;
             }
+            return true;
         } else {
             if (pressedSpan != null) {
                 pressedSpan.setPressed(false);
@@ -44,8 +52,8 @@ public class TouchableLinkMovementMethod extends LinkMovementMethod {
             }
             pressedSpan = null;
             Selection.removeSelection(spannable);
+            return true;
         }
-        return true;
     }
 
     private TouchableSpan getPressedSpan(TextView textView, Spannable spannable, MotionEvent event) {
@@ -72,10 +80,28 @@ public class TouchableLinkMovementMethod extends LinkMovementMethod {
     }
 
     public static MovementMethod getInstance() {
-        if (instance == null) {
-            instance = new TouchableLinkMovementMethod();
-        }
         return instance;
+    }
+
+    public static TouchListener getTouchListener() {
+        return listener;
+    }
+
+    private static class TouchListener implements View.OnTouchListener {
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            if(v instanceof TextView) {
+                TextView textView = (TextView) v;
+                CharSequence text = textView.getText();
+                if(text instanceof Spannable) {
+                    boolean result =  instance.onTouchEvent(textView, (Spannable) text, event);
+                    System.out.println("on touch event: " + result);
+                    return result;
+                }
+            }
+            return false;
+        }
     }
 
 }

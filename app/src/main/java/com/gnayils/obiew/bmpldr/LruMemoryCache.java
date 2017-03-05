@@ -3,6 +3,8 @@ package com.gnayils.obiew.bmpldr;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
+import android.util.LruCache;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -13,6 +15,8 @@ import java.util.Map;
  * Created by Gnayils on 8/21/16.
  */
 public class LRUMemoryCache {
+
+    public static final String TAG = LRUMemoryCache.class.getSimpleName();
 
     private final LinkedHashMap<String, Bitmap> map;
     private final int cacheSize;
@@ -30,6 +34,7 @@ public class LRUMemoryCache {
         if(key == null) {
             throw new NullPointerException("key == null");
         }
+
         synchronized (this) {
             return map.get(key);
         }
@@ -57,7 +62,6 @@ public class LRUMemoryCache {
             Bitmap previous = map.remove(key);
             if(previous != null) {
                 currentSize -= sizeOf(key, previous);
-                previous.recycle();
             }
         }
     }
@@ -98,7 +102,7 @@ public class LRUMemoryCache {
         if(cacheSize == 0) {
             ActivityManager activitymanager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
             int memoryClass = activitymanager.getMemoryClass();
-            cacheSize = memoryClass * 1024 * 1024 / 8;
+            cacheSize = memoryClass * 1024 * 1024 / 4;
         }
         return new LRUMemoryCache(cacheSize);
     }

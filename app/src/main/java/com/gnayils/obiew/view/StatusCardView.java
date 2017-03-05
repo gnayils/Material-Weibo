@@ -1,14 +1,18 @@
 package com.gnayils.obiew.view;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.method.BaseMovementMethod;
+import android.text.method.LinkMovementMethod;
+import android.text.method.ScrollingMovementMethod;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -52,7 +56,7 @@ public class StatusCardView extends CardView {
         setBackground(createRippleDrawable(Color.WHITE, getResources().getDimension(R.dimen.cardview_default_radius)));
 
         RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(dp2px(4), dp2px(2), dp2px(4), dp2px(2));
+        layoutParams.setMargins(dp2px(8), dp2px(4), dp2px(8), dp2px(4));
         setLayoutParams(layoutParams);
 
         LinearLayout statusContentLayout = new LinearLayout(context);
@@ -120,7 +124,7 @@ public class StatusCardView extends CardView {
             statusTextTextView.setId(View.generateViewId());
             statusTextTextView.setText("微博内容微博内容微博内容微博内容微博内容微博内容微博内容微博内容微博内容");
             statusTextTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-            statusTextTextView.setMovementMethod(TouchableLinkMovementMethod.getInstance());
+            statusTextTextView.setOnTouchListener(TouchableLinkMovementMethod.getTouchListener());
             statusTextTextView.setPadding(dp2px(8), dp2px(4), dp2px(8), dp2px(4));
             LinearLayout.LayoutParams statusTextTextViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             statusTextTextView.setLayoutParams(statusTextTextViewLayoutParams);
@@ -131,15 +135,17 @@ public class StatusCardView extends CardView {
             statusPicturesView.setLayoutParams(statusPicturesViewLayoutParams);
 
             retweetedStatusView = new LinearLayout(context);
+            retweetedStatusView.setClickable(true);
             retweetedStatusView.setOrientation(LinearLayout.VERTICAL);
-            retweetedStatusView.setBackgroundColor(getResources().getColor(R.color.colorWindowBackground));
+            retweetedStatusView.setBackground(createRippleDrawable(getResources().getColor(R.color.colorWindowBackground), 0));
+
             LinearLayout.LayoutParams retweetedStatusViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             retweetedStatusView.setLayoutParams(retweetedStatusViewLayoutParams);
             retweetedStatusTextTextView = new TextView(context);
             retweetedStatusTextTextView.setId(View.generateViewId());
             retweetedStatusTextTextView.setText("微博内容微博内容微博内容微博内容微博内容微博内容微博内容微博内容微博内容");
             retweetedStatusTextTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-            retweetedStatusTextTextView.setMovementMethod(TouchableLinkMovementMethod.getInstance());
+            retweetedStatusTextTextView.setOnTouchListener(TouchableLinkMovementMethod.getTouchListener());
             retweetedStatusTextTextView.setPadding(dp2px(8), dp2px(4), dp2px(8), dp2px(4));
             LinearLayout.LayoutParams retweetedStatusTextTextViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             retweetedStatusTextTextView.setLayoutParams(retweetedStatusTextTextViewLayoutParams);
@@ -193,5 +199,6 @@ public class StatusCardView extends CardView {
 
         addView(statusContentLayout);
 
+        setClickable(true);
     }
 }

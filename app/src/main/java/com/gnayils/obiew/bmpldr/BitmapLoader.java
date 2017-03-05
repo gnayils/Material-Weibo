@@ -3,6 +3,7 @@ package com.gnayils.obiew.bmpldr;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -17,6 +18,9 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static android.graphics.BitmapFactory.*;
 
@@ -30,6 +34,8 @@ public class BitmapLoader {
     private URLDownloader downloader;
     private LRUMemoryCache memoryCache;
     private LRUDiskCache diskCache;
+    private int maxSize;
+
 
     private static BitmapLoader bitmapLoader;
 
@@ -37,10 +43,38 @@ public class BitmapLoader {
         memoryCache = LRUMemoryCache.create(App.context(), 0);
         diskCache = LRUDiskCache.create(App.context(), 0);
         downloader = URLDownloader.create();
+        DisplayMetrics displayMetrics = App.context().getResources().getDisplayMetrics();
+        maxSize = Math.max(displayMetrics.widthPixels, displayMetrics.heightPixels) / 2;
     }
 
     public void loadBitmap(String url, ImageView imageView) {
-        new LoadImageTask(url, imageView).execute();
+        loadBitmap(url, imageView, null);
+    }
+
+    public void loadBitmap(String url, ImageView imageView, LoadImageTaskEventListener listener) {
+        LoadImageTask loadImageTask = (LoadImageTask) imageView.getTag();
+        if(loadImageTask != null) {
+            if(loadImageTask.url.equals(url) && loadImageTask.getStatus() != AsyncTask.Status.FINISHED) {
+                Log.d(TAG, "last task attached to the ImageView still running: " + loadImageTask.hashCode());
+                return ;
+            } else {
+                if(loadImageTask.getStatus() != AsyncTask.Status.FINISHED) {
+                    loadImageTask.cancel(true);
+                    Log.d(TAG, "cancel task: " + loadImageTask.hashCode());
+                }
+            }
+        }
+
+        final String urlKey = generateMD5Key(url);
+        Bitmap bitmap = memoryCache.get(urlKey);
+        if(bitmap != null) {
+            Log.d(BitmapLoader.TAG, "get bitmap from memory cache: " + url);
+            imageView.setImageBitmap(bitmap);
+        } else {
+            LoadImageTask task = new LoadImageTask(url, urlKey, imageView, listener);
+            imageView.setTag(task);
+            task.execute();
+        }
     }
 
     public static BitmapLoader getInstance() {
@@ -71,7 +105,7 @@ public class BitmapLoader {
         }
     }
 
-    public class LoadImageTask extends AsyncTask<String, Integer, Bitmap> {
+    public class LoadImageTask extends AsyncTask<String, Integer, Bitmap>{
 
         public final String TAG = LoadImageTask.class.getSimpleName();
 
@@ -80,16 +114,11 @@ public class BitmapLoader {
         private ImageView imageView;
         private LoadImageTaskEventListener listener;
 
-        private LoadImageTask(String url, ImageView imageView) {
+        private LoadImageTask(String url, String urlKey, ImageView imageView, LoadImageTaskEventListener listener) {
             this.url = url;
-            this.urlKey = generateMD5Key(url);
+            this.urlKey = urlKey;
             this.imageView = imageView;
-            this.listener = new LoadImageTaskEventListener() {
-                @Override
-                public void onPostExecute(Bitmap bitmap) {
-                    LoadImageTask.this.imageView.setImageBitmap(bitmap);
-                }
-            };
+            this.listener = listener;
         }
 
         @Override
@@ -101,16 +130,11 @@ public class BitmapLoader {
 
         @Override
         protected Bitmap doInBackground(String... params) {
-            Bitmap bitmap = memoryCache.get(urlKey);
-            if(bitmap != null) {
-                Log.d(BitmapLoader.TAG, "get bitmap from memory cache: " + url);
-                return bitmap;
-            }
-
             File file = diskCache.get(urlKey);
             if(file == null) {
                 try {
                     InputStream inputStream = downloader.getInputStream(url);
+                    Log.d(TAG, "get bitmap from internet: " + url);
                     diskCache.put(urlKey, inputStream, new LRUDiskCache.StreamCopyListener() {
 
                         @Override
@@ -122,7 +146,9 @@ public class BitmapLoader {
                             return false;
                         }
                     });
-                    Log.d(TAG, "get bitmap from internet: " + url);
+                    if(isCancelled()) {
+                        return null;
+                    }
                     file =  diskCache.get(urlKey);
                 } catch (IOException e) {
                     Log.e(TAG, "task failed during load image from [" + url + "] failed", e);
@@ -141,30 +167,6 @@ public class BitmapLoader {
             }
         }
 
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            if(listener != null) {
-                listener.onProgressUpdate(values);
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            if(bitmap != null) {
-                memoryCache.put(urlKey, bitmap);
-            }
-            if(listener != null) {
-                listener.onPostExecute(bitmap);
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            if(listener != null) {
-                listener.onCancelled();
-            }
-        }
-
         private Bitmap decodeImage(File file) throws IOException, InterruptedException {
             InputStream inputStream = downloader.getInputStream(file);
             Options options = new Options();
@@ -172,10 +174,13 @@ public class BitmapLoader {
             inputStream.mark((int)file.length());
             BitmapFactory.decodeStream(inputStream, null, options);
 
-            options = new Options();
-            if(imageView.isLaidOut()) {
-                int scale = Math.round(Math.min((float) options.outWidth / imageView.getWidth(), (float) options.outHeight / imageView.getHeight()));
-                options.inSampleSize = Math.max(scale, 1);
+            options.inJustDecodeBounds = false;
+            options.inSampleSize = calculateInSampleSize(options, maxSize, maxSize);
+            Log.d(TAG, "load image from file, image size: " + options.outWidth + ", " + options.outHeight + "; inSampleSize: " + options.inSampleSize);
+
+            if(isCancelled()) {
+                inputStream.close();
+                return null;
             }
 
             try {
@@ -194,6 +199,56 @@ public class BitmapLoader {
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, options);
             inputStream.close();
             return bitmap;
+        }
+
+        public int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+            final int height = options.outHeight;
+            final int width = options.outWidth;
+            int inSampleSize = 1;
+            if (height > reqHeight || width > reqWidth) {
+                final int halfHeight = height / 2;
+                final int halfWidth = width / 2;
+
+                while ((halfHeight / inSampleSize) > reqHeight
+                        && (halfWidth / inSampleSize) > reqWidth) {
+                    inSampleSize *= 2;
+                }
+                long totalPixels = width * height / inSampleSize;
+
+                final long totalReqPixelsCap = reqWidth * reqHeight * 2;
+
+                while (totalPixels > totalReqPixelsCap) {
+                    inSampleSize *= 2;
+                    totalPixels /= 2;
+                }
+            }
+            return inSampleSize;
+        }
+
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            if(listener != null) {
+                listener.onProgressUpdate(values);
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            if(bitmap != null) {
+                memoryCache.put(urlKey, bitmap);
+                imageView.setImageBitmap(bitmap);
+            }
+            if(listener != null) {
+                listener.onPostExecute(bitmap);
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            if(listener != null) {
+                listener.onCancelled();
+            }
         }
     }
 

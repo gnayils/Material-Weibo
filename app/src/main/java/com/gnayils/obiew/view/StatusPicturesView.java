@@ -1,15 +1,14 @@
 package com.gnayils.obiew.view;
 
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.content.Intent;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.gnayils.obiew.R;
+import com.gnayils.obiew.acitivty.PicturePagerActivity;
 import com.gnayils.obiew.bean.Status;
 import com.gnayils.obiew.bmpldr.BitmapLoader;
 import com.gnayils.obiew.util.ViewUtils;
@@ -20,11 +19,12 @@ import java.util.List;
  * Created by Gnayils on 26/11/2016.
  */
 
-public class StatusPicturesView extends ViewGroup {
+public class StatusPicturesView extends ViewGroup implements View.OnClickListener{
 
     public static final int MARGIN_IN_IMAGES = ViewUtils.dp2px(4);
 
     private int imageViewVisibleCount;
+    private List<Status.PicUrls> picUrlsList;
 
     public StatusPicturesView(Context context) {
         this(context, null);
@@ -42,10 +42,11 @@ public class StatusPicturesView extends ViewGroup {
         super(context, attrs, defStyleAttr, defStyleRes);
         for (int i = 0; i < 9; i++) {
             ImageView imageView = new ImageView(getContext());
-            //imageView.setImageDrawable(getResources().getDrawable(R.drawable.bg_cover_default, getContext().getTheme()));
+            //imageView.setImageDrawable(getResources().getDrawableWithAttribute(R.drawable.bg_cover_default, getContext().getTheme()));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setBackground(ViewUtils.createRippleDrawable(R.color.colorThumbnailBg, ViewUtils.dp2px(2)));
+            imageView.setBackground(ViewUtils.createRippleDrawable(getResources().getColor(R.color.colorThumbnailBg), ViewUtils.dp2px(2)));
             imageView.setClipToOutline(true);
+            imageView.setOnClickListener(this);
             addView(imageView);
         }
     }
@@ -59,16 +60,14 @@ public class StatusPicturesView extends ViewGroup {
             setVisibility(View.GONE);
             throw new IllegalArgumentException("picture urls too much for the StatusPicturesView");
         }
-
+        this.picUrlsList = picUrlsList;
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
             child.setVisibility(View.GONE);
             if(i < picUrlsList.size()) {
                 Status.PicUrls picUrls = picUrlsList.get(i);
                 child.setVisibility(View.VISIBLE);
-                //replace("thumbnail", "large");
-                //replace("thumbnail", "bmiddle");
-                BitmapLoader.getInstance().loadBitmap(picUrls.thumbnail_pic.replace("/thumbnail/", "/bmiddle/"), (ImageView) child);
+                BitmapLoader.getInstance().loadBitmap(picUrls.thumbnail_pic.replace("/thumbnail/", "/bmiddle/" /*"large"*/), (ImageView) child);
             }
         }
 
@@ -92,12 +91,11 @@ public class StatusPicturesView extends ViewGroup {
             for (int i = 0; i < imageViewVisibleCount; i++) {
                 View child = getChildAt(i);
                 if(imageViewVisibleCount == 1) {
-                    child.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+                    child.setLayoutParams(new MarginLayoutParams(MarginLayoutParams.WRAP_CONTENT, MarginLayoutParams.WRAP_CONTENT));
                 } else {
-                    child.setLayoutParams(new LayoutParams(imageSize, imageSize));
+                    child.setLayoutParams(new MarginLayoutParams(imageSize, imageSize));
                 }
                 measureChildWithMargins(child, widthMeasureSpec, 0, heightMeasureSpec, 0);
-
             }
 
             int rows = (int) Math.ceil(imageViewVisibleCount / 3d);
@@ -132,40 +130,20 @@ public class StatusPicturesView extends ViewGroup {
     }
 
     @Override
-    public StatusPicturesView.LayoutParams generateLayoutParams(AttributeSet attrs) {
-        return new StatusPicturesView.LayoutParams(getContext(), attrs);
-    }
-
-    @Override
-    protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
-        return p instanceof StatusPicturesView.LayoutParams;
-    }
-
-    @Override
-    protected ViewGroup.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
-        return new StatusPicturesView.LayoutParams(p);
-    }
-
-    public static class LayoutParams extends MarginLayoutParams {
-
-        public LayoutParams(Context c, AttributeSet attrs) {
-            super(c, attrs);
+    public void onClick(View v) {
+        Intent intent = new Intent(getContext(), PicturePagerActivity.class);
+        int position = 0;
+        for(int i=0; i<imageViewVisibleCount; i++) {
+            if(v == getChildAt(i)) {
+                position = i;
+            }
         }
-
-        public LayoutParams(int width, int height) {
-            super(width, height);
+        intent.putExtra(PicturePagerActivity.EXTRA_CURRENT_PICTURE_POSITION, position);
+        String[] picUrls = new String[picUrlsList.size()];
+        for(int i=0; i<picUrlsList.size(); i++) {
+            picUrls[i] = picUrlsList.get(i).thumbnail_pic;
         }
-
-        public LayoutParams(ViewGroup.LayoutParams source) {
-            super(source);
-        }
-
-        public LayoutParams(ViewGroup.MarginLayoutParams source) {
-            super(source);
-        }
-
-        public LayoutParams(FrameLayout.LayoutParams source) {
-            super(source);
-        }
+        intent.putExtra(PicturePagerActivity.EXTRA_PICTURE_URLS, picUrls);
+        getContext().startActivity(intent);
     }
 }

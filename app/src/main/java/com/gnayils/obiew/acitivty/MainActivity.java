@@ -1,4 +1,4 @@
-package com.gnayils.obiew;
+package com.gnayils.obiew.acitivty;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.gnayils.obiew.R;
 import com.gnayils.obiew.event.AuthorizeCallBackEvent;
 import com.gnayils.obiew.user.StatusTimelineFragment;
 import com.gnayils.obiew.user.UserProfileFragment;

@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.support.v4.view.PagerAdapter;
 import android.util.Log;
 
 import java.io.BufferedOutputStream;
@@ -87,6 +88,8 @@ public class LRUDiskCache {
                     outputStream.flush();
                     map.put(key, file);
                     currentSize += file.length();
+                } else {
+                    file.delete();
                 }
             } catch (Exception e) {
                 Log.e(TAG, "read data from input stream failed", e);
@@ -138,10 +141,11 @@ public class LRUDiskCache {
             File file = map.remove(key);
             if(file != null) {
                 currentSize -= file.length();
-                if(file.exists()) {
+                if(!file.exists()) {
                     throw new IllegalStateException("file that is going to remove cannot be non－exists");
                 }
                 file.delete();
+                Log.d(TAG, "delete file: " + file.getName());
             }
         }
     }

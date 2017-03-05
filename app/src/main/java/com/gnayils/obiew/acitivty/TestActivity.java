@@ -1,7 +1,9 @@
-package com.gnayils.obiew;
+package com.gnayils.obiew.acitivty;
 
 import android.app.Activity;
 import android.os.Bundle;
+
+import com.gnayils.obiew.R;
 
 /**
  * Created by Gnayils on 19/11/2016.

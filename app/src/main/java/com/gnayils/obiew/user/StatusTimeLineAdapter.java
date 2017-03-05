@@ -11,6 +11,7 @@ import android.util.Log;
 import android.util.StateSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.gnayils.obiew.App;
 import com.gnayils.obiew.R;
@@ -42,6 +43,7 @@ public class StatusTimelineAdapter extends RecyclerView.Adapter<StatusTimelineAd
     private DateFormat destinationDateFormat = new SimpleDateFormat("yy-MM-dd HH:mm", Locale.ENGLISH);
 
     public StatusTimelineAdapter() {
+
     }
 
     @Override
@@ -55,14 +57,19 @@ public class StatusTimelineAdapter extends RecyclerView.Adapter<StatusTimelineAd
         Status status = statusList.get(position);
         BitmapLoader.getInstance().loadBitmap(status.user.avatar_large, holder.statusCardView.userAvatarView.avatarCircleImageView);
         holder.statusCardView.userAvatarView.verifiedIconImageView.setVisibility(status.user.verified ? View.VISIBLE : View.INVISIBLE);
-        holder.statusCardView.userAvatarView.verifiedIconImageView
-                .setImageResource(status.user.verified_type == 0 ? R.drawable.avatar_vip_golden :
-                        status.user.verified_type == 1 ? R.drawable.avatar_vip :
-                                status.user.verified_type == 2 ? R.drawable.avatar_vgirl :
-                                    status.user.verified_type == 3 ? R.drawable.avatar_enterprise_vip :
-                                            R.drawable.avatar_grassroot);
         if(status.user.verified) {
             holder.statusCardView.screenNameTextView.setTextColor(App.resources().getColor(R.color.colorVerifiedScreenName));
+            switch(status.user.verified_type) {
+                case 0:
+                    holder.statusCardView.userAvatarView.verifiedIconImageView.setImageResource(R.drawable.avatar_vip_golden);
+                    break;
+                case 1:
+                    holder.statusCardView.userAvatarView.verifiedIconImageView.setImageResource(R.drawable.avatar_vip);
+                    break;
+                case 2:
+                    holder.statusCardView.userAvatarView.verifiedIconImageView.setImageResource(R.drawable.avatar_enterprise_vip);
+                    break;
+            }
         } else {
             holder.statusCardView.screenNameTextView.setTextColor(App.resources().getColor(R.color.colorPrimaryText));
         }
@@ -77,13 +84,13 @@ public class StatusTimelineAdapter extends RecyclerView.Adapter<StatusTimelineAd
         Spannable statusSource = (Spannable) Html.fromHtml(status.source);
         StatusTextDecorator.replaceUrlSpan(statusSource);
         holder.statusCardView.statusSourceTextView.setText(statusSource);
-        holder.statusCardView.statusTextTextView.setText(StatusTextDecorator.decorate(status.text));
+        holder.statusCardView.statusTextTextView.setText(StatusTextDecorator.decorate(status.text), TextView.BufferType.SPANNABLE);
         holder.statusCardView.statusPicturesView.setPictureUrls(status.pic_urls);
         if(status.retweeted_status == null) {
             holder.statusCardView.retweetedStatusView.setVisibility(View.GONE);
         } else {
             holder.statusCardView.retweetedStatusView.setVisibility(View.VISIBLE);
-            holder.statusCardView.retweetedStatusTextTextView.setText(StatusTextDecorator.decorate("@" + status.retweeted_status.user.screen_name +  ": " + status.retweeted_status.text));
+            holder.statusCardView.retweetedStatusTextTextView.setText(StatusTextDecorator.decorate("@" + status.retweeted_status.user.screen_name +  ": " + status.retweeted_status.text), TextView.BufferType.SPANNABLE);
             holder.statusCardView.retweetedStatusPicturesView.setPictureUrls(status.retweeted_status.pic_urls);
         }
         holder.statusCardView.repostButton.setText(String.valueOf(status.reposts_count));
