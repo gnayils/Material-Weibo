@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#ef5214</color>
-    <color name="colorPrimaryDark">#c25835</color>
-    <color name="colorAccent">#ff5c37</color>
+    <!--<color name="colorPrimary">#ef5214</color>-->
+    <!--<color name="colorPrimaryDark">#c25835</color>-->
+    <!--<color name="colorAccent">#ff5c37</color>-->
 
+    <color name="colorPrimary">#3E50B4</color>
+    <color name="colorPrimaryDark">#3646A8</color>
+    <color name="colorAccent">#FE3E80</color>
+
+    <color name="colorWhite">#ffffff</color>
     <color name="colorWindowBackground">#eeeeee</color>
     <color name="colorGreenDark">#4daf51</color>
     <color name="colorWhiteTranslucent">#cfffffff</color>
@@ -17,4 +22,8 @@
 
     <color name="colorLink">#507daf</color>
     <color name="colorLinkBackground">#6c507daf</color>
+
+
+
+    <color name="colorButtonRipple">#474747</color>
 </resources>

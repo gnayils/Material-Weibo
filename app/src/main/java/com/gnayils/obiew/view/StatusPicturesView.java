@@ -1,17 +1,16 @@
 package com.gnayils.obiew.view;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.acitivty.PicturePagerActivity;
-import com.gnayils.obiew.bean.Status;
+import com.gnayils.obiew.activity.PicturePagerActivity;
+import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.bmpldr.BitmapLoader;
-import com.gnayils.obiew.util.ViewUtils;
+import static com.gnayils.obiew.util.ViewUtils.*;
 
 import java.util.List;
 
@@ -21,7 +20,7 @@ import java.util.List;
 
 public class StatusPicturesView extends ViewGroup implements View.OnClickListener{
 
-    public static final int MARGIN_IN_IMAGES = ViewUtils.dp2px(4);
+    public final int MARGIN_IN_IMAGES = dp2px(getContext(), 4);
 
     private int imageViewVisibleCount;
     private List<Status.PicUrls> picUrlsList;
@@ -42,9 +41,9 @@ public class StatusPicturesView extends ViewGroup implements View.OnClickListene
         super(context, attrs, defStyleAttr, defStyleRes);
         for (int i = 0; i < 9; i++) {
             ImageView imageView = new ImageView(getContext());
-            //imageView.setImageDrawable(getResources().getDrawableWithAttribute(R.drawable.bg_cover_default, getContext().getTheme()));
+            //imageView.setImageDrawable(getResources().getDrawableByAttribute(R.drawable.bg_cover_default, getContext().getTheme()));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setBackground(ViewUtils.createRippleDrawable(getResources().getColor(R.color.colorThumbnailBg), ViewUtils.dp2px(2)));
+            imageView.setBackground(createRippleDrawable(getResources().getColor(R.color.colorThumbnailBg), dp2px(context, 2)));
             imageView.setClipToOutline(true);
             imageView.setOnClickListener(this);
             addView(imageView);
@@ -131,19 +130,13 @@ public class StatusPicturesView extends ViewGroup implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        Intent intent = new Intent(getContext(), PicturePagerActivity.class);
         int position = 0;
         for(int i=0; i<imageViewVisibleCount; i++) {
             if(v == getChildAt(i)) {
                 position = i;
+                break;
             }
         }
-        intent.putExtra(PicturePagerActivity.EXTRA_CURRENT_PICTURE_POSITION, position);
-        String[] picUrls = new String[picUrlsList.size()];
-        for(int i=0; i<picUrlsList.size(); i++) {
-            picUrls[i] = picUrlsList.get(i).thumbnail_pic;
-        }
-        intent.putExtra(PicturePagerActivity.EXTRA_PICTURE_URLS, picUrls);
-        getContext().startActivity(intent);
+        PicturePagerActivity.start(getContext(), position, picUrlsList);
     }
 }

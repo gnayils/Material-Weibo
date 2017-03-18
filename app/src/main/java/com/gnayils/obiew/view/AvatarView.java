@@ -2,13 +2,17 @@ package com.gnayils.obiew.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.gnayils.obiew.R;
+import com.gnayils.obiew.util.ViewUtils;
 
 /**
  * Created by Gnayils on 17/11/2016.
@@ -16,9 +20,9 @@ import com.gnayils.obiew.R;
 
 public class AvatarView extends FrameLayout {
 
-    public static final float AVATAR_CIRCLE_IMAGE_VIEW_SIZE_RATIO = 56f / 62f;
-    public static final float VERIFIED_ICON_IMAGE_VIEW_SIZE_RATIO = 20f / 62f;
-    public static final float VERIFIED_ICON_IMAGE_VIEW_MARGIN_RATIO = 2f / 62f;
+    public static final float AVATAR_CIRCLE_IMAGE_VIEW_SIZE_RATIO = 60f / 64f;
+    public static final float VERIFIED_ICON_IMAGE_VIEW_SIZE_RATIO = 24f / 64f;
+    public static final float VERIFIED_ICON_IMAGE_VIEW_MARGIN_RATIO = 2f / 64f;
 
     public CircleImageView avatarCircleImageView;
     public ImageView verifiedIconImageView;
@@ -37,7 +41,8 @@ public class AvatarView extends FrameLayout {
 
     public AvatarView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        setBackground(getResources().getDrawable(R.drawable.bg_avatar_border, context.getTheme()));
+
+        setBackground(getResources().getDrawable(R.drawable.bg_oval, context.getTheme()));
 
         avatarCircleImageView = new CircleImageView(context);
         avatarCircleImageView.setImageResource(R.drawable.ic_avatar_default);

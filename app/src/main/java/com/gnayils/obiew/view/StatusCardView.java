@@ -1,23 +1,23 @@
 package com.gnayils.obiew.view;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
-import android.text.method.BaseMovementMethod;
-import android.text.method.LinkMovementMethod;
-import android.text.method.ScrollingMovementMethod;
+import android.text.Html;
+import android.text.Spannable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.gnayils.obiew.App;
 import com.gnayils.obiew.R;
+import com.gnayils.obiew.activity.StatusDetailActivity;
+import com.gnayils.obiew.weibo.Weibo;
+import com.gnayils.obiew.weibo.bean.Status;
+import com.gnayils.obiew.bmpldr.BitmapLoader;
+import com.gnayils.obiew.weibo.WeiboTextDecorator;
 import com.gnayils.obiew.weibo.TouchableLinkMovementMethod;
 
 import static com.gnayils.obiew.util.ViewUtils.*;
@@ -27,6 +27,12 @@ import static com.gnayils.obiew.util.ViewUtils.*;
 
 public class StatusCardView extends CardView {
 
+
+    public static final String TAG = StatusCardView.class.getSimpleName();
+
+    public Status status;
+
+    public LinearLayout rootView;
     public AvatarView userAvatarView;
     public TextView screenNameTextView;
     public TextView statusTimeTextView;
@@ -39,9 +45,24 @@ public class StatusCardView extends CardView {
     public TextView retweetedStatusTextTextView;
     public StatusPicturesView retweetedStatusPicturesView;
 
+    public LinearLayout commentLayout;
     public CenteredDrawableButton repostButton;
     public CenteredDrawableButton commentButton;
     public CenteredDrawableButton likeButton;
+
+    public OnClickListener onStatusViewClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Status whichStatus = null;
+            if(v.getId() == rootView.getId()) {
+                whichStatus = status;
+            } else if(v.getId() == retweetedStatusView.getId()) {
+                whichStatus = status.retweeted_status;
+            }
+            StatusDetailActivity.start(getContext(), whichStatus);
+        }
+    };
+
 
     public StatusCardView(Context context) {
         this(context, null);
@@ -53,24 +74,22 @@ public class StatusCardView extends CardView {
 
     public StatusCardView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setBackground(createRippleDrawable(Color.WHITE, getResources().getDimension(R.dimen.cardview_default_radius)));
 
-        RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(dp2px(8), dp2px(4), dp2px(8), dp2px(4));
-        setLayoutParams(layoutParams);
-
-        LinearLayout statusContentLayout = new LinearLayout(context);
-        statusContentLayout.setOrientation(LinearLayout.VERTICAL);
-        statusContentLayout.setLayoutParams(new CardView.LayoutParams(CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.WRAP_CONTENT));
+        rootView = new LinearLayout(context);
+        rootView.setId(View.generateViewId());
+        rootView.setOrientation(LinearLayout.VERTICAL);
+        rootView.setLayoutParams(new CardView.LayoutParams(CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.WRAP_CONTENT));
+        rootView.setOnClickListener(onStatusViewClickListener);
+        rootView.setBackground(getDrawableByAttribute(context, R.attr.selectableItemBackground));
 
             RelativeLayout userInfoLayout = new RelativeLayout(context);
-            userInfoLayout.setPadding(dp2px(8), dp2px(8), dp2px(8), dp2px(4));
+            userInfoLayout.setPadding(dp2px(context, 8), dp2px(context, 8), dp2px(context, 8), dp2px(context, 4));
             LinearLayout.LayoutParams userInfoLayoutLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             userInfoLayout.setLayoutParams(userInfoLayoutLayoutParams);
 
                 userAvatarView = new AvatarView(context);
                 userAvatarView.setId(View.generateViewId());
-                RelativeLayout.LayoutParams avatarViewLayoutParams = new RelativeLayout.LayoutParams(dp2px(48), dp2px(48));
+                RelativeLayout.LayoutParams avatarViewLayoutParams = new RelativeLayout.LayoutParams(dp2px(context, 48), dp2px(context, 48));
                 avatarViewLayoutParams.addRule(RelativeLayout.ALIGN_LEFT | RelativeLayout.ALIGN_TOP);
                 userAvatarView.setLayoutParams(avatarViewLayoutParams);
 
@@ -78,7 +97,7 @@ public class StatusCardView extends CardView {
                 screenNameTextView.setText("用户名");
                 screenNameTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
                 RelativeLayout.LayoutParams userNameTextViewLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                userNameTextViewLayoutParams.setMargins(dp2px(8), dp2px(4), 0, 0);
+                userNameTextViewLayoutParams.setMargins(dp2px(context, 8), dp2px(context, 4), 0, 0);
                 userNameTextViewLayoutParams.addRule(RelativeLayout.ALIGN_TOP, userAvatarView.getId());
                 userNameTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, userAvatarView.getId());
                 screenNameTextView.setLayoutParams(userNameTextViewLayoutParams);
@@ -89,7 +108,7 @@ public class StatusCardView extends CardView {
                 statusTimeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
                 statusTimeTextView.setTextColor(getResources().getColor(R.color.colorSecondaryText));
                 RelativeLayout.LayoutParams statusTimeTextViewLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                statusTimeTextViewLayoutParams.setMargins(dp2px(8), 0, 0, dp2px(4));
+                statusTimeTextViewLayoutParams.setMargins(dp2px(context, 8), 0, 0, dp2px(context, 4));
                 statusTimeTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, userAvatarView.getId());
                 statusTimeTextViewLayoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, userAvatarView.getId());
                 statusTimeTextView.setLayoutParams(statusTimeTextViewLayoutParams);
@@ -100,7 +119,7 @@ public class StatusCardView extends CardView {
                 sourceTextTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
                 sourceTextTextView.setTextColor(getResources().getColor(R.color.colorSecondaryText));
                 RelativeLayout.LayoutParams sourceTextTextViewLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                sourceTextTextViewLayoutParams.setMargins(dp2px(8), 0, 0, 0);
+                sourceTextTextViewLayoutParams.setMargins(dp2px(context, 8), 0, 0, 0);
                 sourceTextTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, statusTimeTextView.getId());
                 sourceTextTextViewLayoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, statusTimeTextView.getId());
                 sourceTextTextView.setLayoutParams(sourceTextTextViewLayoutParams);
@@ -125,80 +144,117 @@ public class StatusCardView extends CardView {
             statusTextTextView.setText("微博内容微博内容微博内容微博内容微博内容微博内容微博内容微博内容微博内容");
             statusTextTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
             statusTextTextView.setOnTouchListener(TouchableLinkMovementMethod.getTouchListener());
-            statusTextTextView.setPadding(dp2px(8), dp2px(4), dp2px(8), dp2px(4));
+            statusTextTextView.setPadding(dp2px(context, 8), dp2px(context, 4), dp2px(context, 8), dp2px(context, 4));
             LinearLayout.LayoutParams statusTextTextViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             statusTextTextView.setLayoutParams(statusTextTextViewLayoutParams);
 
             statusPicturesView = new StatusPicturesView(context);
-            statusPicturesView.setPadding(dp2px(8), dp2px(4), dp2px(8), dp2px(4));
+            statusPicturesView.setPadding(dp2px(context, 8), dp2px(context, 4), dp2px(context, 8), dp2px(context, 4));
             LinearLayout.LayoutParams statusPicturesViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             statusPicturesView.setLayoutParams(statusPicturesViewLayoutParams);
 
             retweetedStatusView = new LinearLayout(context);
-            retweetedStatusView.setClickable(true);
+            retweetedStatusView.setId(View.generateViewId());
+            retweetedStatusView.setOnClickListener(onStatusViewClickListener);
             retweetedStatusView.setOrientation(LinearLayout.VERTICAL);
             retweetedStatusView.setBackground(createRippleDrawable(getResources().getColor(R.color.colorWindowBackground), 0));
 
             LinearLayout.LayoutParams retweetedStatusViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             retweetedStatusView.setLayoutParams(retweetedStatusViewLayoutParams);
             retweetedStatusTextTextView = new TextView(context);
-            retweetedStatusTextTextView.setId(View.generateViewId());
             retweetedStatusTextTextView.setText("微博内容微博内容微博内容微博内容微博内容微博内容微博内容微博内容微博内容");
             retweetedStatusTextTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
             retweetedStatusTextTextView.setOnTouchListener(TouchableLinkMovementMethod.getTouchListener());
-            retweetedStatusTextTextView.setPadding(dp2px(8), dp2px(4), dp2px(8), dp2px(4));
+            retweetedStatusTextTextView.setPadding(dp2px(context, 8), dp2px(context, 4), dp2px(context, 8), dp2px(context, 4));
             LinearLayout.LayoutParams retweetedStatusTextTextViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             retweetedStatusTextTextView.setLayoutParams(retweetedStatusTextTextViewLayoutParams);
             retweetedStatusPicturesView = new StatusPicturesView(context);
-            retweetedStatusPicturesView.setPadding(dp2px(8), dp2px(4), dp2px(8), dp2px(4));
+            retweetedStatusPicturesView.setPadding(dp2px(context, 8), dp2px(context, 4), dp2px(context, 8), dp2px(context, 4));
             LinearLayout.LayoutParams retweetedStatusPicturesViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             retweetedStatusPicturesView.setLayoutParams(retweetedStatusPicturesViewLayoutParams);
             retweetedStatusView.addView(retweetedStatusTextTextView);
             retweetedStatusView.addView(retweetedStatusPicturesView);
 
-            LinearLayout hotrankLayout = new LinearLayout(context);
-            hotrankLayout.setOrientation(LinearLayout.HORIZONTAL);
-            hotrankLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            commentLayout = new LinearLayout(context);
+            commentLayout.setOrientation(LinearLayout.HORIZONTAL);
+            commentLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
-                LinearLayout.LayoutParams hotrankButtonsLayoutParams = new LinearLayout.LayoutParams(0, dp2px(36));
+                LinearLayout.LayoutParams hotrankButtonsLayoutParams = new LinearLayout.LayoutParams(0, dp2px(context, 36));
                 hotrankButtonsLayoutParams.weight = 1;
 
                 repostButton = new CenteredDrawableButton(context);
                 repostButton.setTextColor(getResources().getColor(R.color.colorSecondaryText));
-                repostButton.setBackground(createRippleDrawable(Color.WHITE, 0));
-                repostButton.setCompoundDrawablePadding(dp2px(2));
+                repostButton.setBackground(getDrawableByAttribute(context, R.attr.selectableItemBackground));
+                repostButton.setCompoundDrawablePadding(dp2px(context, 2));
                 repostButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
                 repostButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_hotrank_repost, 0, 0, 0);
                 repostButton.setLayoutParams(hotrankButtonsLayoutParams);
 
                 commentButton = new CenteredDrawableButton(context);
                 commentButton.setTextColor(getResources().getColor(R.color.colorSecondaryText));
-                commentButton.setCompoundDrawablePadding(dp2px(2));
-                commentButton.setBackground(createRippleDrawable(Color.WHITE, 0));
+                commentButton.setCompoundDrawablePadding(dp2px(context, 2));
+                commentButton.setBackground(getDrawableByAttribute(context, R.attr.selectableItemBackground));
                 commentButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
                 commentButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_hotrank_comment, 0, 0, 0);
                 commentButton.setLayoutParams(hotrankButtonsLayoutParams);
 
                 likeButton = new CenteredDrawableButton(context);
                 likeButton.setTextColor(getResources().getColor(R.color.colorSecondaryText));
-                likeButton.setCompoundDrawablePadding(dp2px(2));
-                likeButton.setBackground(createRippleDrawable(Color.WHITE, 0));
+                likeButton.setCompoundDrawablePadding(dp2px(context, 2));
+                likeButton.setBackground(getDrawableByAttribute(context, R.attr.selectableItemBackground));
                 likeButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
                 likeButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_hotrank_like, 0, 0, 0);
                 likeButton.setLayoutParams(hotrankButtonsLayoutParams);
 
-            hotrankLayout.addView(repostButton);
-            hotrankLayout.addView(commentButton);
-            hotrankLayout.addView(likeButton);
+            commentLayout.addView(repostButton);
+            commentLayout.addView(commentButton);
+            commentLayout.addView(likeButton);
 
-        statusContentLayout.addView(userInfoLayout);
-        statusContentLayout.addView(statusTextTextView);
-        statusContentLayout.addView(statusPicturesView);
-        statusContentLayout.addView(retweetedStatusView);
-        statusContentLayout.addView(hotrankLayout);
+        rootView.addView(userInfoLayout);
+        rootView.addView(statusTextTextView);
+        rootView.addView(statusPicturesView);
+        rootView.addView(retweetedStatusView);
+        rootView.addView(commentLayout);
 
-        addView(statusContentLayout);
+        addView(rootView);
+    }
 
-        setClickable(true);
+    public void show(Status status) {
+        this.status = status;
+        BitmapLoader.getInstance().loadBitmap(status.user.avatar_large, userAvatarView.avatarCircleImageView);
+        userAvatarView.verifiedIconImageView.setVisibility(status.user.verified ? View.VISIBLE : View.INVISIBLE);
+        if(status.user.verified) {
+            screenNameTextView.setTextColor(App.resources().getColor(R.color.colorVerifiedScreenName));
+            switch(status.user.verified_type) {
+                case 0:
+                    userAvatarView.verifiedIconImageView.setImageResource(R.drawable.avatar_vip_golden);
+                    break;
+                case 1:
+                    userAvatarView.verifiedIconImageView.setImageResource(R.drawable.avatar_vip);
+                    break;
+                case 2:
+                    userAvatarView.verifiedIconImageView.setImageResource(R.drawable.avatar_enterprise_vip);
+                    break;
+            }
+        } else {
+            screenNameTextView.setTextColor(App.resources().getColor(R.color.colorPrimaryText));
+        }
+        screenNameTextView.setText(status.user.screen_name);
+        statusTimeTextView.setText(Weibo.Date.format(status.created_at));
+        Spannable statusSource = (Spannable) Html.fromHtml(status.source);
+        WeiboTextDecorator.replaceUrlSpan(statusSource);
+        statusSourceTextView.setText(statusSource);
+        statusTextTextView.setText(WeiboTextDecorator.decorate(status.text), TextView.BufferType.SPANNABLE);
+        statusPicturesView.setPictureUrls(status.pic_urls);
+        if(status.retweeted_status == null) {
+            retweetedStatusView.setVisibility(View.GONE);
+        } else {
+            retweetedStatusView.setVisibility(View.VISIBLE);
+            retweetedStatusTextTextView.setText(WeiboTextDecorator.decorate("@" + status.retweeted_status.user.screen_name +  ": " + status.retweeted_status.text), TextView.BufferType.SPANNABLE);
+            retweetedStatusPicturesView.setPictureUrls(status.retweeted_status.pic_urls);
+        }
+        repostButton.setText(String.valueOf(status.reposts_count));
+        commentButton.setText(String.valueOf(status.comments_count));
+        likeButton.setText(String.valueOf(status.attitudes_count));
     }
 }

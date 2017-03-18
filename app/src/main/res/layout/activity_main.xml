@@ -27,8 +27,8 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <fragment
-            android:id="@+id/fragment_status_timeline"
-            android:name="com.gnayils.obiew.user.StatusTimelineFragment"
+            android:id="@+id/fragment_status"
+            android:name="com.gnayils.obiew.fragment.StatusFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
@@ -40,7 +40,7 @@
 
             <fragment
                 android:id="@+id/fragment_user_profile"
-                android:name="com.gnayils.obiew.user.UserProfileFragment"
+                android:name="com.gnayils.obiew.fragment.UserFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 

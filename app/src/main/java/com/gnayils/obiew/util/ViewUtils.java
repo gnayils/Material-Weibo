@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RippleDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.util.DisplayMetrics;
 
 import com.gnayils.obiew.App;
@@ -22,36 +23,28 @@ public class ViewUtils {
     public static int adjustColor(int color, float offsetFactor) {
         float[] hsv = new float[3];
         Color.colorToHSV(color, hsv);
-        hsv[2] *= offsetFactor;
+        hsv[2] /= offsetFactor;
         return Color.HSVToColor(hsv);
     }
 
-    public static int dp2px(int dp) {
-        return dp2px(App.resources().getDisplayMetrics(), dp);
+    public static int dp2px(Context context, int dp) {
+        return (int) (dp * ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
-    public static int px2dp(int px) {
-        return px2dp(App.resources().getDisplayMetrics(), px);
+    public static int px2dp(Context context, int px) {
+        return (int) (px / ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
-    public static int dp2px(DisplayMetrics displayMetrics, int dp) {
-        return (int) (dp * ((float) displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT));
-    }
-
-    public static int px2dp(DisplayMetrics displayMetrics, int px) {
-        return (int) (px / ((float) displayMetrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT));
-    }
-
-    public static Drawable getDrawableWithAttribute(Context themeContext, int attrId) {
+    public static Drawable getDrawableByAttribute(Context context, int attrId) {
         int[] attributes = new int[] { attrId };
-        TypedArray typedArray = themeContext.obtainStyledAttributes(attributes);
+        TypedArray typedArray = context.obtainStyledAttributes(attributes);
         Drawable drawable = typedArray.getDrawable(0);
         typedArray.recycle();
         return drawable;
     }
 
     public static RippleDrawable createRippleDrawable(int normalColor, float cornerRadius) {
-        int pressedColor = adjustColor(normalColor, 0.85f);
+        int pressedColor = adjustColor(normalColor, 1.25f);
         GradientDrawable gradientDrawable = new GradientDrawable();
         gradientDrawable.setColor(normalColor);
         gradientDrawable.setCornerRadius(cornerRadius);
@@ -70,21 +63,5 @@ public class ViewUtils {
                 }
         ), gradientDrawable, null);
         return rippleDrawable;
-    }
-
-
-    public static RippleDrawable getPressedColorRippleDrawable(int normalColor, int pressedColor) {
-        return new RippleDrawable(new ColorStateList(
-                new int[][]{
-                        new int[]{android.R.attr.state_pressed},
-                        new int[]{android.R.attr.state_focused},
-                        new int[]{android.R.attr.state_activated},
-                        new int[]{}},
-                new int[]{
-                        pressedColor,
-                        pressedColor,
-                        pressedColor,
-                        normalColor }
-        ), new ColorDrawable(normalColor), null);
     }
 }

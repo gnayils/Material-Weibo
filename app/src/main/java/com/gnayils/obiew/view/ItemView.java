@@ -46,8 +46,8 @@ public class ItemView extends RelativeLayout {
         ImageView iconImageView = new ImageView(context);
         iconImageView.setId(View.generateViewId());
         iconImageView.setImageDrawable(icon);
-        LayoutParams layoutParams = new LayoutParams(dp2px(24), dp2px(24));
-        layoutParams.setMargins(dp2px(8), 0, 0, 0);
+        LayoutParams layoutParams = new LayoutParams(dp2px(context, 24), dp2px(context, 24));
+        layoutParams.setMargins(dp2px(context, 8), 0, 0, 0);
         layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         iconImageView.setLayoutParams(layoutParams);
@@ -57,7 +57,7 @@ public class ItemView extends RelativeLayout {
         titleTextView.setTextSize(16);
         titleTextView.setText(title);
         layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(dp2px(8), 0, 0, 0);
+        layoutParams.setMargins(dp2px(context, 8), 0, 0, 0);
         layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
         layoutParams.addRule(RelativeLayout.RIGHT_OF, iconImageView.getId());
         titleTextView.setLayoutParams(layoutParams);
@@ -66,8 +66,8 @@ public class ItemView extends RelativeLayout {
         ImageView moreIconImageView = new ImageView(context);
         moreIconImageView.setId(View.generateViewId());
         moreIconImageView.setImageDrawable(moreIcon);
-        layoutParams = new LayoutParams(dp2px(12), dp2px(12));
-        layoutParams.setMargins(0, 0, dp2px(8), 0);
+        layoutParams = new LayoutParams(dp2px(context, 12), dp2px(context, 12));
+        layoutParams.setMargins(0, 0, dp2px(context, 8), 0);
         layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         moreIconImageView.setLayoutParams(layoutParams);
@@ -78,7 +78,7 @@ public class ItemView extends RelativeLayout {
         descriptionTextView.setTextColor(getResources().getColor(R.color.colorSecondaryText));
         descriptionTextView.setText(description);
         layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(0, 0, dp2px(8), 0);
+        layoutParams.setMargins(0, 0, dp2px(context, 8), 0);
         layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
         layoutParams.addRule(RelativeLayout.LEFT_OF, moreIconImageView.getId());
         descriptionTextView.setLayoutParams(layoutParams);

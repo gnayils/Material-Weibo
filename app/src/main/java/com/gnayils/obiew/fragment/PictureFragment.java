@@ -23,7 +23,7 @@ import butterknife.ButterKnife;
 
 public class PictureFragment extends Fragment implements LoadImageTaskEventListener {
 
-    public static final String EXTRA_PICTURE_URL = "EXTRA_PICTURE_URL";
+    public static final String ARGS_KEY_PICTURE_URL = "ARGS_KEY_PICTURE_URL";
 
     @Bind(R.id.progress_bar)
     protected ProgressBar progressBar;
@@ -36,7 +36,7 @@ public class PictureFragment extends Fragment implements LoadImageTaskEventListe
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pictureUrl = getArguments().getString(EXTRA_PICTURE_URL);
+        pictureUrl = getArguments().getString(ARGS_KEY_PICTURE_URL);
     }
 
     @Nullable
@@ -56,7 +56,7 @@ public class PictureFragment extends Fragment implements LoadImageTaskEventListe
     public static Fragment newInstance(String pictureUrl) {
         PictureFragment fragment = new PictureFragment();
         Bundle args = new Bundle();
-        args.putString(EXTRA_PICTURE_URL, pictureUrl);
+        args.putString(ARGS_KEY_PICTURE_URL, pictureUrl);
         fragment.setArguments(args);
         return fragment;
     }
