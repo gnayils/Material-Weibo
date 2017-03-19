@@ -12,7 +12,7 @@ import rx.Observable;
 
 public interface UserAPI {
 
-    @GET("users/show.json")
+    @GET("2/users/show.json")
     Observable<User> show(@Query("access_token") String accessToken, @Query("uid") String uid);
 
 }

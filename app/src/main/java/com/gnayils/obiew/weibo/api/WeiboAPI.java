@@ -34,7 +34,7 @@ public class WeiboAPI {
 
     private static final String TAG = WeiboAPI.class.getSimpleName();
 
-    public static final String BASE_URL = App.context().getString(R.string.weibo_base_url);
+    public static final String BASE_URL = App.context().getString(R.string.api_base_url);
     public static final int DEFAULT_TIMEOUT = 10;
     private static WeiboAPI instance = new WeiboAPI();
 

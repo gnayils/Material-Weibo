@@ -36,7 +36,7 @@ public class CommentPresenter implements CommentInterface.Presenter {
     public void loadComment(long statusId, boolean latest) {
         compositeSubscription.clear();
         Subscription subscription = WeiboAPI.get(CommentAPI.class)
-                .show(TokenKeeper.getToken().getToken(), statusId, latest ? 0L : sinceId, 0L)
+                .show(TokenKeeper.getToken().access_token, statusId, latest ? 0L : sinceId, 0L)
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {

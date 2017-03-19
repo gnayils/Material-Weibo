@@ -21,9 +21,6 @@ public interface UserInterface {
     }
 
     interface Presenter extends BasePresenter {
-
-        void requestLogin(Activity activity);
-
-        void requestSignUp(Activity activity);
+        void loadUser();
     }
 }

@@ -1,5 +1,6 @@
 package com.gnayils.obiew.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -12,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.event.AuthorizeCallBackEvent;
 import com.gnayils.obiew.fragment.StatusFragment;
 import com.gnayils.obiew.fragment.UserFragment;
 import com.gnayils.obiew.interfaces.StatusInterface;
@@ -73,12 +73,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        EventBus.getDefault().post(new AuthorizeCallBackEvent(requestCode, resultCode, data));
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -114,5 +108,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public static void start(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        context.startActivity(intent);
     }
 }

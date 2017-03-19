@@ -12,7 +12,7 @@ import android.support.v4.view.ViewPager;
 
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.fragment.PictureFragment;
-import com.gnayils.obiew.weibo.bean.Status;
+import com.gnayils.obiew.weibo.bean.PicUrls;
 
 import java.io.Serializable;
 import java.util.List;
@@ -32,13 +32,13 @@ public class PicturePagerActivity extends FragmentActivity {
     @Bind(R.id.view_pager)
     protected ViewPager viewPager;
 
-    private List<Status.PicUrls> pictureUrls;
+    private List<PicUrls> pictureUrls;
     private int currentPicturePosition;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pictureUrls = (List<Status.PicUrls>) getIntent().getSerializableExtra(ARGS_KEY_PICTURE_URLS);
+        pictureUrls = (List<PicUrls>) getIntent().getSerializableExtra(ARGS_KEY_PICTURE_URLS);
         currentPicturePosition = getIntent().getIntExtra(ARGS_KEY_CURRENT_PICTURE_POSITION, 0);
         setContentView(R.layout.activity_picture_pager);
         ButterKnife.bind(this);
@@ -46,7 +46,7 @@ public class PicturePagerActivity extends FragmentActivity {
         viewPager.setCurrentItem(currentPicturePosition);
     }
 
-    public static void start(Context context, int currentPicturePosition, List<Status.PicUrls> picUrlsList) {
+    public static void start(Context context, int currentPicturePosition, List<PicUrls> picUrlsList) {
         Intent intent = new Intent(context, PicturePagerActivity.class);
         intent.putExtra(ARGS_KEY_CURRENT_PICTURE_POSITION, currentPicturePosition);
         intent.putExtra(ARGS_KEY_PICTURE_URLS, (Serializable) picUrlsList);

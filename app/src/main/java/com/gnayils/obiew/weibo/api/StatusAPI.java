@@ -13,10 +13,10 @@ import rx.Observable;
 
 public interface StatusAPI {
 
-    @GET("statuses/home_timeline.json")
+    @GET("2/statuses/home_timeline.json")
     Observable<StatusTimeline> homeTimeline(@Query("access_token") String accessToken, @Query("max_id")long maxId, @Query("since_id")long sinceId);
 
-    @GET("statuses/repost_timeline.json")
+    @GET("2/statuses/repost_timeline.json")
     Observable<RepostTimeline> repostTimeline(@Query("access_token") String accessToken, @Query("id") long statusId, @Query("max_id") long maxId, @Query("since_id") long sinceId);
 
 }

@@ -51,19 +51,6 @@ public class UserFragment extends Fragment implements UserInterface.View {
     public android.view.View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         android.view.View userView = inflater.inflate(R.layout.fragment_user_profile, container, false);
         ButterKnife.bind(this, userView);
-        loginButton.setOnClickListener(new android.view.View.OnClickListener() {
-            @Override
-            public void onClick(android.view.View v) {
-                userPresenter.requestLogin(getActivity());
-            }
-        });
-        signupButton.setOnClickListener(new android.view.View.OnClickListener(){
-
-            @Override
-            public void onClick(android.view.View v) {
-                userPresenter.requestSignUp(getActivity());
-            }
-        });
         return userView;
     }
 

@@ -55,30 +55,6 @@ public class Status implements Comparable<Status>, Serializable {
     public List<?> hot_weibo_tags;
     public List<?> text_tag_tips;
 
-    public static class Geo implements Serializable {
-        public String longitude;
-        public String latitude;
-        public String city;
-        public String province;
-        public String city_name;
-        public String province_name;
-        public String address;
-        public String pinyin;
-        public String more;
-    }
-
-    public static class Visible implements Serializable {
-        public int type;
-        public int list_id;
-    }
-
-    public static class PicUrls implements Serializable {
-        public String thumbnail_pic;
-    }
-
-    public static class Annotations implements Serializable {
-        public String client_mblogid;
-    }
 
     @Override
     public boolean equals(Object another) {

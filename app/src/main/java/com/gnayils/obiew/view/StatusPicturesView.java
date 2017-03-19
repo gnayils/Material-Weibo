@@ -8,7 +8,7 @@ import android.widget.ImageView;
 
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.activity.PicturePagerActivity;
-import com.gnayils.obiew.weibo.bean.Status;
+import com.gnayils.obiew.weibo.bean.PicUrls;
 import com.gnayils.obiew.bmpldr.BitmapLoader;
 import static com.gnayils.obiew.util.ViewUtils.*;
 
@@ -23,7 +23,7 @@ public class StatusPicturesView extends ViewGroup implements View.OnClickListene
     public final int MARGIN_IN_IMAGES = dp2px(getContext(), 4);
 
     private int imageViewVisibleCount;
-    private List<Status.PicUrls> picUrlsList;
+    private List<PicUrls> picUrlsList;
 
     public StatusPicturesView(Context context) {
         this(context, null);
@@ -50,7 +50,7 @@ public class StatusPicturesView extends ViewGroup implements View.OnClickListene
         }
     }
 
-    public void setPictureUrls(List<Status.PicUrls> picUrlsList) {
+    public void setPictureUrls(List<PicUrls> picUrlsList) {
         if(picUrlsList == null) {
             setVisibility(View.GONE);
             return;
@@ -64,7 +64,7 @@ public class StatusPicturesView extends ViewGroup implements View.OnClickListene
             View child = getChildAt(i);
             child.setVisibility(View.GONE);
             if(i < picUrlsList.size()) {
-                Status.PicUrls picUrls = picUrlsList.get(i);
+                PicUrls picUrls = picUrlsList.get(i);
                 child.setVisibility(View.VISIBLE);
                 BitmapLoader.getInstance().loadBitmap(picUrls.thumbnail_pic.replace("/thumbnail/", "/bmiddle/" /*"large"*/), (ImageView) child);
             }

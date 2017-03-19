@@ -1,7 +1,6 @@
 package com.gnayils.obiew;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.gnayils.obiew.util.URLParser;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -13,9 +12,13 @@ import org.junit.Test;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Gnayils on 12/03/2017.
@@ -24,9 +27,9 @@ import java.io.InputStreamReader;
 @Ignore
 public class ApiTest {
 
-    @Test
-    public void test() throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("/Users/Gnayils/GitHubRepositories/obiew/app/src/test/res/comment_timeline.json"))));
+
+    public void testJsonParser() throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("/Users/Gnayils/GitHubRepositories/obiew/app/src/testJsonParser/res/comment_timeline.json"))));
 
         JsonParser parser = new JsonParser();
         JsonElement rootJson = parser.parse(bufferedReader);
@@ -38,5 +41,12 @@ public class ApiTest {
             commentJson.remove("status");
         }
         System.out.println(rootJson.toString());
+    }
+
+    @Test
+    public void testUrlDecode() throws MalformedURLException, UnsupportedEncodingException {
+        URL url = new URL("https://api.weibo.com/oauth2/authorize?client_id=2388828892&scope=friendships_groups_read,friendships_groups_write,statuses_to_me_read,follow_app_official_microblog&amp;redirect_uri=http://baidu.com&display=mobile&forcelogin=true");
+        Map<String, List<String>> maps = URLParser.decode(url);
+        System.out.println(maps.get("scope"));
     }
 }
