@@ -1,1 +1,1 @@
-include ':app', ':weiboSDK', 'swipyrefreshlayout'
+include ':app', 'swipyrefreshlayout'
