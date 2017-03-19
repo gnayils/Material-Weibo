@@ -9,9 +9,6 @@ import com.gnayils.obiew.weibo.TokenKeeper;
 import com.gnayils.obiew.weibo.api.StatusAPI;
 import com.gnayils.obiew.weibo.api.WeiboAPI;
 import com.gnayils.obiew.weibo.bean.RepostTimeline;
-import com.sina.weibo.sdk.exception.WeiboException;
-import com.sina.weibo.sdk.net.RequestListener;
-import com.sina.weibo.sdk.openapi.legacy.StatusesAPI;
 
 import rx.Subscriber;
 import rx.Subscription;

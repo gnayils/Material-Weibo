@@ -23,7 +23,5 @@
     <color name="colorLink">#507daf</color>
     <color name="colorLinkBackground">#6c507daf</color>
 
-
-
-    <color name="colorButtonRipple">#474747</color>
+    <color name="colorRippleMask">#75000000</color>
 </resources>

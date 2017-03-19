@@ -22,4 +22,8 @@
         <attr name="avatarImage" format="reference" />
         <attr name="verifiedIcon" format="reference"/>
     </declare-styleable>
+
+    <declare-styleable name="ForegroundImageView">
+        <attr name="android:foreground"/>
+    </declare-styleable>
 </resources>

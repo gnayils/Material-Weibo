@@ -22,7 +22,6 @@ import android.content.SharedPreferences.Editor;
 
 import com.gnayils.obiew.App;
 import com.gnayils.obiew.weibo.bean.AccessToken;
-import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 
 public class TokenKeeper {
 
