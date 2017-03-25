@@ -95,9 +95,7 @@ public class TouchableLinkMovementMethod extends LinkMovementMethod {
                 TextView textView = (TextView) v;
                 CharSequence text = textView.getText();
                 if(text instanceof Spannable) {
-                    boolean result =  instance.onTouchEvent(textView, (Spannable) text, event);
-                    System.out.println("on touch event: " + result);
-                    return result;
+                    return instance.onTouchEvent(textView, (Spannable) text, event);
                 }
             }
             return false;

@@ -2,8 +2,6 @@ package com.gnayils.obiew.presenter;
 
 import android.util.Log;
 
-import com.gnayils.obiew.App;
-import com.gnayils.obiew.R;
 import com.gnayils.obiew.interfaces.RepostInterface;
 import com.gnayils.obiew.weibo.TokenKeeper;
 import com.gnayils.obiew.weibo.api.StatusAPI;
@@ -39,7 +37,7 @@ public class RepostPresenter implements RepostInterface.Presenter {
     public void loadRepost(long statusId, boolean latest) {
         compositeSubscription.clear();
         Subscription subscription = WeiboAPI.get(StatusAPI.class)
-                .repostTimeline(TokenKeeper.getToken().access_token, statusId, latest ? 0L : sinceId, 0L)
+                .repostTimeline(statusId, latest ? 0L : sinceId, 0L)
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {

@@ -14,6 +14,6 @@ import rx.Observable;
 public interface CommentAPI {
 
     @GET("2/comments/show.json")
-    Observable<CommentTimeline> show(@Query("access_token") String accessToken, @Query("id") long statusId, @Query("max_id") long maxId, @Query("since_id") long sinceId);
+    Observable<CommentTimeline> show(@Query("id") long statusId, @Query("max_id") long maxId, @Query("since_id") long sinceId);
 
 }

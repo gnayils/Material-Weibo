@@ -6,13 +6,13 @@ import android.graphics.Bitmap;
  * Created by Gnayils on 20/11/2016.
  */
 
-public interface LoadImageTaskEventListener {
+public interface BitmapLoadListener {
 
-    void onPreExecute();
+    void onPreLoad();
 
     void onProgressUpdate(Integer... values);
 
-    void onPostExecute(Bitmap bitmap);
+    void onPostLoad(Bitmap bitmap);
 
     void onCancelled();
 }

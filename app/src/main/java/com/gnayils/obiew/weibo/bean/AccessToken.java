@@ -12,5 +12,4 @@ public class AccessToken {
     public long remind_in;
     public String scope;
 
-
 }

@@ -5,12 +5,9 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import com.gnayils.obiew.App;
-import com.gnayils.obiew.R;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,9 +15,6 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static android.graphics.BitmapFactory.*;
 
@@ -51,7 +45,7 @@ public class BitmapLoader {
         loadBitmap(url, imageView, null);
     }
 
-    public void loadBitmap(String url, ImageView imageView, LoadImageTaskEventListener listener) {
+    public void loadBitmap(String url, ImageView imageView, BitmapLoadListener listener) {
         LoadImageTask loadImageTask = (LoadImageTask) imageView.getTag();
         if(loadImageTask != null) {
             if(loadImageTask.url.equals(url) && loadImageTask.getStatus() != AsyncTask.Status.FINISHED) {
@@ -69,6 +63,12 @@ public class BitmapLoader {
         Bitmap bitmap = memoryCache.get(urlKey);
         if(bitmap != null) {
             Log.d(BitmapLoader.TAG, "get bitmap from memory cache: " + url);
+            if(listener != null) {
+                listener.onPreLoad();
+                listener.onProgressUpdate(0);
+                listener.onProgressUpdate(100);
+                listener.onPostLoad(bitmap);
+            }
             imageView.setImageBitmap(bitmap);
         } else {
             LoadImageTask task = new LoadImageTask(url, urlKey, imageView, listener);
@@ -112,9 +112,9 @@ public class BitmapLoader {
         private String url;
         private String urlKey;
         private ImageView imageView;
-        private LoadImageTaskEventListener listener;
+        private BitmapLoadListener listener;
 
-        private LoadImageTask(String url, String urlKey, ImageView imageView, LoadImageTaskEventListener listener) {
+        private LoadImageTask(String url, String urlKey, ImageView imageView, BitmapLoadListener listener) {
             this.url = url;
             this.urlKey = urlKey;
             this.imageView = imageView;
@@ -124,7 +124,7 @@ public class BitmapLoader {
         @Override
         protected void onPreExecute() {
             if(listener != null) {
-                listener.onPreExecute();
+                listener.onPreLoad();
             }
         }
 
@@ -201,7 +201,7 @@ public class BitmapLoader {
             return bitmap;
         }
 
-        public int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
             final int height = options.outHeight;
             final int width = options.outWidth;
             int inSampleSize = 1;
@@ -240,7 +240,7 @@ public class BitmapLoader {
                 imageView.setImageBitmap(bitmap);
             }
             if(listener != null) {
-                listener.onPostExecute(bitmap);
+                listener.onPostLoad(bitmap);
             }
         }
 

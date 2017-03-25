@@ -4,8 +4,13 @@ import android.util.Log;
 
 import com.gnayils.obiew.App;
 import com.gnayils.obiew.R;
+import com.gnayils.obiew.weibo.TokenKeeper;
+import com.gnayils.obiew.weibo.bean.APIError;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -13,17 +18,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import okhttp3.logging.HttpLoggingInterceptor;
 import okio.Buffer;
+import retrofit2.Converter;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.HttpException;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -44,7 +54,10 @@ public class WeiboAPI {
     private WeiboAPI() {
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
         httpClientBuilder.connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
-        httpClientBuilder.interceptors().add(new LoggingInterceptor());
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        httpClientBuilder.addInterceptor(new AttachTokenInterceptor());
+        httpClientBuilder.addInterceptor(loggingInterceptor);
         retrofit = new Retrofit.Builder()
                 .client(httpClientBuilder.build())
                 .addConverterFactory(GsonConverterFactory.create())
@@ -67,6 +80,7 @@ public class WeiboAPI {
                         return ((Observable) result)
                                 .subscribeOn(Schedulers.io())
                                 .unsubscribeOn(Schedulers.io())
+                                .doOnError(new RetrofitErrorHandler())
                                 .observeOn(AndroidSchedulers.mainThread());
                     } else {
                         Log.e(TAG, "all method in the retrofit instance must be return a Observable instance");
@@ -79,30 +93,39 @@ public class WeiboAPI {
         return interfaceInstance;
     }
 
-    public static class LoggingInterceptor implements Interceptor  {
+    private class RetrofitErrorHandler implements Action1<Throwable> {
 
-        public static final String TAG = LoggingInterceptor.class.getSimpleName();
+        @Override
+        public void call(Throwable throwable) {
+            APIError apiError = null;
+            if (throwable instanceof HttpException) {
+                HttpException httpException = (HttpException) throwable;
+                Converter<ResponseBody, APIError> converter = retrofit.responseBodyConverter(APIError.class, new Annotation[0]);
+                try {
+                    apiError = converter.convert(httpException.response().errorBody());
+                } catch (IOException e) {
+                    Log.e(TAG, "convert http response error body to APIError failed", e);
+                }
+            } else if (throwable instanceof IOException) {
+            }
+            if(apiError != null) {
+                EventBus.getDefault().post(apiError);
+            }
+        }
+    }
+
+    public static class AttachTokenInterceptor implements Interceptor {
 
         @Override
         public Response intercept(Chain chain) throws IOException {
-            Request request = chain.request();
-            long t1 = System.nanoTime();
-            String requestLog = String.format("Sending request %s on %s%n%s", request.url(), chain.connection(), request.headers());
-            if(request.method().compareToIgnoreCase("post") == 0){
-                Buffer buffer = new Buffer();
-                request.newBuilder().build().body().writeTo(buffer);
-                requestLog ="\n" + requestLog + "\n" + buffer.readUtf8();
-            }
-            Log.d(TAG, "Request: " + "\n" + requestLog);
-
-            Response response = chain.proceed(request);
-
-            long t2 = System.nanoTime();
-            String responseLog = String.format("Received response for %s in %.1fms%n%s", response.request().url(), (t2 - t1) / 1e6d, response.headers());
-            String bodyString = response.body().string();
-            Log.d(TAG,"Response: " + "\n" + responseLog + "\n" + bodyString);
-
-            return response.newBuilder().body(ResponseBody.create(response.body().contentType(), bodyString)).build();
+            Request original = chain.request();
+            HttpUrl originalHttpUrl = original.url();
+            HttpUrl url = originalHttpUrl.newBuilder()
+                    .addQueryParameter("access_token", TokenKeeper.getToken())
+                    .build();
+            Request.Builder requestBuilder = original.newBuilder().url(url);
+            Request request = requestBuilder.build();
+            return chain.proceed(request);
         }
     }
 

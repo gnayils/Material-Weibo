@@ -21,7 +21,7 @@ import com.gnayils.obiew.util.ViewUtils;
 public class AvatarView extends FrameLayout {
 
     public static final float AVATAR_CIRCLE_IMAGE_VIEW_SIZE_RATIO = 60f / 64f;
-    public static final float VERIFIED_ICON_IMAGE_VIEW_SIZE_RATIO = 24f / 64f;
+    public static final float VERIFIED_ICON_IMAGE_VIEW_SIZE_RATIO = 20f / 64f;
     public static final float VERIFIED_ICON_IMAGE_VIEW_MARGIN_RATIO = 2f / 64f;
 
     public CircleImageView avatarCircleImageView;
@@ -41,8 +41,6 @@ public class AvatarView extends FrameLayout {
 
     public AvatarView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-
-        setBackground(getResources().getDrawable(R.drawable.bg_oval, context.getTheme()));
 
         avatarCircleImageView = new CircleImageView(context);
         avatarCircleImageView.setImageResource(R.drawable.ic_avatar_default);

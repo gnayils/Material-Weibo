@@ -14,13 +14,14 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.VectorDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-public class CircleImageView extends ImageView {
+public class CircleImageView extends AppCompatImageView {
 
     public CircleImageView(Context context) {
         this(context, null);
@@ -31,11 +32,7 @@ public class CircleImageView extends ImageView {
     }
 
     public CircleImageView(Context context, AttributeSet attrs, int defStyle) {
-        this(context, attrs, defStyle, 0);
-    }
-
-    public CircleImageView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
+        super(context, attrs, defStyle);
         GradientDrawable backgroundDrawable = new GradientDrawable();
         backgroundDrawable.setColor(Color.TRANSPARENT);
         backgroundDrawable.setShape(GradientDrawable.OVAL);

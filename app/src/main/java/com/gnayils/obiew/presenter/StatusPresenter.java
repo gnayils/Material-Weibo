@@ -24,7 +24,7 @@ public class StatusPresenter implements StatusInterface.Presenter {
 
     private StatusInterface.View statusView;
 
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();;
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     private long sinceId = 0;
 
@@ -36,7 +36,8 @@ public class StatusPresenter implements StatusInterface.Presenter {
     @Override
     public void loadStatusTimeline(boolean latest) {
         compositeSubscription.clear();
-        Subscription subscription = WeiboAPI.get(StatusAPI.class).homeTimeline(TokenKeeper.getToken().access_token, latest ? 0L : this.sinceId, 0L)
+        Subscription subscription = WeiboAPI.get(StatusAPI.class)
+                .homeTimeline(latest ? 0L : this.sinceId, 0L)
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {

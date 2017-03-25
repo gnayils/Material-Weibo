@@ -31,39 +31,44 @@ public class TokenKeeper {
     private static final String KEY_ACCESS_TOKEN = "access_token";
     private static final String KEY_EXPIRES_IN = "expires_in";
 
-    private static AccessToken token;
+    private static AccessToken accessToken;
 
-    public static void writeToken(AccessToken token) {
+    public static void write(AccessToken token) {
         SharedPreferences pref = App.context().getSharedPreferences(PREFERENCES_NAME, Context.MODE_APPEND);
         Editor editor = pref.edit();
         editor.putString(KEY_UID, token.uid);
         editor.putString(KEY_ACCESS_TOKEN, token.access_token);
         editor.putLong(KEY_EXPIRES_IN, token.expires_in);
-        editor.commit();
-        TokenKeeper.token = token;
+        editor.apply();
+        accessToken = token;
     }
 
-    public static AccessToken readToken() {
-        token = new AccessToken();
-        SharedPreferences pref = App.context().getSharedPreferences(PREFERENCES_NAME, Context.MODE_APPEND);
-        token.uid = pref.getString(KEY_UID, "");
-        token.access_token = pref.getString(KEY_ACCESS_TOKEN, "");
-        token.expires_in = pref.getLong(KEY_EXPIRES_IN, 0);
-        return token;
-    }
-
-    public static AccessToken getToken() {
-        if(token == null) {
-            readToken();
+    public static AccessToken read() {
+        if(accessToken != null) {
+            return accessToken;
         }
-        return token;
+        accessToken = new AccessToken();
+        SharedPreferences pref = App.context().getSharedPreferences(PREFERENCES_NAME, Context.MODE_APPEND);
+        accessToken.uid = pref.getString(KEY_UID, "");
+        accessToken.access_token = pref.getString(KEY_ACCESS_TOKEN, "");
+        accessToken.expires_in = pref.getLong(KEY_EXPIRES_IN, 0);
+        return accessToken;
+    }
+
+    public static String getToken() {
+        return read().access_token;
+    }
+
+    public static String getUid() {
+        return read().uid;
     }
 
     public static void clear() {
         SharedPreferences pref = App.context().getSharedPreferences(PREFERENCES_NAME, Context.MODE_APPEND);
         Editor editor = pref.edit();
         editor.clear();
-        editor.commit();
-        token = null;
+        editor.apply();
+        accessToken = null;
     }
+
 }

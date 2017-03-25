@@ -12,7 +12,7 @@ import android.widget.ProgressBar;
 
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.bmpldr.BitmapLoader;
-import com.gnayils.obiew.bmpldr.LoadImageTaskEventListener;
+import com.gnayils.obiew.bmpldr.BitmapLoadListener;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -21,7 +21,7 @@ import butterknife.ButterKnife;
  * Created by Gnayils on 04/03/2017.
  */
 
-public class PictureFragment extends Fragment implements LoadImageTaskEventListener {
+public class PictureFragment extends Fragment implements BitmapLoadListener {
 
     public static final String ARGS_KEY_PICTURE_URL = "ARGS_KEY_PICTURE_URL";
 
@@ -62,7 +62,7 @@ public class PictureFragment extends Fragment implements LoadImageTaskEventListe
     }
 
     @Override
-    public void onPreExecute() {
+    public void onPreLoad() {
 
     }
 
@@ -72,7 +72,7 @@ public class PictureFragment extends Fragment implements LoadImageTaskEventListe
     }
 
     @Override
-    public void onPostExecute(Bitmap bitmap) {
+    public void onPostLoad(Bitmap bitmap) {
         progressBar.setVisibility(View.GONE);
     }
 
