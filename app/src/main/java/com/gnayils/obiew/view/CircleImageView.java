@@ -21,7 +21,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-public class CircleImageView extends AppCompatImageView {
+public class CircleImageView extends ForegroundImageView {
 
     public CircleImageView(Context context) {
         this(context, null);

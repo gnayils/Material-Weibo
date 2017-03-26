@@ -73,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
                     MainActivity.start(LoginActivity.this);
                     finish();
                 }
-            }, 2000);
+            }, 500);
             return;
         }
 

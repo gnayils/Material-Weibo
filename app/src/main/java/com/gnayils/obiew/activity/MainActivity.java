@@ -58,8 +58,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         UserFragment userFragment = (UserFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_user_profile);
         userPresenter = new UserPresenter(userFragment);
-        StatusFragment statusFragment = (StatusFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_status);
+
+        StatusFragment statusFragment = StatusFragment.newInstance(StatusFragment.TIMELINE_TYPE_HOME, null);
         statusPresenter = new StatusPresenter(statusFragment);
+        getSupportFragmentManager().beginTransaction().add(R.id.frame_layout_fragment_container, statusFragment).commit();
     }
 
     @Override

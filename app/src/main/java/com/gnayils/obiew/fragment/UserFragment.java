@@ -35,7 +35,7 @@ public class UserFragment extends Fragment implements UserInterface.View {
     protected TextView followerNumberTextView;
     @Bind(R.id.text_view_username)
     protected TextView usernameTextView;
-    @Bind(R.id.text_view_about_me)
+    @Bind(R.id.text_view_description)
     protected TextView aboutMeTextView;
     @Bind(R.id.avatar_view_user)
     protected AvatarView userAvatarView;

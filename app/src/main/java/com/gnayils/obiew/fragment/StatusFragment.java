@@ -1,5 +1,6 @@
 package com.gnayils.obiew.fragment;
 
+import android.icu.text.TimeZoneFormat;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,7 @@ import com.gnayils.obiew.interfaces.UserInterface;
 import com.gnayils.obiew.view.StatusCardView;
 import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.weibo.bean.StatusTimeline;
+import com.gnayils.obiew.weibo.bean.User;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 
@@ -42,9 +44,26 @@ public class StatusFragment extends Fragment implements StatusInterface.View {
     @Bind(R.id.swipy_refresh_layout)
     protected SwipyRefreshLayout swipyRefreshLayout;
 
-    private RecycleViewAdapter recycleViewAdapter;
+    private int timelineType;
+    private User user;
 
+    private RecycleViewAdapter recycleViewAdapter;
     private StatusInterface.Presenter presenter;
+
+    public static final int TIMELINE_TYPE_HOME = 0;
+    public static final int TIMELINE_TYPE_USER = 1;
+
+    public static final String ARGS_TIMELINE_TYPE = "ARGS_TIMELINE_TYPE";
+    public static final String ARGS_USER = "ARGS_USER";
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        timelineType = getArguments().getInt(ARGS_TIMELINE_TYPE);
+        if(timelineType == TIMELINE_TYPE_USER) {
+            user = (User) getArguments().get(ARGS_USER);
+        }
+    }
 
     @Nullable
     @Override
@@ -57,12 +76,12 @@ public class StatusFragment extends Fragment implements StatusInterface.View {
         swipyRefreshLayout.setOnRefreshListener(new SwipyRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh(SwipyRefreshLayoutDirection direction) {
-                if(direction == SwipyRefreshLayoutDirection.TOP) {
-                    presenter.loadStatusTimeline(true);
-                } else if(direction == SwipyRefreshLayoutDirection.BOTTOM) {
-                    presenter.loadStatusTimeline(false);
+                boolean latest = direction == SwipyRefreshLayoutDirection.TOP ? true : false;
+                if(timelineType == TIMELINE_TYPE_HOME) {
+                    presenter.loadStatusTimeline(latest);
+                } else if(timelineType == TIMELINE_TYPE_USER) {
+                    presenter.loadStatusTimeline(latest, user);
                 }
-
             }
         });
         return statusView;
@@ -83,10 +102,25 @@ public class StatusFragment extends Fragment implements StatusInterface.View {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if(timelineType == TIMELINE_TYPE_HOME) {
+            presenter.loadStatusTimeline(true);
+        } else if(timelineType == TIMELINE_TYPE_USER) {
+            presenter.loadStatusTimeline(true, user);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        presenter.unsubscribe();
+    }
+
+    @Override
     public void setPresenter(StatusInterface.Presenter presenter) {
         this.presenter = presenter;
     }
-
 
     class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewHolder> {
 
@@ -135,5 +169,14 @@ public class StatusFragment extends Fragment implements StatusInterface.View {
             this.statusCardView.setLayoutParams(layoutParams);
             this.statusCardView.setRadius(dp2px(statusCardView.getContext(), 4));
         }
+    }
+
+    public static StatusFragment newInstance(int timelineType, User user) {
+        StatusFragment fragment = new StatusFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARGS_TIMELINE_TYPE, timelineType);
+        args.putSerializable(ARGS_USER, user);
+        fragment.setArguments(args);
+        return fragment;
     }
 }

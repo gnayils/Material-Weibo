@@ -41,10 +41,9 @@ public class StatusPicturesView extends ViewGroup implements View.OnClickListene
         super(context, attrs, defStyleAttr, defStyleRes);
         for (int i = 0; i < 9; i++) {
             ForegroundImageView imageView = new ForegroundImageView(getContext());
-            //imageView.setImageDrawable(getResources().getDrawableByAttribute(R.drawable.bg_cover_default, getContext().getTheme()));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setForegroundResource(R.drawable.bg_ripple_mask);
-            imageView.setBackgroundColor(getResources().getColor(R.color.colorThumbnailBg));
+            imageView.setBackgroundResource(R.drawable.bg_thumbnail);
             imageView.setClipToOutline(true);
             imageView.setOnClickListener(this);
             addView(imageView);

@@ -20,9 +20,7 @@ import com.gnayils.obiew.util.ViewUtils;
 
 public class AvatarView extends FrameLayout {
 
-    public static final float AVATAR_CIRCLE_IMAGE_VIEW_SIZE_RATIO = 60f / 64f;
     public static final float VERIFIED_ICON_IMAGE_VIEW_SIZE_RATIO = 20f / 64f;
-    public static final float VERIFIED_ICON_IMAGE_VIEW_MARGIN_RATIO = 2f / 64f;
 
     public CircleImageView avatarCircleImageView;
     public ImageView verifiedIconImageView;
@@ -44,6 +42,10 @@ public class AvatarView extends FrameLayout {
 
         avatarCircleImageView = new CircleImageView(context);
         avatarCircleImageView.setImageResource(R.drawable.ic_avatar_default);
+        LayoutParams avatarCircleImageViewLayoutParam = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        avatarCircleImageViewLayoutParam.gravity = Gravity.CENTER;
+        avatarCircleImageView.setLayoutParams(avatarCircleImageViewLayoutParam);
+
         addView(avatarCircleImageView);
 
         verifiedIconImageView = new ImageView(context);
@@ -65,16 +67,9 @@ public class AvatarView extends FrameLayout {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int size = Math.min(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.getSize(heightMeasureSpec));
 
-        int avatarCircleImageViewSize = (int) (size * AVATAR_CIRCLE_IMAGE_VIEW_SIZE_RATIO);
-        LayoutParams avatarCircleImageViewLayoutParam = new LayoutParams(avatarCircleImageViewSize, avatarCircleImageViewSize);
-        avatarCircleImageViewLayoutParam.gravity = Gravity.CENTER;
-        avatarCircleImageView.setLayoutParams(avatarCircleImageViewLayoutParam);
-
         int verifiedIconImageViewSize = (int) (size * VERIFIED_ICON_IMAGE_VIEW_SIZE_RATIO);
         LayoutParams verifiedIconImageViewLayoutParam = new LayoutParams(verifiedIconImageViewSize, verifiedIconImageViewSize);
         verifiedIconImageViewLayoutParam.gravity = Gravity.BOTTOM | Gravity.RIGHT;
-        int verifiedIconImageViewMargin = (int) (size * VERIFIED_ICON_IMAGE_VIEW_MARGIN_RATIO);
-        verifiedIconImageViewLayoutParam.setMargins(0, 0, verifiedIconImageViewMargin, verifiedIconImageViewMargin);
         verifiedIconImageView.setLayoutParams(verifiedIconImageViewLayoutParam);
 
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);

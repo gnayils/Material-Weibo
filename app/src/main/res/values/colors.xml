@@ -13,7 +13,7 @@
     <color name="colorGreenDark">#4daf51</color>
     <color name="colorWhiteTranslucent">#cfffffff</color>
     <color name="colorGrayTranslucent">#af6e6e6e</color>
-    <color name="colorThumbnailBg">#e4e4e4</color>
+    <color name="colorThumbnailBackground">#e4e4e4</color>
 
     <color name="colorSecondaryText">#89000000</color>
     <color name="colorPrimaryText">#dd000000</color>

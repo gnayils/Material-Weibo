@@ -46,6 +46,9 @@ public class BitmapLoader {
     }
 
     public void loadBitmap(String url, ImageView imageView, BitmapLoadListener listener) {
+        if(url == null || url.trim().isEmpty()) {
+            return;
+        }
         LoadImageTask loadImageTask = (LoadImageTask) imageView.getTag();
         if(loadImageTask != null) {
             if(loadImageTask.url.equals(url) && loadImageTask.getStatus() != AsyncTask.Status.FINISHED) {

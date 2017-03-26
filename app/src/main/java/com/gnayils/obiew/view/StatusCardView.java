@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.gnayils.obiew.App;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.activity.StatusDetailActivity;
+import com.gnayils.obiew.activity.UserProfileActivity;
 import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.bmpldr.BitmapLoader;
@@ -50,7 +51,7 @@ public class StatusCardView extends CardView {
     public CenteredDrawableButton commentButton;
     public CenteredDrawableButton likeButton;
 
-    public OnClickListener onStatusViewClickListener = new OnClickListener() {
+    public OnClickListener statusViewOnClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
             Status whichStatus = null;
@@ -60,6 +61,13 @@ public class StatusCardView extends CardView {
                 whichStatus = status.retweeted_status;
             }
             StatusDetailActivity.start(getContext(), whichStatus);
+        }
+    };
+
+    public OnClickListener avatarCircleImageViewOnClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            UserProfileActivity.start(getContext(), status.user);
         }
     };
 
@@ -79,7 +87,7 @@ public class StatusCardView extends CardView {
         rootView.setId(View.generateViewId());
         rootView.setOrientation(LinearLayout.VERTICAL);
         rootView.setLayoutParams(new CardView.LayoutParams(CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.WRAP_CONTENT));
-        rootView.setOnClickListener(onStatusViewClickListener);
+        rootView.setOnClickListener(statusViewOnClickListener);
         rootView.setBackground(getDrawableByAttribute(context, R.attr.selectableItemBackground));
 
             RelativeLayout userInfoLayout = new RelativeLayout(context);
@@ -92,6 +100,8 @@ public class StatusCardView extends CardView {
                 RelativeLayout.LayoutParams avatarViewLayoutParams = new RelativeLayout.LayoutParams(dp2px(context, 48), dp2px(context, 48));
                 avatarViewLayoutParams.addRule(RelativeLayout.ALIGN_LEFT | RelativeLayout.ALIGN_TOP);
                 userAvatarView.setLayoutParams(avatarViewLayoutParams);
+                userAvatarView.avatarCircleImageView.setForegroundResource(R.drawable.bg_ripple_mask);
+                userAvatarView.avatarCircleImageView.setOnClickListener(avatarCircleImageViewOnClickListener);
 
                 screenNameTextView = new TextView(context);
                 screenNameTextView.setText("用户名");
@@ -155,7 +165,7 @@ public class StatusCardView extends CardView {
 
             retweetedStatusView = new LinearLayout(context);
             retweetedStatusView.setId(View.generateViewId());
-            retweetedStatusView.setOnClickListener(onStatusViewClickListener);
+            retweetedStatusView.setOnClickListener(statusViewOnClickListener);
             retweetedStatusView.setOrientation(LinearLayout.VERTICAL);
             retweetedStatusView.setBackground(createRippleDrawable(getResources().getColor(R.color.colorWindowBackground), 0));
 

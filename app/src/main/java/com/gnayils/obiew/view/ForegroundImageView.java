@@ -18,8 +18,11 @@ public class ForegroundImageView extends AppCompatImageView {
     }
 
     public ForegroundImageView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
+    }
 
+    public ForegroundImageView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ForegroundImageView);
         Drawable foreground = a.getDrawable(R.styleable.ForegroundImageView_android_foreground);
         if (foreground != null) {
@@ -29,7 +32,7 @@ public class ForegroundImageView extends AppCompatImageView {
     }
 
     public void setForegroundResource(int drawableResId) {
-        setForeground(getContext().getResources().getDrawable(drawableResId));
+        setForeground(getContext().getDrawable(drawableResId));
     }
 
     public void setForeground(Drawable drawable) {

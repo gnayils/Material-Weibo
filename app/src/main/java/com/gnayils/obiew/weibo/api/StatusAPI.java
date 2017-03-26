@@ -19,4 +19,7 @@ public interface StatusAPI {
     @GET("2/statuses/repost_timeline.json")
     Observable<RepostTimeline> repostTimeline(@Query("id") long statusId, @Query("max_id") long maxId, @Query("since_id") long sinceId);
 
+    @GET("2/statuses/user_timeline.json")
+    Observable<StatusTimeline> userTimeline(@Query("uid") long uid, @Query("max_id") long maxId, @Query("since_id") long sinceId);
+
 }

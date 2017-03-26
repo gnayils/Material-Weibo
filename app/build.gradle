@@ -24,10 +24,11 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
+    /*
     dexOptions {
         maxProcessCount 4
         javaMaxHeapSize "2g"
-    }
+    }*/
 }
 
 dependencies {
