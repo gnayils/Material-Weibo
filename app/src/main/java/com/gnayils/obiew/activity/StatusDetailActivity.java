@@ -38,7 +38,7 @@ public class StatusDetailActivity extends AppCompatActivity {
     protected TabLayout tabLayout;
     @Bind(R.id.view_pager)
     protected ViewPager viewPager;
-    @Bind(R.id.tool_bar)
+    @Bind(R.id.toolbar)
     protected Toolbar toolbar;
 
     private CommentInterface.Presenter commentPresenter;

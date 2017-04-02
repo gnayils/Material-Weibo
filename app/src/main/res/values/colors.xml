@@ -12,6 +12,7 @@
     <color name="colorWindowBackground">#eeeeee</color>
     <color name="colorGreenDark">#4daf51</color>
     <color name="colorWhiteTranslucent">#cfffffff</color>
+    <color name="colorBlackTranslucent">#75000000</color>
     <color name="colorGrayTranslucent">#af6e6e6e</color>
     <color name="colorThumbnailBackground">#e4e4e4</color>
 
@@ -23,5 +24,5 @@
     <color name="colorLink">#507daf</color>
     <color name="colorLinkBackground">#6c507daf</color>
 
-    <color name="colorRippleMask">#75000000</color>
+    <color name="colorRippleMask">@color/colorBlackTranslucent</color>
 </resources>
