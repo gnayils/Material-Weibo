@@ -24,6 +24,7 @@ import com.gnayils.obiew.bmpldr.BitmapLoader;
 import com.gnayils.obiew.bmpldr.BitmapLoadListener;
 import com.gnayils.obiew.util.URLParser;
 import com.gnayils.obiew.view.AvatarView;
+import com.gnayils.obiew.view.CircleImageView;
 import com.gnayils.obiew.weibo.LoginUser;
 import com.gnayils.obiew.weibo.TokenKeeper;
 import com.gnayils.obiew.weibo.api.AuthorizeAPI;
@@ -61,6 +62,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setStatusBarColor(getResources().getColor(android.R.color.transparent));
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 

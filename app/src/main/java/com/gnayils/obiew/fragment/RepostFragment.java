@@ -3,6 +3,7 @@ package com.gnayils.obiew.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.interfaces.RepostInterface;
+import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.view.CommentView;
 import com.gnayils.obiew.view.RepostView;
 import com.gnayils.obiew.weibo.bean.Comment;
@@ -49,7 +51,12 @@ public class RepostFragment extends Fragment implements RepostInterface.View{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         recyclerView = (RecyclerView) inflater.inflate(R.layout.fragment_repost, container, false);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), linearLayoutManager.getOrientation());
+        dividerItemDecoration.setDrawable(ViewUtils.createDividerDrawable(getContext(), ViewUtils.dp2px(getContext(), 1),
+                getResources().getColor(android.R.color.white), getResources().getColor(R.color.colorDivider), ViewUtils.dp2px(getContext(), 64)));
+        recyclerView.addItemDecoration(dividerItemDecoration);
+        recyclerView.setLayoutManager(linearLayoutManager);
         recyclerViewAdapter = new RecyclerViewAdapter();
         recyclerView.setAdapter(recyclerViewAdapter);
         return recyclerView;
@@ -123,9 +130,9 @@ public class RepostFragment extends Fragment implements RepostInterface.View{
             super(repostView);
             this.repostView = repostView;
             RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(dp2px(repostView.getContext(), 8), dp2px(repostView.getContext(), 4), dp2px(repostView.getContext(), 8), dp2px(repostView.getContext(), 4));
             this.repostView.setLayoutParams(layoutParams);
-            this.repostView.setRadius(dp2px(repostView.getContext(), 4));
+            this.repostView.setRadius(0);
+            this.repostView.setElevation(0);
         }
     }
 

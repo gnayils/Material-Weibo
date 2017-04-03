@@ -6,11 +6,12 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <item name="android:textColor">@color/colorPrimaryText</item>
-        <item name="android:windowTranslucentStatus">true</item>
-        <!--
-        <item name="android:statusBarColor">@color/colorBlackTranslucent</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        -->
+
+        <!--<item name="android:windowTranslucentStatus">true</item>-->
+
+        <!--<item name="android:statusBarColor">@android:color/transparent</item>-->
+        <!--<item name="android:windowDrawsSystemBarBackgrounds">true</item>-->
+
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

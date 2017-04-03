@@ -20,8 +20,6 @@ import com.gnayils.obiew.interfaces.UserInterface;
 import com.gnayils.obiew.presenter.StatusPresenter;
 import com.gnayils.obiew.presenter.UserPresenter;
 
-import org.greenrobot.eventbus.EventBus;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -29,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Bind(R.id.drawer_layout)
     protected DrawerLayout drawerLayout;
-    @Bind(R.id.nav_view)
+    @Bind(R.id.navigation_view)
     protected NavigationView navigationView;
 
     private UserInterface.Presenter userPresenter;
@@ -38,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setStatusBarColor(getResources().getColor(android.R.color.transparent));
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -56,8 +55,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        UserFragment userFragment = (UserFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_user_profile);
-        userPresenter = new UserPresenter(userFragment);
+//        UserFragment userFragment = (UserFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_user_profile);
+//        userPresenter = new UserPresenter(userFragment);
 
         StatusFragment statusFragment = StatusFragment.newInstance(StatusFragment.TIMELINE_TYPE_HOME, null);
         statusPresenter = new StatusPresenter(statusFragment);

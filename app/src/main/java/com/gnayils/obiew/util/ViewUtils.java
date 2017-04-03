@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.util.DisplayMetrics;
@@ -73,4 +74,19 @@ public class ViewUtils {
         ), gradientDrawable, null);
         return rippleDrawable;
     }
+
+    public static Drawable createDividerDrawable(Context context, int thickness, int backgroundColor, int foregroundColor, int foregroundLeftPadding) {
+        GradientDrawable background = new GradientDrawable();
+        background.setColor(backgroundColor);
+        background.setShape(GradientDrawable.RECTANGLE);
+        background.setSize(0, thickness);
+        GradientDrawable foreground = new GradientDrawable();
+        foreground.setColor(foregroundColor);
+        foreground.setShape(GradientDrawable.RECTANGLE);
+        foreground.setSize(0, thickness);
+        LayerDrawable layerDrawable = new LayerDrawable(new Drawable[]{background, foreground});
+        layerDrawable.setLayerInset(1, foregroundLeftPadding, 0, 0, 0);
+        return layerDrawable;
+    }
+
 }

@@ -1,8 +1,13 @@
 package com.gnayils.obiew.fragment;
 
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +16,7 @@ import android.view.ViewGroup;
 
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.interfaces.CommentInterface;
+import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.view.CommentView;
 import com.gnayils.obiew.weibo.bean.Comment;
 import com.gnayils.obiew.weibo.bean.CommentTimeline;
@@ -20,8 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
-import static com.gnayils.obiew.util.ViewUtils.dp2px;
 
 /**
  * Created by Gnayils on 11/03/2017.
@@ -48,7 +52,12 @@ public class CommentFragment extends Fragment implements CommentInterface.View{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         recyclerView = (RecyclerView) inflater.inflate(R.layout.fragment_comment, container, false);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), linearLayoutManager.getOrientation());
+        dividerItemDecoration.setDrawable(ViewUtils.createDividerDrawable(getContext(), ViewUtils.dp2px(getContext(), 1),
+                getResources().getColor(android.R.color.white), getResources().getColor(R.color.colorDivider), ViewUtils.dp2px(getContext(), 64)));
+        recyclerView.addItemDecoration(dividerItemDecoration);
+        recyclerView.setLayoutManager(linearLayoutManager);
         recyclerViewAdapter = new RecyclerViewAdapter();
         recyclerView.setAdapter(recyclerViewAdapter);
         return recyclerView;
@@ -121,9 +130,9 @@ public class CommentFragment extends Fragment implements CommentInterface.View{
             super(commentView);
             this.commentView = commentView;
             RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(dp2px(commentView.getContext(), 8), dp2px(commentView.getContext(), 4), dp2px(commentView.getContext(), 8), dp2px(commentView.getContext(), 4));
             this.commentView.setLayoutParams(layoutParams);
-            this.commentView.setRadius(dp2px(commentView.getContext(), 4));
+            this.commentView.setRadius(0);
+            this.commentView.setElevation(0);
         }
     }
 

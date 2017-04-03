@@ -34,7 +34,7 @@
                 android:layout_height="62dp">
 
                 <com.gnayils.obiew.view.AvatarView
-                    android:id="@+id/avatar_view_user"
+                    android:id="@+id/avatar_view"
                     android:layout_width="62dp"
                     android:layout_height="62dp"/>
 
@@ -45,7 +45,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="8dp"
-                    android:layout_toRightOf="@id/avatar_view_user"
+                    android:layout_toRightOf="@id/avatar_view"
                     android:shadowColor="#75000000"
                     android:shadowDy="1"
                     android:shadowRadius="1"
@@ -61,7 +61,7 @@
                     android:layout_alignParentBottom="true"
                     android:layout_marginBottom="8dp"
                     android:layout_marginLeft="8dp"
-                    android:layout_toRightOf="@id/avatar_view_user"
+                    android:layout_toRightOf="@id/avatar_view"
                     android:shadowColor="#75000000"
                     android:shadowDy="1"
                     android:shadowRadius="1"
@@ -126,6 +126,7 @@
             </LinearLayout>
 
         </LinearLayout>
+
     </FrameLayout>
 
     <FrameLayout

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="200dp">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_cover_default" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <com.gnayils.obiew.view.AvatarView
+                android:id="@+id/avatar_view"
+                android:layout_width="62dp"
+                android:layout_height="62dp" />
+
+            <TextView
+                android:id="@+id/text_view_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:shadowColor="#75000000"
+                android:shadowDy="1"
+                android:shadowRadius="1"
+                android:text="未登录"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/text_view_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:shadowColor="#75000000"
+                android:shadowDy="1"
+                android:shadowRadius="1"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:text="暂无介绍"
+                android:textColor="@android:color/white"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:padding="4dp">
+
+            <Button
+                android:id="@+id/text_view_weibo_number"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:gravity="center"
+                android:shadowColor="#75000000"
+                android:shadowDy="1"
+                android:shadowRadius="1"
+                android:text="0\n微博"
+                android:textColor="@android:color/white" />
+
+            <Button
+                android:id="@+id/text_view_follow_number"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:gravity="center"
+                android:shadowColor="#75000000"
+                android:shadowDy="1"
+                android:shadowRadius="1"
+                android:text="0\n关注"
+                android:textColor="@android:color/white" />
+
+            <Button
+                android:id="@+id/text_view_follower_number"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:gravity="center"
+                android:shadowColor="#75000000"
+                android:shadowDy="1"
+                android:shadowRadius="1"
+                android:text="0\n粉丝"
+                android:textColor="@android:color/white" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

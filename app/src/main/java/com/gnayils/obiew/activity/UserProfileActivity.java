@@ -58,9 +58,10 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        user = (User) getIntent().getSerializableExtra(ARGS_KEY_USER);
+        getWindow().setStatusBarColor(getResources().getColor(android.R.color.transparent));
         setContentView(R.layout.activity_user_profile);
         ButterKnife.bind(this);
+        user = (User) getIntent().getSerializableExtra(ARGS_KEY_USER);
         swipeRefreshLayout.setProgressViewOffset(false, -swipeRefreshLayout.getProgressCircleDiameter(), ViewUtils.getStatusBarHeight(this) * 2);
         swipeRefreshLayout.setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
             @Override
