@@ -1,10 +1,5 @@
 package com.gnayils.obiew.interfaces;
 
-import android.app.Activity;
-
-import com.gnayils.obiew.BasePresenter;
-import com.gnayils.obiew.BaseView;
-import com.gnayils.obiew.weibo.bean.StatusTimeline;
 import com.gnayils.obiew.weibo.bean.User;
 
 /**
@@ -13,8 +8,7 @@ import com.gnayils.obiew.weibo.bean.User;
 
 public interface UserInterface {
 
-
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView {
 
         void show(User user);
 

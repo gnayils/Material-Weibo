@@ -3,7 +3,6 @@ package com.gnayils.obiew.presenter;
 import android.util.Log;
 
 import com.gnayils.obiew.interfaces.CommentInterface;
-import com.gnayils.obiew.weibo.TokenKeeper;
 import com.gnayils.obiew.weibo.api.CommentAPI;
 import com.gnayils.obiew.weibo.api.WeiboAPI;
 import com.gnayils.obiew.weibo.bean.CommentTimeline;
@@ -33,26 +32,26 @@ public class CommentPresenter implements CommentInterface.Presenter {
     }
 
     @Override
-    public void loadComment(long statusId, boolean latest) {
+    public void loadCommentTimeline(long statusId, boolean latest) {
         compositeSubscription.clear();
         Subscription subscription = WeiboAPI.get(CommentAPI.class)
                 .show(statusId, latest ? 0L : sinceId, 0L)
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        commentView.showLoadingIndicator(true);
+                        commentView.showCommentLoadingIndicator(true);
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<CommentTimeline>() {
                     @Override
                     public void onCompleted() {
-                        commentView.showLoadingIndicator(false);
+                        commentView.showCommentLoadingIndicator(false);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        commentView.showLoadingIndicator(false);
+                        commentView.showCommentLoadingIndicator(false);
                         Log.e(TAG, "update comment time line failed: ", e);
                     }
 

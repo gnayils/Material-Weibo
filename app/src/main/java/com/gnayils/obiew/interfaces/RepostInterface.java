@@ -1,8 +1,5 @@
 package com.gnayils.obiew.interfaces;
 
-import com.gnayils.obiew.BasePresenter;
-import com.gnayils.obiew.BaseView;
-import com.gnayils.obiew.weibo.bean.CommentTimeline;
 import com.gnayils.obiew.weibo.bean.RepostTimeline;
 
 /**
@@ -12,17 +9,17 @@ import com.gnayils.obiew.weibo.bean.RepostTimeline;
 public interface RepostInterface {
 
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
         void show(RepostTimeline repostTimeline);
 
-        void showLoadingIndicator(boolean refreshing);
+        void showRepostLoadingIndicator(boolean refreshing);
 
     }
 
     interface Presenter extends BasePresenter {
 
-        void loadRepost(long statusId, boolean latest);
+        void loadRepostTimeline(long statusId, boolean latest);
 
     }
 }

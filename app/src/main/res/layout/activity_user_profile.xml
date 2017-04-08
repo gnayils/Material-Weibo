@@ -98,13 +98,14 @@
 
         </android.support.design.widget.AppBarLayout>
         ​
-        <FrameLayout
-            android:id="@+id/frame_layout_fragment_container"
+
+        <com.gnayils.obiew.view.StatusTimelineView
+            android:id="@+id/status_timeline_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:behavior_overlapTop="84dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-        ​
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
         <android.support.design.widget.FloatingActionButton
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"

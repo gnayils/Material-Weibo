@@ -15,11 +15,13 @@ import android.widget.TextView;
 
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.bmpldr.BitmapLoader;
-import com.gnayils.obiew.fragment.StatusFragment;
+import com.gnayils.obiew.interfaces.BasePresenter;
 import com.gnayils.obiew.interfaces.StatusInterface;
 import com.gnayils.obiew.presenter.StatusPresenter;
 import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.view.AvatarView;
+import com.gnayils.obiew.view.StatusTimelineView;
+import com.gnayils.obiew.weibo.bean.StatusTimeline;
 import com.gnayils.obiew.weibo.bean.User;
 
 import butterknife.Bind;
@@ -29,7 +31,7 @@ import butterknife.ButterKnife;
  * Created by Gnayils on 26/03/2017.
  */
 
-public class UserProfileActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener{
+public class UserProfileActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener, StatusInterface.View {
 
     public static final String ARGS_KEY_USER = "ARGS_KEY_USER";
 
@@ -49,12 +51,15 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
     protected AppBarLayout appBarLayout;
     @Bind(R.id.collapsing_toolbar_layout)
     protected CollapsingToolbarLayout collapsingToolbarLayout;
+    @Bind(R.id.status_timeline_view)
+    protected StatusTimelineView statusTimelineView;
 
     private StatusInterface.Presenter statusPresenter;
 
     private int appBarCurrentVerticalOffset;
 
     private User user;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +71,7 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
         swipeRefreshLayout.setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
             @Override
             public boolean canChildScrollUp(SwipeRefreshLayout parent, @Nullable View child) {
-                return appBarLayout.getTotalScrollRange() == Math.abs(appBarCurrentVerticalOffset);
+                return 0 > appBarCurrentVerticalOffset;
             }
         });
         appBarLayout.addOnOffsetChangedListener(this);
@@ -82,19 +87,49 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
         screenNameTextView.setText(user.screen_name);
         descriptionTextView.setText(user.description);
 
-        StatusFragment statusFragment = StatusFragment.newInstance(StatusFragment.TIMELINE_TYPE_USER, user);
-        statusPresenter = new StatusPresenter(statusFragment);
-        getSupportFragmentManager().beginTransaction().add(R.id.frame_layout_fragment_container, statusFragment).commit();
+        statusPresenter = new StatusPresenter(this);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                statusPresenter.loadStatusTimeline(true, user);
+            }
+        });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        statusPresenter.unsubscribe();
+    }
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        appBarCurrentVerticalOffset = verticalOffset;
+    }
+
+    @Override
+    public void setPresenter(BasePresenter presenter) {
+        this.statusPresenter = (StatusInterface.Presenter) presenter;
+    }
+
+    @Override
+    public void show(StatusTimeline statusTimeline) {
+        statusTimelineView.show(statusTimeline);
+    }
+
+    @Override
+    public void showStatusLoadingIndicator(final boolean refreshing) {
+        swipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefreshLayout.setRefreshing(refreshing);
+            }
+        });
     }
 
     public static void start(Context context, User user) {
         Intent intent = new Intent(context, UserProfileActivity.class);
         intent.putExtra(ARGS_KEY_USER, user);
         context.startActivity(intent);
-    }
-
-    @Override
-    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-        appBarCurrentVerticalOffset = verticalOffset;
     }
 }

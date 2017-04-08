@@ -1,4 +1,4 @@
-package com.gnayils.obiew;
+package com.gnayils.obiew.interfaces;
 
 /**
  * Created by Gnayils on 12/11/2016.

@@ -12,6 +12,7 @@ import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 
 import com.gnayils.obiew.App;
 import com.gnayils.obiew.R;
@@ -43,6 +44,14 @@ public class ViewUtils {
             result = context.getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    public static int getActionBarHeight(Context context)  {
+        TypedValue tv = new TypedValue();
+        if (context.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            return TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics());
+        }
+        return 0;
     }
 
     public static Drawable getDrawableByAttribute(Context context, int attrId) {

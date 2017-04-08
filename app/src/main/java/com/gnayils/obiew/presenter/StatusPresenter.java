@@ -41,7 +41,7 @@ public class StatusPresenter implements StatusInterface.Presenter {
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        statusView.showLoadingIndicator(true);
+                        statusView.showStatusLoadingIndicator(true);
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -49,12 +49,12 @@ public class StatusPresenter implements StatusInterface.Presenter {
 
                     @Override
                     public void onCompleted() {
-                        statusView.showLoadingIndicator(false);
+                        statusView.showStatusLoadingIndicator(false);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        statusView.showLoadingIndicator(false);
+                        statusView.showStatusLoadingIndicator(false);
                         Log.e(TAG, "update status time line failed: ", e);
                     }
 
@@ -74,7 +74,7 @@ public class StatusPresenter implements StatusInterface.Presenter {
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        statusView.showLoadingIndicator(true);
+                        statusView.showStatusLoadingIndicator(true);
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -82,12 +82,12 @@ public class StatusPresenter implements StatusInterface.Presenter {
 
                     @Override
                     public void onCompleted() {
-                        statusView.showLoadingIndicator(false);
+                        statusView.showStatusLoadingIndicator(false);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        statusView.showLoadingIndicator(false);
+                        statusView.showStatusLoadingIndicator(false);
                         Log.e(TAG, "update status time line failed: ", e);
                     }
 

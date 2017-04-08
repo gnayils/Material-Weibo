@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,22 +14,28 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.fragment.StatusFragment;
 import com.gnayils.obiew.fragment.UserFragment;
+import com.gnayils.obiew.interfaces.BasePresenter;
 import com.gnayils.obiew.interfaces.StatusInterface;
 import com.gnayils.obiew.interfaces.UserInterface;
 import com.gnayils.obiew.presenter.StatusPresenter;
 import com.gnayils.obiew.presenter.UserPresenter;
+import com.gnayils.obiew.view.StatusTimelineView;
+import com.gnayils.obiew.weibo.bean.StatusTimeline;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, StatusInterface.View {
 
     @Bind(R.id.drawer_layout)
     protected DrawerLayout drawerLayout;
     @Bind(R.id.navigation_view)
     protected NavigationView navigationView;
+    @Bind(R.id.swipe_refresh_layout)
+    protected SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.status_timeline_view)
+    protected StatusTimelineView statusTimelineView;
 
     private UserInterface.Presenter userPresenter;
     private StatusInterface.Presenter statusPresenter;
@@ -58,9 +65,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        UserFragment userFragment = (UserFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_user_profile);
 //        userPresenter = new UserPresenter(userFragment);
 
-        StatusFragment statusFragment = StatusFragment.newInstance(StatusFragment.TIMELINE_TYPE_HOME, null);
-        statusPresenter = new StatusPresenter(statusFragment);
-        getSupportFragmentManager().beginTransaction().add(R.id.frame_layout_fragment_container, statusFragment).commit();
+        statusPresenter = new StatusPresenter(this);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                statusPresenter.loadStatusTimeline(true);
+            }
+        });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        statusPresenter.unsubscribe();
     }
 
     @Override
@@ -111,8 +128,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    @Override
+    public void setPresenter(BasePresenter presenter) {
+        this.statusPresenter = (StatusInterface.Presenter) presenter;
+    }
+
+    @Override
+    public void show(StatusTimeline statusTimeline) {
+        statusTimelineView.show(statusTimeline);
+    }
+
+    @Override
+    public void showStatusLoadingIndicator(final boolean refreshing) {
+        swipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefreshLayout.setRefreshing(refreshing);
+            }
+        });
+    }
+
     public static void start(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
         context.startActivity(intent);
     }
+
 }

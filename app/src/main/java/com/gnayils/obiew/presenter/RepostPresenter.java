@@ -3,7 +3,6 @@ package com.gnayils.obiew.presenter;
 import android.util.Log;
 
 import com.gnayils.obiew.interfaces.RepostInterface;
-import com.gnayils.obiew.weibo.TokenKeeper;
 import com.gnayils.obiew.weibo.api.StatusAPI;
 import com.gnayils.obiew.weibo.api.WeiboAPI;
 import com.gnayils.obiew.weibo.bean.RepostTimeline;
@@ -34,26 +33,26 @@ public class RepostPresenter implements RepostInterface.Presenter {
     }
 
     @Override
-    public void loadRepost(long statusId, boolean latest) {
+    public void loadRepostTimeline(long statusId, boolean latest) {
         compositeSubscription.clear();
         Subscription subscription = WeiboAPI.get(StatusAPI.class)
                 .repostTimeline(statusId, latest ? 0L : sinceId, 0L)
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        repostView.showLoadingIndicator(true);
+                        repostView.showRepostLoadingIndicator(true);
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<RepostTimeline>() {
                     @Override
                     public void onCompleted() {
-                        repostView.showLoadingIndicator(false);
+                        repostView.showRepostLoadingIndicator(false);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        repostView.showLoadingIndicator(false);
+                        repostView.showRepostLoadingIndicator(false);
                         Log.e(TAG, "update repost time line failed: ", e);
                     }
 

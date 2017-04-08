@@ -37,7 +37,6 @@ public class StatusCardView extends CardView {
     public AvatarView userAvatarView;
     public TextView screenNameTextView;
     public TextView statusTimeTextView;
-    public TextView sourceTextTextView;
     public TextView statusSourceTextView;
     public TextView statusTextTextView;
     public StatusPicturesView statusPicturesView;
@@ -123,30 +122,19 @@ public class StatusCardView extends CardView {
                 statusTimeTextViewLayoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, userAvatarView.getId());
                 statusTimeTextView.setLayoutParams(statusTimeTextViewLayoutParams);
 
-                sourceTextTextView = new TextView(context);
-                sourceTextTextView.setText("来自");
-                sourceTextTextView.setId(View.generateViewId());
-                sourceTextTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-                sourceTextTextView.setTextColor(getResources().getColor(R.color.colorSecondaryText));
-                RelativeLayout.LayoutParams sourceTextTextViewLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                sourceTextTextViewLayoutParams.setMargins(dp2px(context, 8), 0, 0, 0);
-                sourceTextTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, statusTimeTextView.getId());
-                sourceTextTextViewLayoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, statusTimeTextView.getId());
-                sourceTextTextView.setLayoutParams(sourceTextTextViewLayoutParams);
-
                 statusSourceTextView = new TextView(context);
                 statusSourceTextView.setText("微博 weibo.com");
                 statusSourceTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
                 statusSourceTextView.setTextColor(getResources().getColor(R.color.colorSecondaryText));
                 RelativeLayout.LayoutParams sourceTextViewLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                sourceTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, sourceTextTextView.getId());
-                sourceTextViewLayoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, sourceTextTextView.getId());
+                sourceTextViewLayoutParams.setMargins(dp2px(context, 8), 0, 0, 0);
+                sourceTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, statusTimeTextView.getId());
+                sourceTextViewLayoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, statusTimeTextView.getId());
                 statusSourceTextView.setLayoutParams(sourceTextViewLayoutParams);
 
             userInfoLayout.addView(userAvatarView);
             userInfoLayout.addView(screenNameTextView);
             userInfoLayout.addView(statusTimeTextView);
-            userInfoLayout.addView(sourceTextTextView);
             userInfoLayout.addView(statusSourceTextView);
 
             statusTextTextView = new TextView(context);

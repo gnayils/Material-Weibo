@@ -1,7 +1,5 @@
 package com.gnayils.obiew.interfaces;
 
-import com.gnayils.obiew.BasePresenter;
-import com.gnayils.obiew.BaseView;
 import com.gnayils.obiew.weibo.bean.StatusTimeline;
 import com.gnayils.obiew.weibo.bean.User;
 
@@ -11,11 +9,11 @@ import com.gnayils.obiew.weibo.bean.User;
 
 public interface StatusInterface  {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView {
 
         void show(StatusTimeline statusTimeline);
 
-        void showLoadingIndicator(boolean refreshing);
+        void showStatusLoadingIndicator(boolean refreshing);
 
     }
 

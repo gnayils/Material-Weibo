@@ -1,7 +1,5 @@
 package com.gnayils.obiew.interfaces;
 
-import com.gnayils.obiew.BasePresenter;
-import com.gnayils.obiew.BaseView;
 import com.gnayils.obiew.weibo.bean.CommentTimeline;
 
 /**
@@ -10,18 +8,17 @@ import com.gnayils.obiew.weibo.bean.CommentTimeline;
 
 public interface CommentInterface {
 
-    interface View  extends BaseView<Presenter> {
+    interface View extends BaseView {
 
         void show(CommentTimeline commentTimeline);
 
-        void showLoadingIndicator(boolean refreshing);
-
+        void showCommentLoadingIndicator(boolean refreshing);
     }
 
 
     interface Presenter extends BasePresenter {
 
-        void loadComment(long statusId, boolean latest);
+        void loadCommentTimeline(long statusId, boolean latest);
 
     }
 }

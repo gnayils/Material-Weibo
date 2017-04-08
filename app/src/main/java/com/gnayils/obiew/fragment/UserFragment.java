@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.gnayils.obiew.R;
+import com.gnayils.obiew.interfaces.BasePresenter;
 import com.gnayils.obiew.interfaces.UserInterface;
 import com.gnayils.obiew.weibo.bean.User;
 import com.gnayils.obiew.bmpldr.BitmapLoader;
@@ -68,8 +69,8 @@ public class UserFragment extends Fragment implements UserInterface.View {
     }
 
     @Override
-    public void setPresenter(UserInterface.Presenter presenter) {
-        userPresenter = presenter;
+    public void setPresenter(BasePresenter presenter) {
+        userPresenter = (UserInterface.Presenter) presenter;
     }
 
     @Override
