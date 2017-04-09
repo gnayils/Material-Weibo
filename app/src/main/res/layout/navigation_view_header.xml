@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="200dp">
+    android:layout_height="180dp">
 
     <ImageView
         android:layout_width="match_parent"
@@ -24,15 +24,24 @@
             android:orientation="vertical"
             android:gravity="center">
 
-            <com.gnayils.obiew.view.AvatarView
-                android:id="@+id/avatar_view"
-                android:layout_width="62dp"
-                android:layout_height="62dp" />
+            <FrameLayout
+                android:layout_width="66dp"
+                android:layout_height="66dp"
+                android:background="@drawable/bg_avatar_border">
+
+                <com.gnayils.obiew.view.AvatarView
+                    android:id="@+id/avatar_view"
+                    android:layout_width="62dp"
+                    android:layout_height="62dp"
+                    android:layout_gravity="center"/>
+
+            </FrameLayout>
 
             <TextView
                 android:id="@+id/text_view_username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
                 android:shadowColor="#75000000"
                 android:shadowDy="1"
                 android:shadowRadius="1"
@@ -64,7 +73,7 @@
             android:padding="4dp">
 
             <Button
-                android:id="@+id/text_view_weibo_number"
+                android:id="@+id/text_view_status_count"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -78,7 +87,7 @@
                 android:textColor="@android:color/white" />
 
             <Button
-                android:id="@+id/text_view_follow_number"
+                android:id="@+id/text_view_follow_count"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -92,7 +101,7 @@
                 android:textColor="@android:color/white" />
 
             <Button
-                android:id="@+id/text_view_follower_number"
+                android:id="@+id/text_view_follower_count"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

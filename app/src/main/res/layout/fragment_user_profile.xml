@@ -79,7 +79,7 @@
                 android:padding="4dp">
 
                 <TextView
-                    android:id="@+id/text_view_weibo_number"
+                    android:id="@+id/text_view_status_count"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_alignParentLeft="true"
@@ -94,7 +94,7 @@
                     android:textColor="@android:color/white"/>
 
                 <TextView
-                    android:id="@+id/text_view_follow_number"
+                    android:id="@+id/text_view_follow_count"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_alignParentLeft="true"
@@ -109,7 +109,7 @@
                     android:textColor="@android:color/white"/>
 
                 <TextView
-                    android:id="@+id/text_view_follower_number"
+                    android:id="@+id/text_view_follower_count"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_alignParentLeft="true"

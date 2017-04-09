@@ -11,7 +11,7 @@
     <color name="colorWhite">#ffffff</color>
     <color name="colorWindowBackground">#eeeeee</color>
     <color name="colorGreenDark">#4daf51</color>
-    <color name="colorWhiteTranslucent">#cfffffff</color>
+    <color name="colorWhiteTranslucent">#75ffffff</color>
     <color name="colorBlackTranslucent">#75000000</color>
     <color name="colorGrayTranslucent">#af6e6e6e</color>
     <color name="colorThumbnailBackground">#e4e4e4</color>

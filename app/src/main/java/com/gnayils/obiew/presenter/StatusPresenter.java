@@ -2,9 +2,13 @@ package com.gnayils.obiew.presenter;
 
 import android.util.Log;
 
+import com.gnayils.obiew.App;
+import com.gnayils.obiew.R;
 import com.gnayils.obiew.interfaces.StatusInterface;
+import com.gnayils.obiew.weibo.TokenKeeper;
 import com.gnayils.obiew.weibo.api.StatusAPI;
 import com.gnayils.obiew.weibo.api.WeiboAPI;
+import com.gnayils.obiew.weibo.bean.AccessToken;
 import com.gnayils.obiew.weibo.bean.StatusTimeline;
 import com.gnayils.obiew.weibo.bean.User;
 

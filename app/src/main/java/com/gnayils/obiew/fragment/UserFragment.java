@@ -28,11 +28,11 @@ public class UserFragment extends Fragment implements UserInterface.View {
     protected Button loginButton;
     @Bind(R.id.button_signup)
     protected Button signupButton;
-    @Bind(R.id.text_view_weibo_number)
+    @Bind(R.id.text_view_status_count)
     protected TextView weiboNumberTextView;
-    @Bind(R.id.text_view_follow_number)
+    @Bind(R.id.text_view_follow_count)
     protected TextView followNumberTextView;
-    @Bind(R.id.text_view_follower_number)
+    @Bind(R.id.text_view_follower_count)
     protected TextView followerNumberTextView;
     @Bind(R.id.text_view_username)
     protected TextView usernameTextView;

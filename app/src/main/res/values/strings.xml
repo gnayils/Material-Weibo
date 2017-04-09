@@ -8,15 +8,23 @@
     <string name="register_activity_title">手机号注册</string>
 
     <string name="obiew_app_key">2980324701</string>
+    <string name="obiew_app_secret">ed949e96fa05d6b42dc1d762744bdc77</string>
     <string name="obiew_callback_url">https://api.weibo.com/oauth2/default.html</string>
-
-    <string name="api_base_url">https://api.weibo.com/</string>
-    <string name="auth_url" formatted="false">https://api.weibo.com/oauth2/authorize?client_id=%s&amp;scope=%s&amp;redirect_uri=%s&amp;display=mobile&amp;forcelogin=true</string>
-    <string name="auth_scope">email,direct_messages_read,direct_messages_write,friendships_groups_read,friendships_groups_write,statuses_to_me_read,follow_app_official_microblog,invitation_write</string>
 
     <string name="weico_app_key">211160679</string>
     <string name="weico_app_secret">63b64d531b98c2dbff2443816f274dd3</string>
     <string name="weico_callback_url">http://oauth.weico.cc</string>
+
+    <string name="smooth_app_key">2200697181</string>
+    <string name="smooth_app_secret">d66e9e1528ef89669e3ffa22f0f8aaf4</string>
+    <string name="smooth_callback_url">http://06peng.com</string>
+
+    <string name="api_base_url">https://api.weibo.com/</string>
+    <string name="auth_url" formatted="false">https://open.weibo.cn/oauth2/authorize?client_id=%s&amp;scope=%s&amp;redirect_uri=%s&amp;display=mobile&amp;response_type=code</string>
+    <string name="auth_scope">email,direct_messages_read,direct_messages_write,friendships_groups_read,friendships_groups_write,statuses_to_me_read,follow_app_official_microblog,invitation_write</string>
+    <string name="app_key">@string/smooth_app_key</string>
+    <string name="app_secret">@string/smooth_app_secret</string>
+    <string name="callback_url">@string/smooth_callback_url</string>
 
     <string name="lorem">
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit.

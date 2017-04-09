@@ -62,7 +62,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setStatusBarColor(getResources().getColor(android.R.color.transparent));
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
@@ -79,9 +78,9 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        appKey = getString(R.string.weico_app_key);
-        appSecret = getString(R.string.weico_app_secret);
-        callbackUrl = getString(R.string.weico_callback_url);
+        appKey = getString(R.string.app_key);
+        appSecret = getString(R.string.app_secret);
+        callbackUrl = getString(R.string.callback_url);
         authorizationUrl = String.format(getString(R.string.auth_url), appKey, getString(R.string.auth_scope), callbackUrl);
 
         WebSettings webSettings = webView.getSettings();
@@ -163,6 +162,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             @Override
                             public void onNext(User user) {
+                                LoginUser.setUser(user);
                                 dispatchMessage(obtainMessage(MESSAGE_LOGIN_USER_OBTAINED));
                             }
                         });

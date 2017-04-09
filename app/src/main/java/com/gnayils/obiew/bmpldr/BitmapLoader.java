@@ -155,6 +155,7 @@ public class BitmapLoader {
                     file =  diskCache.get(urlKey);
                 } catch (IOException e) {
                     Log.e(TAG, "task failed during load image from [" + url + "] failed", e);
+                    return null;
                 }
             } else {
                 Log.d(TAG, "get bitmap from disk cache: " + url);

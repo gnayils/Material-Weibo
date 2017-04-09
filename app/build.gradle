@@ -24,6 +24,11 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
+    repositories{
+        flatDir {
+            dirs 'libs'
+        }
+    }
     /*
     dexOptions {
         maxProcessCount 4
