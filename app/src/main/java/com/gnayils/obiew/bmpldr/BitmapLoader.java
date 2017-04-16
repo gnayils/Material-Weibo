@@ -219,7 +219,7 @@ public class BitmapLoader {
                 }
                 long totalPixels = width * height / inSampleSize;
 
-                final long totalReqPixelsCap = reqWidth * reqHeight * 2;
+                final long totalReqPixelsCap = reqWidth * reqHeight;
 
                 while (totalPixels > totalReqPixelsCap) {
                     inSampleSize *= 2;

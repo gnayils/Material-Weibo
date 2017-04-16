@@ -91,8 +91,9 @@ public class LRUDiskCache {
                 } else {
                     file.delete();
                 }
-            } catch (Exception e) {
+            } catch (IOException e) {
                 Log.e(TAG, "read data from input stream failed", e);
+                throw e;
             } finally {
                 if (outputStream != null) {
                     try {

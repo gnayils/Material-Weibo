@@ -31,7 +31,7 @@ public class StatusPresenter implements StatusInterface.Presenter {
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     private long homeTimelineSinceId = 0;
-    private long userTimelineSinceId = 0;
+    private int userTimelinePage = 1;
 
     public StatusPresenter(StatusInterface.View statusView) {
         this.statusView = statusView;
@@ -39,13 +39,13 @@ public class StatusPresenter implements StatusInterface.Presenter {
     }
 
     @Override
-    public void loadStatusTimeline(boolean latest) {
+    public void loadStatusTimeline(final boolean isLoadingLatest) {
         Subscription subscription = WeiboAPI.get(StatusAPI.class)
-                .homeTimeline(latest ? 0L : this.homeTimelineSinceId, 0L)
+                .homeTimeline(isLoadingLatest ? 0L : homeTimelineSinceId, 0L)
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        statusView.showStatusLoadingIndicator(true);
+                        statusView.showStatusLoadingIndicator(isLoadingLatest, true);
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -53,18 +53,18 @@ public class StatusPresenter implements StatusInterface.Presenter {
 
                     @Override
                     public void onCompleted() {
-                        statusView.showStatusLoadingIndicator(false);
+                        statusView.showStatusLoadingIndicator(isLoadingLatest, false);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        statusView.showStatusLoadingIndicator(false);
+                        statusView.showStatusLoadingIndicator(isLoadingLatest, false);
                         Log.e(TAG, "update status time line failed: ", e);
                     }
 
                     @Override
                     public void onNext(StatusTimeline timeline) {
-                        StatusPresenter.this.homeTimelineSinceId = timeline.max_id;
+                        homeTimelineSinceId = timeline.max_id;
                         statusView.show(timeline);
                     }
                 });
@@ -72,13 +72,13 @@ public class StatusPresenter implements StatusInterface.Presenter {
     }
 
     @Override
-    public void loadStatusTimeline(boolean latest, User user) {
+    public void loadStatusTimeline(final boolean isLoadingLatest, User user) {
         Subscription subscription = WeiboAPI.get(StatusAPI.class)
-                .userTimeline(user.id, latest ? 0L : this.userTimelineSinceId, 0L)
+                .userTimeline(user.id, 20, userTimelinePage ++ )
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        statusView.showStatusLoadingIndicator(true);
+                        statusView.showStatusLoadingIndicator(isLoadingLatest, true);
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -86,18 +86,17 @@ public class StatusPresenter implements StatusInterface.Presenter {
 
                     @Override
                     public void onCompleted() {
-                        statusView.showStatusLoadingIndicator(false);
+                        statusView.showStatusLoadingIndicator(isLoadingLatest, false);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        statusView.showStatusLoadingIndicator(false);
+                        statusView.showStatusLoadingIndicator(isLoadingLatest, false);
                         Log.e(TAG, "update status time line failed: ", e);
                     }
 
                     @Override
                     public void onNext(StatusTimeline timeline) {
-                        StatusPresenter.this.userTimelineSinceId = timeline.max_id;
                         statusView.show(timeline);
                     }
                 });

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 
@@ -22,7 +21,7 @@ import java.util.TreeSet;
  * Created by Gnayils on 08/04/2017.
  */
 
-public class RepostTimelineView extends RecyclerView {
+public class RepostTimelineView extends LoadMoreRecyclerView {
 
     private RecyclerViewAdapter recyclerViewAdapter;
 
@@ -51,7 +50,7 @@ public class RepostTimelineView extends RecyclerView {
     }
 
 
-    class RecyclerViewAdapter extends Adapter<RecyclerViewHolder> {
+    class RecyclerViewAdapter extends LoadMoreAdapter {
 
         private List<Repost> repostList = new ArrayList<>();
 
@@ -59,20 +58,20 @@ public class RepostTimelineView extends RecyclerView {
 
         }
 
-        @Override public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            RecyclerViewHolder holder = new RecyclerViewHolder(new RepostView(parent.getContext()));
-            return holder;
-        }
-
         @Override
-        public void onBindViewHolder(RecyclerViewHolder holder, int position) {
-            Repost repost = repostList.get(position);
-            holder.repostView.show(repost);
-        }
-
-        @Override
-        public int getItemCount() {
+        public int getActualItemCount() {
             return repostList.size();
+        }
+
+        @Override
+        public ViewHolder onCreateActualViewHolder(ViewGroup parent, int viewType) {
+            return new RepostViewHolder(new RepostView(parent.getContext()));
+        }
+
+        @Override
+        public void onBindActualViewHolder(ViewHolder holder, int position) {
+            Repost repost = repostList.get(position);
+            ((RepostViewHolder)holder).repostView.show(repost);
         }
 
         public void add(RepostTimeline repostTimeline) {
@@ -84,11 +83,11 @@ public class RepostTimelineView extends RecyclerView {
         }
     }
 
-    class RecyclerViewHolder extends ViewHolder {
+    class RepostViewHolder extends ViewHolder {
 
         RepostView repostView;
 
-        RecyclerViewHolder(RepostView repostView) {
+        RepostViewHolder(RepostView repostView) {
             super(repostView);
             this.repostView = repostView;
             LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);

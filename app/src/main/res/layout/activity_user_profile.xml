@@ -46,11 +46,20 @@
                     android:gravity="center"
                     android:orientation="vertical" >
 
-                    <com.gnayils.obiew.view.AvatarView
-                        android:id="@+id/avatar_view"
-                        android:layout_width="84dp"
-                        android:layout_height="84dp"
-                        android:src="@drawable/ic_avatar_default"/>
+
+                    <FrameLayout
+                        android:layout_width="90dp"
+                        android:layout_height="90dp"
+                        android:background="@drawable/bg_avatar_border">
+
+                        <com.gnayils.obiew.view.AvatarView
+                            android:id="@+id/avatar_view"
+                            android:layout_width="84dp"
+                            android:layout_height="84dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_avatar_default"/>
+
+                    </FrameLayout>
 
                     <TextView
                         android:id="@+id/text_view_screen_name"

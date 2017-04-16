@@ -32,26 +32,26 @@ public class CommentPresenter implements CommentInterface.Presenter {
     }
 
     @Override
-    public void loadCommentTimeline(long statusId, boolean latest) {
+    public void loadCommentTimeline(long statusId, final boolean isLoadingLatest) {
         compositeSubscription.clear();
         Subscription subscription = WeiboAPI.get(CommentAPI.class)
-                .show(statusId, latest ? 0L : sinceId, 0L)
+                .show(statusId, isLoadingLatest ? 0L : sinceId, 0L)
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        commentView.showCommentLoadingIndicator(true);
+                        commentView.showCommentLoadingIndicator(isLoadingLatest,true);
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<CommentTimeline>() {
                     @Override
                     public void onCompleted() {
-                        commentView.showCommentLoadingIndicator(false);
+                        commentView.showCommentLoadingIndicator(isLoadingLatest, false);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        commentView.showCommentLoadingIndicator(false);
+                        commentView.showCommentLoadingIndicator(isLoadingLatest, false);
                         Log.e(TAG, "update comment time line failed: ", e);
                     }
 

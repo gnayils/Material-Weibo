@@ -12,13 +12,13 @@ public interface CommentInterface {
 
         void show(CommentTimeline commentTimeline);
 
-        void showCommentLoadingIndicator(boolean refreshing);
+        void showCommentLoadingIndicator(boolean isLoadingLatest, boolean refreshing);
     }
 
 
     interface Presenter extends BasePresenter {
 
-        void loadCommentTimeline(long statusId, boolean latest);
+        void loadCommentTimeline(long statusId, boolean isLoadingLatest);
 
     }
 }

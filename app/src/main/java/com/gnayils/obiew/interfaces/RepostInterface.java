@@ -13,13 +13,13 @@ public interface RepostInterface {
 
         void show(RepostTimeline repostTimeline);
 
-        void showRepostLoadingIndicator(boolean refreshing);
+        void showRepostLoadingIndicator(boolean isLoadingLatest, boolean refreshing);
 
     }
 
     interface Presenter extends BasePresenter {
 
-        void loadRepostTimeline(long statusId, boolean latest);
+        void loadRepostTimeline(long statusId, boolean isLoadingLatest);
 
     }
 }

@@ -17,12 +17,10 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.fragment.UserFragment;
 import com.gnayils.obiew.interfaces.BasePresenter;
 import com.gnayils.obiew.interfaces.StatusInterface;
 import com.gnayils.obiew.interfaces.UserInterface;
 import com.gnayils.obiew.presenter.StatusPresenter;
-import com.gnayils.obiew.presenter.UserPresenter;
 import com.gnayils.obiew.view.StatusTimelineView;
 import com.gnayils.obiew.weibo.bean.StatusTimeline;
 
@@ -68,6 +66,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onRefresh() {
                 statusPresenter.loadStatusTimeline(true);
+            }
+        });
+        statusTimelineView.setOnLoadMoreListener(new StatusTimelineView.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                statusPresenter.loadStatusTimeline(false);
             }
         });
 
@@ -145,13 +149,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void showStatusLoadingIndicator(final boolean refreshing) {
-        swipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                swipeRefreshLayout.setRefreshing(refreshing);
-            }
-        });
+    public void showStatusLoadingIndicator(boolean isLoadingLatest, final boolean refreshing) {
+        if(isLoadingLatest) {
+            swipeRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    swipeRefreshLayout.setRefreshing(refreshing);
+                }
+            });
+        } else {
+
+        }
     }
 
     public static void start(Context context) {

@@ -7,4 +7,5 @@ package com.gnayils.obiew.interfaces;
 public interface BaseView {
 
     void setPresenter(BasePresenter presenter);
+    
 }

@@ -5,12 +5,16 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.weibo.bean.StatusTimeline;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -21,9 +25,9 @@ import static com.gnayils.obiew.util.ViewUtils.dp2px;
  * Created by Gnayils on 08/04/2017.
  */
 
-public class StatusTimelineView extends RecyclerView {
+public class StatusTimelineView extends LoadMoreRecyclerView {
 
-    private RecyclerViewAdapter recyclerViewAdapter;
+    private StatusTimelineAdapter statusTimelineAdapter;
 
     public StatusTimelineView(Context context) {
         this(context, null);
@@ -36,37 +40,37 @@ public class StatusTimelineView extends RecyclerView {
     public StatusTimelineView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerViewAdapter = new RecyclerViewAdapter();
-        setAdapter(recyclerViewAdapter);
+        statusTimelineAdapter = new StatusTimelineAdapter();
+        setAdapter(statusTimelineAdapter);
     }
 
     public void show(StatusTimeline statusTimeline) {
-        recyclerViewAdapter.addTimeline(statusTimeline);
+        statusTimelineAdapter.addTimeline(statusTimeline);
     }
 
-    class RecyclerViewAdapter extends RecyclerView.Adapter<RecycleViewHolder> {
+    private class StatusTimelineAdapter extends LoadMoreRecyclerView.LoadMoreAdapter {
 
-        private List<Status> statusList = new ArrayList<Status>();
-
-        public RecyclerViewAdapter() {
-
-        }
+        List<Status> statusList = new ArrayList<Status>();
 
         @Override
-        public RecycleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            RecycleViewHolder holder = new RecycleViewHolder(new StatusCardView(parent.getContext()));
-            return holder;
-        }
-
-        @Override
-        public void onBindViewHolder(RecycleViewHolder holder, int position) {
-            Status status = statusList.get(position);
-            holder.statusCardView.show(status);
-        }
-
-        @Override
-        public int getItemCount() {
+        public int getActualItemCount() {
             return statusList.size();
+        }
+
+        @Override
+        public ViewHolder onCreateActualViewHolder(ViewGroup parent, int viewType) {
+            StatusCardView statusCardView = new StatusCardView(parent.getContext());
+            RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(dp2px(statusCardView.getContext(), 8), dp2px(statusCardView.getContext(), 4), dp2px(statusCardView.getContext(), 8), dp2px(statusCardView.getContext(), 4));
+            statusCardView.setLayoutParams(layoutParams);
+            statusCardView.setRadius(dp2px(statusCardView.getContext(), 4));
+            return new StatusCardViewHolder(statusCardView);
+        }
+
+        @Override
+        public void onBindActualViewHolder(ViewHolder holder, int position) {
+            Status status = statusList.get(position);
+            ((StatusCardViewHolder)holder).statusCardView.show(status);
         }
 
         public void addTimeline(StatusTimeline statusTimeline) {
@@ -76,21 +80,15 @@ public class StatusTimelineView extends RecyclerView {
             statusList.addAll(statusSet);
             notifyDataSetChanged();
         }
-
     }
 
-    class RecycleViewHolder extends RecyclerView.ViewHolder {
+    class StatusCardViewHolder extends ViewHolder {
 
         StatusCardView statusCardView;
 
-        RecycleViewHolder(StatusCardView statusCardView) {
+        StatusCardViewHolder(StatusCardView statusCardView) {
             super(statusCardView);
             this.statusCardView = statusCardView;
-            RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(dp2px(statusCardView.getContext(), 8), dp2px(statusCardView.getContext(), 4), dp2px(statusCardView.getContext(), 8), dp2px(statusCardView.getContext(), 4));
-            this.statusCardView.setLayoutParams(layoutParams);
-            this.statusCardView.setRadius(dp2px(statusCardView.getContext(), 4));
         }
     }
-
 }

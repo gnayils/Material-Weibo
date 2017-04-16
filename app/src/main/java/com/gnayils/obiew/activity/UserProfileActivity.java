@@ -82,7 +82,15 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
                 onBackPressed();
             }
         });
-        BitmapLoader.getInstance().loadBitmap(user.cover_image_phone, coverImageView);
+        if(user.cover_image_phone != null && !user.cover_image_phone.isEmpty()) {
+            String coverImageUrl = user.cover_image_phone;
+            if(coverImageUrl.indexOf(";") != 0) {
+                String[] coverImageUrls = coverImageUrl.split(";");
+                coverImageUrl = coverImageUrls[(int) (Math.random() * coverImageUrls.length)];
+            }
+            BitmapLoader.getInstance().loadBitmap(coverImageUrl, coverImageView);
+
+        }
         BitmapLoader.getInstance().loadBitmap(user.avatar_large, avatarView.avatarCircleImageView);
         screenNameTextView.setText(user.screen_name);
         descriptionTextView.setText(user.description);
@@ -92,6 +100,12 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
             @Override
             public void onRefresh() {
                 statusPresenter.loadStatusTimeline(true, user);
+            }
+        });
+        statusTimelineView.setOnLoadMoreListener(new StatusTimelineView.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                statusPresenter.loadStatusTimeline(false, user);
             }
         });
     }
@@ -118,13 +132,15 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
     }
 
     @Override
-    public void showStatusLoadingIndicator(final boolean refreshing) {
-        swipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                swipeRefreshLayout.setRefreshing(refreshing);
-            }
-        });
+    public void showStatusLoadingIndicator(boolean isLoadingLatest, final boolean refreshing) {
+        if(isLoadingLatest) {
+            swipeRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    swipeRefreshLayout.setRefreshing(refreshing);
+                }
+            });
+        }
     }
 
     public static void start(Context context, User user) {

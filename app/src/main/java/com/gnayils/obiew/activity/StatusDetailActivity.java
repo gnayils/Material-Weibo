@@ -6,25 +6,25 @@ import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.fragment.CommentTimelineFragment;
-import com.gnayils.obiew.fragment.RepostTimelineFragment;
 import com.gnayils.obiew.interfaces.BasePresenter;
 import com.gnayils.obiew.interfaces.CommentInterface;
 import com.gnayils.obiew.interfaces.RepostInterface;
 import com.gnayils.obiew.presenter.CommentPresenter;
 import com.gnayils.obiew.presenter.RepostPresenter;
 import com.gnayils.obiew.util.ViewUtils;
+import com.gnayils.obiew.view.CommentTimelineView;
+import com.gnayils.obiew.view.LoadMoreRecyclerView;
+import com.gnayils.obiew.view.RepostTimelineView;
 import com.gnayils.obiew.view.StatusCardView;
 import com.gnayils.obiew.weibo.bean.CommentTimeline;
 import com.gnayils.obiew.weibo.bean.RepostTimeline;
@@ -53,9 +53,9 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
     protected Toolbar toolbar;
 
     private CommentInterface.Presenter commentPresenter;
-    private CommentTimelineFragment commentTimelineFragment;
+    private CommentTimelineView commentTimelineView;
     private RepostInterface.Presenter repostPresenter;
-    private RepostTimelineFragment repostTimelineFragment;
+    private RepostTimelineView repostTimelineView;
 
     private int appBarCurrentVerticalOffset;
 
@@ -88,14 +88,27 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
         statusCardView.setBackgroundColor(Color.TRANSPARENT);
         statusCardView.commentLayout.setVisibility(View.GONE);
         statusCardView.show(status);
-        viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager()));
+        viewPager.setAdapter(new ViewPagerAdapter());
         tabLayout.setupWithViewPager(viewPager);
-        commentTimelineFragment = CommentTimelineFragment.newInstance();
+        commentTimelineView = new CommentTimelineView(this);
+        repostTimelineView = new RepostTimelineView(this);
         commentPresenter = new CommentPresenter(this);
-        repostTimelineFragment = RepostTimelineFragment.newInstance();
         repostPresenter = new RepostPresenter(this);
 
+        commentTimelineView.setOnLoadMoreListener(new LoadMoreRecyclerView.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                commentPresenter.loadCommentTimeline(status.id, false);
+            }
+        });
+        repostTimelineView.setOnLoadMoreListener(new LoadMoreRecyclerView.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                repostPresenter.loadRepostTimeline(status.id, false);
+            }
+        });
     }
+
 
     @Override
     protected void onStop() {
@@ -115,32 +128,40 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
 
     @Override
     public void show(RepostTimeline repostTimeline) {
-        repostTimelineFragment.show(repostTimeline);
+        repostTimelineView.show(repostTimeline);
     }
 
     @Override
-    public void showRepostLoadingIndicator(final boolean refreshing) {
-        swipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                swipeRefreshLayout.setRefreshing(refreshing);
-            }
-        });
+    public void showRepostLoadingIndicator(boolean isLoadingLastest, final boolean refreshing) {
+        if(isLoadingLastest) {
+            swipeRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    swipeRefreshLayout.setRefreshing(refreshing);
+                }
+            });
+        } else {
+
+        }
     }
 
     @Override
     public void show(CommentTimeline commentTimeline) {
-        commentTimelineFragment.show(commentTimeline);
+        commentTimelineView.show(commentTimeline);
     }
 
     @Override
-    public void showCommentLoadingIndicator(final boolean refreshing) {
-        swipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                swipeRefreshLayout.setRefreshing(refreshing);
-            }
-        });
+    public void showCommentLoadingIndicator(boolean isLoadingLatest, final boolean refreshing) {
+        if(isLoadingLatest) {
+            swipeRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    swipeRefreshLayout.setRefreshing(refreshing);
+                }
+            });
+        } else {
+
+        }
     }
 
     @Override
@@ -148,13 +169,8 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
         appBarCurrentVerticalOffset = verticalOffset;
     }
 
+    class ViewPagerAdapter extends PagerAdapter {
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-
-
-        public ViewPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
 
         @Override
         public int getCount() {
@@ -162,14 +178,29 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
         }
 
         @Override
-        public Fragment getItem(int i) {
-            switch(i) {
+        public Object instantiateItem(ViewGroup collection, int position) {
+            View view = null;
+            switch (position) {
                 case 0:
-                    return repostTimelineFragment;
+                    view = repostTimelineView;
+                    break;
                 case 1:
-                    return commentTimelineFragment;
+                    view = commentTimelineView;
+                    break;
             }
-            return null;
+            if(view != null) {
+                collection.addView(view);
+            }
+            return view;
+        }
+        @Override
+        public void destroyItem(ViewGroup collection, int position, Object view) {
+            collection.removeView((View) view);
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
         }
 
         @Override
@@ -177,8 +208,8 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
             switch(position) {
                 case 0: return status.reposts_count + "转发";
                 case 1: return status.comments_count + "评论";
+                default: return null;
             }
-            return "";
         }
     }
 

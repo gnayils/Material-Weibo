@@ -22,7 +22,7 @@ import java.util.TreeSet;
  * Created by Gnayils on 08/04/2017.
  */
 
-public class CommentTimelineView extends RecyclerView {
+public class CommentTimelineView extends LoadMoreRecyclerView {
 
     private RecyclerViewAdapter recyclerViewAdapter;
 
@@ -51,7 +51,7 @@ public class CommentTimelineView extends RecyclerView {
     }
 
 
-    class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
+    class RecyclerViewAdapter extends LoadMoreAdapter {
 
         private List<Comment> commentList = new ArrayList<>();
 
@@ -59,20 +59,20 @@ public class CommentTimelineView extends RecyclerView {
 
         }
 
-        @Override public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            RecyclerViewHolder holder = new RecyclerViewHolder(new CommentView(parent.getContext()));
-            return holder;
-        }
-
         @Override
-        public void onBindViewHolder(RecyclerViewHolder holder, int position) {
-            Comment comment = commentList.get(position);
-            holder.commentView.show(comment);
-        }
-
-        @Override
-        public int getItemCount() {
+        public int getActualItemCount() {
             return commentList.size();
+        }
+
+        @Override
+        public ViewHolder onCreateActualViewHolder(ViewGroup parent, int viewType) {
+            return new CommentViewHolder(new CommentView(parent.getContext()));
+        }
+
+        @Override
+        public void onBindActualViewHolder(ViewHolder holder, int position) {
+            Comment comment = commentList.get(position);
+            ((CommentViewHolder)holder).commentView.show(comment);
         }
 
         public void add(CommentTimeline commentTimeline) {
@@ -84,11 +84,11 @@ public class CommentTimelineView extends RecyclerView {
         }
     }
 
-    class RecyclerViewHolder extends RecyclerView.ViewHolder {
+    class CommentViewHolder extends RecyclerView.ViewHolder {
 
         CommentView commentView;
 
-        RecyclerViewHolder(CommentView commentView) {
+        CommentViewHolder(CommentView commentView) {
             super(commentView);
             this.commentView = commentView;
             RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT);

@@ -13,14 +13,14 @@ public interface StatusInterface  {
 
         void show(StatusTimeline statusTimeline);
 
-        void showStatusLoadingIndicator(boolean refreshing);
+        void showStatusLoadingIndicator(boolean isLoadingLatest, boolean refreshing);
 
     }
 
     interface Presenter extends BasePresenter {
 
-        void loadStatusTimeline(boolean latest);
+        void loadStatusTimeline(boolean isLoadingLatest);
 
-        void loadStatusTimeline(boolean latest, User user);
+        void loadStatusTimeline(boolean isLoadingLatest, User user);
     }
 }

@@ -33,26 +33,26 @@ public class RepostPresenter implements RepostInterface.Presenter {
     }
 
     @Override
-    public void loadRepostTimeline(long statusId, boolean latest) {
+    public void loadRepostTimeline(long statusId, final boolean isLoadingLatest) {
         compositeSubscription.clear();
         Subscription subscription = WeiboAPI.get(StatusAPI.class)
-                .repostTimeline(statusId, latest ? 0L : sinceId, 0L)
+                .repostTimeline(statusId, isLoadingLatest ? 0L : sinceId, 0L)
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        repostView.showRepostLoadingIndicator(true);
+                        repostView.showRepostLoadingIndicator(isLoadingLatest, true);
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<RepostTimeline>() {
                     @Override
                     public void onCompleted() {
-                        repostView.showRepostLoadingIndicator(false);
+                        repostView.showRepostLoadingIndicator(isLoadingLatest, false);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        repostView.showRepostLoadingIndicator(false);
+                        repostView.showRepostLoadingIndicator(isLoadingLatest, false);
                         Log.e(TAG, "update repost time line failed: ", e);
                     }
 
