@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.interfaces.BasePresenter;
@@ -43,14 +44,16 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
     protected SwipeRefreshLayout swipeRefreshLayout;
     @Bind(R.id.app_bar_layout)
     protected AppBarLayout appBarLayout;
+    @Bind(R.id.toolbar)
+    protected Toolbar toolbar;
     @Bind(R.id.status_card_view)
     protected StatusCardView statusCardView;
     @Bind(R.id.tab_layout)
     protected TabLayout tabLayout;
+    @Bind(R.id.text_view_like_count)
+    protected TextView likeCountTextView;
     @Bind(R.id.view_pager)
     protected ViewPager viewPager;
-    @Bind(R.id.toolbar)
-    protected Toolbar toolbar;
 
     private CommentInterface.Presenter commentPresenter;
     private CommentTimelineView commentTimelineView;
@@ -90,6 +93,7 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
         statusCardView.show(status);
         viewPager.setAdapter(new ViewPagerAdapter());
         tabLayout.setupWithViewPager(viewPager);
+        likeCountTextView.setText(status.attitudes_count + " 赞");
         commentTimelineView = new CommentTimelineView(this);
         repostTimelineView = new RepostTimelineView(this);
         commentPresenter = new CommentPresenter(this);
@@ -206,8 +210,8 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
         @Override
         public CharSequence getPageTitle(int position) {
             switch(position) {
-                case 0: return status.reposts_count + "转发";
-                case 1: return status.comments_count + "评论";
+                case 0: return status.reposts_count + " 转发";
+                case 1: return status.comments_count + " 评论";
                 default: return null;
             }
         }

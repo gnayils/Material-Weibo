@@ -24,5 +24,10 @@
     <color name="colorLink">#507daf</color>
     <color name="colorLinkBackground">#6c507daf</color>
 
-    <color name="colorRippleMask">@color/colorBlackTranslucent</color>
+
+    <color name="colorRetweetStatusViewBg">@color/colorWindowBackground</color>
+    <color name="colorStatusPictureThumbnailBg">@color/colorWindowBackground</color>
+
+    <color name="colorStatusPictureThumbnailMask">#25000000</color>
+    <color name="colorAvatarMask">#25000000</color>
 </resources>

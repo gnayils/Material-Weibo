@@ -42,8 +42,8 @@ public class StatusPicturesView extends ViewGroup implements View.OnClickListene
         for (int i = 0; i < 9; i++) {
             ForegroundImageView imageView = new ForegroundImageView(getContext());
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setForegroundResource(R.drawable.bg_ripple_mask);
-            imageView.setBackgroundResource(R.drawable.bg_thumbnail);
+            imageView.setForegroundResource(R.drawable.fg_status_picture_thumbnail_mask);
+            imageView.setBackgroundResource(R.drawable.bg_status_picture_thumbnail);
             imageView.setClipToOutline(true);
             imageView.setOnClickListener(this);
             addView(imageView);
@@ -90,7 +90,7 @@ public class StatusPicturesView extends ViewGroup implements View.OnClickListene
             for (int i = 0; i < imageViewVisibleCount; i++) {
                 View child = getChildAt(i);
                 if(imageViewVisibleCount == 1) {
-                    child.setLayoutParams(new MarginLayoutParams(MarginLayoutParams.WRAP_CONTENT, MarginLayoutParams.WRAP_CONTENT));
+                    child.setLayoutParams(new MarginLayoutParams(MarginLayoutParams.MATCH_PARENT, dp2px(getContext(), 200)));
                 } else {
                     child.setLayoutParams(new MarginLayoutParams(imageSize, imageSize));
                 }

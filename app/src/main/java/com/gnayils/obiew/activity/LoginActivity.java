@@ -68,13 +68,7 @@ public class LoginActivity extends AppCompatActivity {
         String accessToken = TokenKeeper.getToken();
         if (accessToken != null && !accessToken.isEmpty()) {
             webView.setVisibility(View.INVISIBLE);
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    MainActivity.start(LoginActivity.this);
-                    finish();
-                }
-            }, 500);
+            handler.dispatchMessage(handler.obtainMessage(MESSAGE_ACCESS_TOKEN_OBTAINED));
             return;
         }
 
@@ -167,7 +161,6 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         });
             } else if(msg.what == MESSAGE_LOGIN_USER_OBTAINED) {
-
                 BitmapLoader.getInstance().loadBitmap(LoginUser.getUser().avatar_large, avatarView.avatarCircleImageView, new BitmapLoadAdapter() {
 
                     @Override
@@ -178,7 +171,7 @@ public class LoginActivity extends AppCompatActivity {
                                 MainActivity.start(LoginActivity.this);
                                 LoginActivity.this.finish();
                             }
-                        }, 2000);
+                        }, 1000);
                     }
                 });
             }

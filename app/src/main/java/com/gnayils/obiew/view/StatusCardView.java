@@ -99,7 +99,7 @@ public class StatusCardView extends CardView {
                 RelativeLayout.LayoutParams avatarViewLayoutParams = new RelativeLayout.LayoutParams(dp2px(context, 48), dp2px(context, 48));
                 avatarViewLayoutParams.addRule(RelativeLayout.ALIGN_LEFT | RelativeLayout.ALIGN_TOP);
                 userAvatarView.setLayoutParams(avatarViewLayoutParams);
-                userAvatarView.avatarCircleImageView.setForegroundResource(R.drawable.bg_ripple_mask);
+                userAvatarView.avatarCircleImageView.setForegroundResource(R.drawable.fg_avatar_mask);
                 userAvatarView.avatarCircleImageView.setOnClickListener(avatarCircleImageViewOnClickListener);
 
                 screenNameTextView = new TextView(context);
@@ -155,7 +155,7 @@ public class StatusCardView extends CardView {
             retweetedStatusView.setId(View.generateViewId());
             retweetedStatusView.setOnClickListener(statusViewOnClickListener);
             retweetedStatusView.setOrientation(LinearLayout.VERTICAL);
-            retweetedStatusView.setBackground(createRippleDrawable(getResources().getColor(R.color.colorWindowBackground), 0));
+            retweetedStatusView.setBackground(createRippleDrawable(getResources().getColor(R.color.colorRetweetStatusViewBg), 0));
 
             LinearLayout.LayoutParams retweetedStatusViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             retweetedStatusView.setLayoutParams(retweetedStatusViewLayoutParams);

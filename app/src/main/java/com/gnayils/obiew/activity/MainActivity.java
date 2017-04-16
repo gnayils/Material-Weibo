@@ -12,16 +12,23 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.gnayils.obiew.R;
+import com.gnayils.obiew.bmpldr.BitmapLoader;
 import com.gnayils.obiew.interfaces.BasePresenter;
 import com.gnayils.obiew.interfaces.StatusInterface;
 import com.gnayils.obiew.interfaces.UserInterface;
 import com.gnayils.obiew.presenter.StatusPresenter;
+import com.gnayils.obiew.view.AvatarView;
 import com.gnayils.obiew.view.StatusTimelineView;
+import com.gnayils.obiew.weibo.LoginUser;
 import com.gnayils.obiew.weibo.bean.StatusTimeline;
 
 import butterknife.Bind;
@@ -37,6 +44,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected FloatingActionButton floatingActionButton;
     @Bind(R.id.navigation_view)
     protected NavigationView navigationView;
+
+    protected ImageView coverImageView;
+    protected AvatarView avatarView;
+    protected TextView screenNameTextView;
+    protected TextView descriptionTextView;
+    protected Button statusCountButton;
+    protected Button followCountButton;
+    protected Button followerCountButton;
+
     @Bind(R.id.swipe_refresh_layout)
     protected SwipeRefreshLayout swipeRefreshLayout;
     @Bind(R.id.status_timeline_view)
@@ -56,10 +72,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.setDrawerListener(toggle);
         toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
 
-//        UserFragment userFragment = (UserFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_user_profile);
-//        userPresenter = new UserPresenter(userFragment);
+        navigationView.setNavigationItemSelectedListener(this);
+        View headerView = navigationView.getHeaderView(0);
+        coverImageView = (ImageView) headerView.findViewById(R.id.image_view_cover);
+        avatarView = (AvatarView) headerView.findViewById(R.id.avatar_view);
+        screenNameTextView = (TextView) headerView.findViewById(R.id.text_view_screen_name);
+        descriptionTextView = (TextView) headerView.findViewById(R.id.text_view_description);
+        statusCountButton = (Button) headerView.findViewById(R.id.button_status_count);
+        followCountButton = (Button) headerView.findViewById(R.id.button_follow_count);
+        followerCountButton = (Button) headerView.findViewById(R.id.button_follower_count);
+        if(LoginUser.getUser().cover_image_phone != null && !LoginUser.getUser().cover_image_phone.isEmpty()) {
+            String coverImageUrl = LoginUser.getUser().cover_image_phone;
+            if(coverImageUrl.indexOf(";") != 0) {
+                String[] coverImageUrls = coverImageUrl.split(";");
+                coverImageUrl = coverImageUrls[(int) (Math.random() * coverImageUrls.length)];
+            }
+            BitmapLoader.getInstance().loadBitmap(coverImageUrl, coverImageView);
+
+        }
+        BitmapLoader.getInstance().loadBitmap(LoginUser.getUser().avatar_large, avatarView.avatarCircleImageView);
+        screenNameTextView.setText(LoginUser.getUser().screen_name);
+        descriptionTextView.setText(LoginUser.getUser().description == null || LoginUser.getUser().description.isEmpty() ? "暂无介绍" : LoginUser.getUser().description);
+        statusCountButton.setText(LoginUser.getUser().statuses_count + "\n微博");
+        followCountButton.setText(LoginUser.getUser().friends_count + "\n关注");
+        followerCountButton.setText(LoginUser.getUser().followers_count + "\n粉丝");
 
         statusPresenter = new StatusPresenter(this);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

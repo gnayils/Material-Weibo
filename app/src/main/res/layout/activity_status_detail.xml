@@ -61,16 +61,20 @@
                     app:tabIndicatorColor="?attr/colorAccent"
                     app:tabIndicatorHeight="4dp"
                     app:tabSelectedTextColor="?attr/colorAccent"
-                    app:tabTextColor="?android:attr/textColorPrimaryInverse" />
+                    app:tabTextColor="?android:attr/textColorPrimaryInverse"
+                    app:tabTextAppearance="@style/AppTheme.TabLayoutTextAppearance"/>
 
                 <TextView
+                    android:id="@+id/text_view_like_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="16dp"
-                    android:text="0赞"
-                    android:textColor="?android:attr/colorAccent" />
+                    android:text="0 赞"
+                    android:textColor="?android:attr/colorAccent"
+                    android:textSize="16sp"/>
+
 
             </RelativeLayout>
 
