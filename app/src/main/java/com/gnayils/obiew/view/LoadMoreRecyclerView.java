@@ -49,9 +49,9 @@ public class LoadMoreRecyclerView extends RecyclerView {
                 if(getLayoutManager() instanceof LinearLayoutManager) {
                     lastVisibleItemPosition = ((LinearLayoutManager)getLayoutManager()).findLastVisibleItemPosition();
                 } else if (getLayoutManager() instanceof StaggeredGridLayoutManager) {
-                    int[] postions = ((StaggeredGridLayoutManager)getLayoutManager()).findLastVisibleItemPositions(null);
-                    if(postions != null) {
-                        lastVisibleItemPosition = postions[postions.length - 1];
+                    int[] positions = ((StaggeredGridLayoutManager)getLayoutManager()).findLastVisibleItemPositions(null);
+                    if(positions != null) {
+                        lastVisibleItemPosition = positions[positions.length - 1];
                     }
                 }
             }

@@ -6,10 +6,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,8 +23,10 @@ import com.gnayils.obiew.interfaces.BasePresenter;
 import com.gnayils.obiew.interfaces.StatusInterface;
 import com.gnayils.obiew.presenter.StatusPresenter;
 import com.gnayils.obiew.util.ViewUtils;
+import com.gnayils.obiew.view.AlbumTimelineView;
 import com.gnayils.obiew.view.AvatarView;
 import com.gnayils.obiew.view.StatusTimelineView;
+import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.weibo.bean.StatusTimeline;
 import com.gnayils.obiew.weibo.bean.User;
 
@@ -51,8 +57,14 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
     protected AppBarLayout appBarLayout;
     @Bind(R.id.collapsing_toolbar_layout)
     protected CollapsingToolbarLayout collapsingToolbarLayout;
-    @Bind(R.id.status_timeline_view)
+    @Bind(R.id.tab_layout)
+    protected TabLayout tabLayout;
+    @Bind(R.id.view_pager)
+    protected ViewPager viewPager;
+
+
     protected StatusTimelineView statusTimelineView;
+    protected AlbumTimelineView albumTimelineView;
 
     private StatusInterface.Presenter statusPresenter;
 
@@ -95,7 +107,11 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
         screenNameTextView.setText(user.screen_name);
         descriptionTextView.setText(user.description);
 
+        statusTimelineView = new StatusTimelineView(this);
+        albumTimelineView = new AlbumTimelineView(this);
         statusPresenter = new StatusPresenter(this);
+        viewPager.setAdapter(new ViewPagerAdapter());
+        tabLayout.setupWithViewPager(viewPager);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -147,5 +163,49 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
         Intent intent = new Intent(context, UserProfileActivity.class);
         intent.putExtra(ARGS_KEY_USER, user);
         context.startActivity(intent);
+    }
+
+    class ViewPagerAdapter extends PagerAdapter {
+
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup collection, int position) {
+            View view = null;
+            switch (position) {
+                case 0:
+                    view = statusTimelineView;
+                    break;
+                case 1:
+                    view = albumTimelineView;
+                    break;
+            }
+            if(view != null) {
+                collection.addView(view);
+            }
+            return view;
+        }
+        @Override
+        public void destroyItem(ViewGroup collection, int position, Object view) {
+            collection.removeView((View) view);
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch(position) {
+                case 0: return "微博";
+                case 1: return "相册";
+                default: return null;
+            }
+        }
     }
 }

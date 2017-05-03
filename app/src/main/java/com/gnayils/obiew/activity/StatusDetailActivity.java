@@ -65,9 +65,9 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        status = (Status) getIntent().getSerializableExtra(ARGS_KEY_STATUS);
         setContentView(R.layout.activity_status_detail);
         ButterKnife.bind(this);
+        status = (Status) getIntent().getSerializableExtra(ARGS_KEY_STATUS);
         swipeRefreshLayout.setProgressViewOffset(false, ViewUtils.getStatusBarHeight(this) + ViewUtils.getActionBarHeight(this), ViewUtils.getStatusBarHeight(this) + ViewUtils.getActionBarHeight(this) * 2);
         swipeRefreshLayout.setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
             @Override

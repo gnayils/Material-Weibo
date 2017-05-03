@@ -84,7 +84,7 @@
                         android:layout_marginRight="8dp"
                         android:layout_below="@id/text_view_screen_name"
                         android:gravity="center"
-                        android:maxLines="1"
+                        android:maxLines="2"
                         android:ellipsize="end"
                         android:shadowColor="#75000000"
                         android:shadowDy="1"
@@ -108,12 +108,30 @@
         </android.support.design.widget.AppBarLayout>
         ​
 
-        <com.gnayils.obiew.view.StatusTimelineView
-            android:id="@+id/status_timeline_view"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:behavior_overlapTop="84dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            android:orientation="vertical"
+            app:behavior_overlapTop="96dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:tabGravity="center"
+                app:tabIndicatorColor="?attr/colorAccent"
+                app:tabIndicatorHeight="4dp"
+                app:tabSelectedTextColor="?attr/colorAccent"
+                app:tabTextColor="?android:attr/textColorPrimaryInverse"
+                app:tabTextAppearance="@style/AppTheme.TabLayoutTextAppearance"/>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
 
         <android.support.design.widget.FloatingActionButton
             android:layout_height="wrap_content"
