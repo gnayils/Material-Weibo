@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.bmpldr.BitmapLoader;
 import com.gnayils.obiew.bmpldr.BitmapLoadListener;
+import com.gnayils.obiew.weibo.bean.PicUrls;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -31,12 +32,12 @@ public class PictureFragment extends Fragment implements BitmapLoadListener {
     @Bind(R.id.image_view)
     protected ImageView imageView;
 
-    private String pictureUrl;
+    private PicUrls picUrls;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pictureUrl = getArguments().getString(ARGS_KEY_PICTURE_URL);
+        picUrls = (PicUrls) getArguments().getSerializable(ARGS_KEY_PICTURE_URL);
     }
 
     @Nullable
@@ -50,13 +51,13 @@ public class PictureFragment extends Fragment implements BitmapLoadListener {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        BitmapLoader.getInstance().loadBitmap(pictureUrl.replace("/thumbnail/", "/large/"), imageView, this);
+        BitmapLoader.getInstance().loadBitmap(picUrls.largeThumbnailPic(), imageView, this);
     }
 
-    public static Fragment newInstance(String pictureUrl) {
+    public static Fragment newInstance(PicUrls picUrls) {
         PictureFragment fragment = new PictureFragment();
         Bundle args = new Bundle();
-        args.putString(ARGS_KEY_PICTURE_URL, pictureUrl);
+        args.putSerializable(ARGS_KEY_PICTURE_URL, picUrls);
         fragment.setArguments(args);
         return fragment;
     }

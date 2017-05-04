@@ -66,7 +66,7 @@ public class PicturePagerActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return PictureFragment.newInstance(PicturePagerActivity.this.pictureUrls.get(position).thumbnail_pic);
+            return PictureFragment.newInstance(pictureUrls.get(position));
         }
     }
 }

@@ -66,7 +66,7 @@ public class StatusPicturesView extends ViewGroup implements View.OnClickListene
             if(i < picUrlsList.size()) {
                 PicUrls picUrls = picUrlsList.get(i);
                 child.setVisibility(View.VISIBLE);
-                BitmapLoader.getInstance().loadBitmap(picUrls.thumbnail_pic.replace("/thumbnail/", "/bmiddle/" /*"large"*/), (ImageView) child);
+                BitmapLoader.getInstance().loadBitmap(picUrls.middleThumbnailPic(), (ImageView) child);
             }
         }
 

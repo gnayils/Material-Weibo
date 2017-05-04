@@ -143,6 +143,12 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         appBarCurrentVerticalOffset = verticalOffset;
+        tabLayout.getBackground().setAlpha((int) (Math.abs(verticalOffset) / (appBarLayout.getTotalScrollRange() / 255d)));
+        if(Math.abs(verticalOffset) == appBarLayout.getTotalScrollRange()) {
+            tabLayout.setElevation(ViewUtils.dp2px(this, 6));
+        } else if(verticalOffset == 0) {
+            tabLayout.setElevation(0);
+        }
     }
 
     @Override

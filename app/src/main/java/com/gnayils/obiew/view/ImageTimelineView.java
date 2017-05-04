@@ -3,6 +3,7 @@ package com.gnayils.obiew.view;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
@@ -43,10 +44,10 @@ public class ImageTimelineView extends LoadMoreRecyclerView {
 
     public ImageTimelineView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        setLayoutManager(new GridLayoutManager(context, 3));
         imageTimelineAdapter = new ImageTimelineAdapter();
         setAdapter(imageTimelineAdapter);
-        setPadding(dp2px(context, 4), 0, dp2px(context, 4), 0);
+        setPadding(dp2px(context, 6), 0, dp2px(context, 6), 0);
     }
 
     public void show(StatusTimeline statusTimeline) {
@@ -65,25 +66,16 @@ public class ImageTimelineView extends LoadMoreRecyclerView {
 
         @Override
         public RecyclerView.ViewHolder onCreateActualViewHolder(ViewGroup parent, int viewType) {
-            CardView cardView = new CardView(parent.getContext());
-            RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(dp2px(cardView.getContext(), 4), dp2px(cardView.getContext(), 4), dp2px(cardView.getContext(), 4), dp2px(cardView.getContext(), 4));
-            cardView.setLayoutParams(layoutParams);
-
-            ForegroundImageView imageView = new ForegroundImageView(parent.getContext());
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setForegroundResource(R.drawable.fg_status_picture_thumbnail_mask);
-            FrameLayout.LayoutParams imageViewLayoutParams = new FrameLayout.LayoutParams(CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.WRAP_CONTENT);
-            imageViewLayoutParams.gravity = Gravity.CENTER;
-            imageView.setLayoutParams(imageViewLayoutParams);
-
-            cardView.addView(imageView);
-            return new ImageCardViewHolder(cardView, imageView);
+            PictureCardView pictureCardView = new PictureCardView(parent.getContext());
+            RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+            layoutParams.setMargins(dp2px(pictureCardView.getContext(), 2), dp2px(pictureCardView.getContext(), 4), dp2px(pictureCardView.getContext(), 2), dp2px(pictureCardView.getContext(), 0));
+            pictureCardView.setLayoutParams(layoutParams);
+            return new ImageCardViewHolder(pictureCardView);
         }
 
         @Override
         public void onBindActualViewHolder(RecyclerView.ViewHolder holder, int position) {
-            BitmapLoader.getInstance().loadBitmap(picUrlsList.get(position).thumbnail_pic, ((ImageCardViewHolder) holder).imageView);
+            BitmapLoader.getInstance().loadBitmap(picUrlsList.get(position).middleThumbnailPic(), ((ImageCardViewHolder) holder).imageView);
         }
 
         public void addTimeline(StatusTimeline statusTimeline) {
@@ -106,9 +98,9 @@ public class ImageTimelineView extends LoadMoreRecyclerView {
 
         ImageView imageView;
 
-        ImageCardViewHolder(CardView cardView, ImageView imageView) {
-            super(cardView);
-            this.imageView = imageView;
+        ImageCardViewHolder(PictureCardView pictureCardView) {
+            super(pictureCardView);
+            imageView = pictureCardView.imageView;
         }
     }
 }
