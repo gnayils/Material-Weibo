@@ -6,8 +6,15 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 
+import com.gnayils.obiew.R;
+import com.gnayils.obiew.bmpldr.BitmapLoadAdapter;
+import com.gnayils.obiew.bmpldr.BitmapLoader;
+import com.gnayils.obiew.weibo.bean.PicUrls;
 import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.weibo.bean.StatusTimeline;
 
@@ -48,40 +55,60 @@ public class ImageTimelineView extends LoadMoreRecyclerView {
 
     private class ImageTimelineAdapter extends LoadMoreRecyclerView.LoadMoreAdapter {
 
-        List<Status> statusList = new ArrayList<Status>();
+        List<PicUrls> picUrlsList = new ArrayList<>();
+        List<Status> statusList = new ArrayList<>();
 
         @Override
         public int getActualItemCount() {
-            return 50;
+            return picUrlsList.size();
         }
 
         @Override
         public RecyclerView.ViewHolder onCreateActualViewHolder(ViewGroup parent, int viewType) {
-            CardView statusCardView = new CardView(parent.getContext());
-            RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, dp2px(parent.getContext(), (int) (200 + Math.random() * 100)));
-            layoutParams.setMargins(dp2px(statusCardView.getContext(), 4), dp2px(statusCardView.getContext(), 4), dp2px(statusCardView.getContext(), 4), dp2px(statusCardView.getContext(), 4));
-            statusCardView.setLayoutParams(layoutParams);
-            return new ImageCardViewHolder(statusCardView);
+            CardView cardView = new CardView(parent.getContext());
+            RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(dp2px(cardView.getContext(), 4), dp2px(cardView.getContext(), 4), dp2px(cardView.getContext(), 4), dp2px(cardView.getContext(), 4));
+            cardView.setLayoutParams(layoutParams);
+
+            ForegroundImageView imageView = new ForegroundImageView(parent.getContext());
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setForegroundResource(R.drawable.fg_status_picture_thumbnail_mask);
+            FrameLayout.LayoutParams imageViewLayoutParams = new FrameLayout.LayoutParams(CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.WRAP_CONTENT);
+            imageViewLayoutParams.gravity = Gravity.CENTER;
+            imageView.setLayoutParams(imageViewLayoutParams);
+
+            cardView.addView(imageView);
+            return new ImageCardViewHolder(cardView, imageView);
         }
 
         @Override
         public void onBindActualViewHolder(RecyclerView.ViewHolder holder, int position) {
-
+            BitmapLoader.getInstance().loadBitmap(picUrlsList.get(position).thumbnail_pic, ((ImageCardViewHolder) holder).imageView);
         }
 
         public void addTimeline(StatusTimeline statusTimeline) {
-            Set<Status> statusSet = new TreeSet<Status>(statusList);
+            Set<Status> statusSet = new TreeSet<>(statusList);
             statusSet.addAll(statusTimeline.statuses);
             statusList.clear();
             statusList.addAll(statusSet);
+
+            picUrlsList.clear();
+            for(Status status : statusList) {
+                if(status.pic_urls != null) {
+                    picUrlsList.addAll(status.pic_urls);
+                }
+            }
             notifyDataSetChanged();
         }
     }
 
     class ImageCardViewHolder extends RecyclerView.ViewHolder {
 
-        ImageCardViewHolder(CardView statusCardView) {
-            super(statusCardView);
+        ImageView imageView;
+
+        ImageCardViewHolder(CardView cardView, ImageView imageView) {
+            super(cardView);
+            this.imageView = imageView;
         }
     }
 }
