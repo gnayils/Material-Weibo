@@ -2,15 +2,14 @@ package com.gnayils.obiew.presenter;
 
 import android.util.Log;
 
-import com.gnayils.obiew.App;
-import com.gnayils.obiew.R;
 import com.gnayils.obiew.interfaces.StatusInterface;
-import com.gnayils.obiew.weibo.TokenKeeper;
 import com.gnayils.obiew.weibo.api.StatusAPI;
 import com.gnayils.obiew.weibo.api.WeiboAPI;
-import com.gnayils.obiew.weibo.bean.AccessToken;
+import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.weibo.bean.StatusTimeline;
 import com.gnayils.obiew.weibo.bean.User;
+
+import java.util.Arrays;
 
 import rx.Subscriber;
 import rx.Subscription;
@@ -31,11 +30,12 @@ public class StatusPresenter implements StatusInterface.Presenter {
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     private long homeTimelineSinceId = 0;
-    private int userTimelinePage = 1;
+    private int[] userTimelinePages = new int[Status.FEATURES_COUNT];
 
     public StatusPresenter(StatusInterface.View statusView) {
         this.statusView = statusView;
         this.statusView.setPresenter(this);
+        Arrays.fill(userTimelinePages, 1);
     }
 
     @Override
@@ -65,16 +65,16 @@ public class StatusPresenter implements StatusInterface.Presenter {
                     @Override
                     public void onNext(StatusTimeline timeline) {
                         homeTimelineSinceId = timeline.max_id;
-                        statusView.show(timeline);
+                        statusView.show(timeline, Status.FEATURE_ALL);
                     }
                 });
         compositeSubscription.add(subscription);
     }
 
     @Override
-    public void loadStatusTimeline(final boolean isLoadingLatest, User user) {
+    public void loadStatusTimeline(final boolean isLoadingLatest, User user, final int feature) {
         Subscription subscription = WeiboAPI.get(StatusAPI.class)
-                .userTimeline(user.id, 20, userTimelinePage ++ )
+                .userTimeline(user.id, feature, 20, userTimelinePages[feature] ++)
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
@@ -97,7 +97,7 @@ public class StatusPresenter implements StatusInterface.Presenter {
 
                     @Override
                     public void onNext(StatusTimeline timeline) {
-                        statusView.show(timeline);
+                        statusView.show(timeline, feature);
                     }
                 });
         compositeSubscription.add(subscription);

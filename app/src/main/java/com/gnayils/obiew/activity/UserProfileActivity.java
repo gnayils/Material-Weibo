@@ -23,8 +23,9 @@ import com.gnayils.obiew.interfaces.BasePresenter;
 import com.gnayils.obiew.interfaces.StatusInterface;
 import com.gnayils.obiew.presenter.StatusPresenter;
 import com.gnayils.obiew.util.ViewUtils;
-import com.gnayils.obiew.view.AlbumTimelineView;
+import com.gnayils.obiew.view.ImageTimelineView;
 import com.gnayils.obiew.view.AvatarView;
+import com.gnayils.obiew.view.LoadMoreRecyclerView;
 import com.gnayils.obiew.view.StatusTimelineView;
 import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.weibo.bean.StatusTimeline;
@@ -64,7 +65,7 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
 
 
     protected StatusTimelineView statusTimelineView;
-    protected AlbumTimelineView albumTimelineView;
+    protected ImageTimelineView imageTimelineView;
 
     private StatusInterface.Presenter statusPresenter;
 
@@ -108,20 +109,27 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
         descriptionTextView.setText(user.description);
 
         statusTimelineView = new StatusTimelineView(this);
-        albumTimelineView = new AlbumTimelineView(this);
+        imageTimelineView = new ImageTimelineView(this);
         statusPresenter = new StatusPresenter(this);
         viewPager.setAdapter(new ViewPagerAdapter());
         tabLayout.setupWithViewPager(viewPager);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                statusPresenter.loadStatusTimeline(true, user);
+                statusPresenter.loadStatusTimeline(true, user, Status.FEATURE_ALL);
+                statusPresenter.loadStatusTimeline(true, user, Status.FEATURE_IMAGE);
             }
         });
-        statusTimelineView.setOnLoadMoreListener(new StatusTimelineView.OnLoadMoreListener() {
+        statusTimelineView.setOnLoadMoreListener(new LoadMoreRecyclerView.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                statusPresenter.loadStatusTimeline(false, user);
+                statusPresenter.loadStatusTimeline(false, user, Status.FEATURE_ALL);
+            }
+        });
+        imageTimelineView.setOnLoadMoreListener(new LoadMoreRecyclerView.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                statusPresenter.loadStatusTimeline(false, user, Status.FEATURE_IMAGE);
             }
         });
     }
@@ -143,8 +151,12 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
     }
 
     @Override
-    public void show(StatusTimeline statusTimeline) {
-        statusTimelineView.show(statusTimeline);
+    public void show(StatusTimeline statusTimeline, int feature) {
+        if(feature == Status.FEATURE_ALL) {
+            statusTimelineView.show(statusTimeline);
+        } else if(feature == Status.FEATURE_IMAGE) {
+            imageTimelineView.show(statusTimeline);
+        }
     }
 
     @Override
@@ -181,7 +193,7 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
                     view = statusTimelineView;
                     break;
                 case 1:
-                    view = albumTimelineView;
+                    view = imageTimelineView;
                     break;
             }
             if(view != null) {

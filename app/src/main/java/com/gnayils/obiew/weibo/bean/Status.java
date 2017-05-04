@@ -55,6 +55,13 @@ public class Status implements Comparable<Status>, Serializable {
     public List<?> hot_weibo_tags;
     public List<?> text_tag_tips;
 
+    public static final int FEATURE_ALL = 0;
+    public static final int FEATURE_ORIGINAL = 1;
+    public static final int FEATURE_IMAGE = 2;
+    public static final int FEATURE_VIDEO = 3;
+    public static final int FEATURE_MUSIC = 4;
+
+    public static final int FEATURES_COUNT = 5;
 
     @Override
     public boolean equals(Object another) {

@@ -22,31 +22,31 @@ import static com.gnayils.obiew.util.ViewUtils.dp2px;
  * Created by Gnayils on 17/04/2017.
  */
 
-public class AlbumTimelineView extends LoadMoreRecyclerView {
+public class ImageTimelineView extends LoadMoreRecyclerView {
 
-    private AlbumTimelineAdapter albumTimelineAdapter;
+    private ImageTimelineAdapter imageTimelineAdapter;
 
-    public AlbumTimelineView(Context context) {
+    public ImageTimelineView(Context context) {
         this(context, null);
     }
 
-    public AlbumTimelineView(Context context, @Nullable AttributeSet attrs) {
+    public ImageTimelineView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public AlbumTimelineView(Context context, @Nullable AttributeSet attrs, int defStyle) {
+    public ImageTimelineView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-        albumTimelineAdapter = new AlbumTimelineAdapter();
-        setAdapter(albumTimelineAdapter);
+        imageTimelineAdapter = new ImageTimelineAdapter();
+        setAdapter(imageTimelineAdapter);
         setPadding(dp2px(context, 4), 0, dp2px(context, 4), 0);
     }
 
     public void show(StatusTimeline statusTimeline) {
-        albumTimelineAdapter.addTimeline(statusTimeline);
+        imageTimelineAdapter.addTimeline(statusTimeline);
     }
 
-    private class AlbumTimelineAdapter extends LoadMoreRecyclerView.LoadMoreAdapter {
+    private class ImageTimelineAdapter extends LoadMoreRecyclerView.LoadMoreAdapter {
 
         List<Status> statusList = new ArrayList<Status>();
 
@@ -61,7 +61,7 @@ public class AlbumTimelineView extends LoadMoreRecyclerView {
             RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, dp2px(parent.getContext(), (int) (200 + Math.random() * 100)));
             layoutParams.setMargins(dp2px(statusCardView.getContext(), 4), dp2px(statusCardView.getContext(), 4), dp2px(statusCardView.getContext(), 4), dp2px(statusCardView.getContext(), 4));
             statusCardView.setLayoutParams(layoutParams);
-            return new AlbumCardViewHolder(statusCardView);
+            return new ImageCardViewHolder(statusCardView);
         }
 
         @Override
@@ -78,9 +78,9 @@ public class AlbumTimelineView extends LoadMoreRecyclerView {
         }
     }
 
-    class AlbumCardViewHolder extends RecyclerView.ViewHolder {
+    class ImageCardViewHolder extends RecyclerView.ViewHolder {
 
-        AlbumCardViewHolder(CardView statusCardView) {
+        ImageCardViewHolder(CardView statusCardView) {
             super(statusCardView);
         }
     }

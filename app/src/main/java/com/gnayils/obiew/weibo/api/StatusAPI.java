@@ -20,6 +20,6 @@ public interface StatusAPI {
     Observable<RepostTimeline> repostTimeline(@Query("id") long statusId, @Query("max_id") long maxId, @Query("since_id") long sinceId);
 
     @GET("2/statuses/user_timeline.json")
-    Observable<StatusTimeline> userTimeline(@Query("uid") long uid, @Query("count") int count, @Query("page") int page);
+    Observable<StatusTimeline> userTimeline(@Query("uid") long uid, @Query("feature")int feature, @Query("count") int count, @Query("page") int page);
 
 }

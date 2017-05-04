@@ -11,7 +11,7 @@ public interface StatusInterface  {
 
     interface View extends BaseView {
 
-        void show(StatusTimeline statusTimeline);
+        void show(StatusTimeline statusTimeline, int feature);
 
         void showStatusLoadingIndicator(boolean isLoadingLatest, boolean refreshing);
 
@@ -21,6 +21,6 @@ public interface StatusInterface  {
 
         void loadStatusTimeline(boolean isLoadingLatest);
 
-        void loadStatusTimeline(boolean isLoadingLatest, User user);
+        void loadStatusTimeline(boolean isLoadingLatest, User user, int feature);
     }
 }

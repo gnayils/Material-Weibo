@@ -29,6 +29,7 @@ import com.gnayils.obiew.presenter.StatusPresenter;
 import com.gnayils.obiew.view.AvatarView;
 import com.gnayils.obiew.view.StatusTimelineView;
 import com.gnayils.obiew.weibo.LoginUser;
+import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.weibo.bean.StatusTimeline;
 
 import butterknife.Bind;
@@ -181,8 +182,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void show(StatusTimeline statusTimeline) {
-        statusTimelineView.show(statusTimeline);
+    public void show(StatusTimeline statusTimeline, int feature) {
+        if(feature == Status.FEATURE_ALL) {
+            statusTimelineView.show(statusTimeline);
+        }
     }
 
     @Override
