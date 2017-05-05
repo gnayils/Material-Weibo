@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.bmpldr.BitmapLoadAdapter;
 import com.gnayils.obiew.bmpldr.BitmapLoader;
@@ -75,7 +76,7 @@ public class ImageTimelineView extends LoadMoreRecyclerView {
 
         @Override
         public void onBindActualViewHolder(RecyclerView.ViewHolder holder, int position) {
-            BitmapLoader.getInstance().loadBitmap(picUrlsList.get(position).middleThumbnailPic(), ((ImageCardViewHolder) holder).imageView);
+            Glide.with(getContext()).load(picUrlsList.get(position).middleThumbnailPic()).into(((ImageCardViewHolder) holder).imageView);
         }
 
         public void addTimeline(StatusTimeline statusTimeline) {

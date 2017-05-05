@@ -26,7 +26,6 @@ public class App extends Application {
         super.onCreate();
         application = this;
         EventBus.getDefault().register(this);
-        BitmapLoader.initialize();
     }
 
     public static Context context() {

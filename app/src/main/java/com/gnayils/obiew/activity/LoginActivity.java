@@ -18,6 +18,10 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.bmpldr.BitmapLoadAdapter;
 import com.gnayils.obiew.bmpldr.BitmapLoader;
@@ -161,10 +165,14 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         });
             } else if(msg.what == MESSAGE_LOGIN_USER_OBTAINED) {
-                BitmapLoader.getInstance().loadBitmap(LoginUser.getUser().avatar_large, avatarView.avatarCircleImageView, new BitmapLoadAdapter() {
+                Glide.with(LoginActivity.this).load(LoginUser.getUser().avatar_large).listener(new RequestListener<String, GlideDrawable>() {
+                    @Override
+                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                        return false;
+                    }
 
                     @Override
-                    public void onPostLoad(Bitmap bitmap) {
+                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
                         postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -172,8 +180,9 @@ public class LoginActivity extends AppCompatActivity {
                                 LoginActivity.this.finish();
                             }
                         }, 1000);
+                        return false;
                     }
-                });
+                }).into(avatarView.avatarCircleImageView);
             }
         }
     };

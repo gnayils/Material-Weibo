@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.gnayils.obiew.App;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.bmpldr.BitmapLoader;
@@ -93,7 +94,7 @@ public class CommentView extends CardView {
 
     public void show(Comment comment) {
         this.comment = comment;
-        BitmapLoader.getInstance().loadBitmap(comment.user.avatar_large, userAvatarView.avatarCircleImageView);
+        Glide.with(getContext()).load(comment.user.avatar_large).into(userAvatarView.avatarCircleImageView);
         userAvatarView.verifiedIconImageView.setVisibility(comment.user.verified ? View.VISIBLE : View.INVISIBLE);
         if(comment.user.verified) {
             screenNameTextView.setTextColor(App.resources().getColor(R.color.colorVerifiedScreenName));

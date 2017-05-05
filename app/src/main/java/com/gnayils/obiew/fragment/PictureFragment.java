@@ -10,6 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.bmpldr.BitmapLoader;
 import com.gnayils.obiew.bmpldr.BitmapLoadListener;
@@ -22,7 +26,7 @@ import butterknife.ButterKnife;
  * Created by Gnayils on 04/03/2017.
  */
 
-public class PictureFragment extends Fragment implements BitmapLoadListener {
+public class PictureFragment extends Fragment {
 
     public static final String ARGS_KEY_PICTURE_URL = "ARGS_KEY_PICTURE_URL";
 
@@ -51,7 +55,18 @@ public class PictureFragment extends Fragment implements BitmapLoadListener {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        BitmapLoader.getInstance().loadBitmap(picUrls.largeThumbnailPic(), imageView, this);
+        Glide.with(this).load(picUrls.largeThumbnailPic()).listener(new RequestListener<String, GlideDrawable>() {
+            @Override
+            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                return false;
+            }
+
+            @Override
+            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                progressBar.setVisibility(View.GONE);
+                return false;
+            }
+        }).into(imageView);
     }
 
     public static Fragment newInstance(PicUrls picUrls) {
@@ -60,25 +75,5 @@ public class PictureFragment extends Fragment implements BitmapLoadListener {
         args.putSerializable(ARGS_KEY_PICTURE_URL, picUrls);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onPreLoad() {
-
-    }
-
-    @Override
-    public void onProgressUpdate(Integer... values) {
-
-    }
-
-    @Override
-    public void onPostLoad(Bitmap bitmap) {
-        progressBar.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onCancelled() {
-
     }
 }

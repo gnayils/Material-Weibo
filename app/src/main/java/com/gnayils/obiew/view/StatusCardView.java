@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.gnayils.obiew.App;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.activity.StatusDetailActivity;
@@ -219,7 +220,7 @@ public class StatusCardView extends CardView {
 
     public void show(Status status) {
         this.status = status;
-        BitmapLoader.getInstance().loadBitmap(status.user.avatar_large, userAvatarView.avatarCircleImageView);
+        Glide.with(getContext()).load(status.user.avatar_large).into(userAvatarView.avatarCircleImageView);
         userAvatarView.verifiedIconImageView.setVisibility(status.user.verified ? View.VISIBLE : View.INVISIBLE);
         if(status.user.verified) {
             screenNameTextView.setTextColor(App.resources().getColor(R.color.colorVerifiedScreenName));

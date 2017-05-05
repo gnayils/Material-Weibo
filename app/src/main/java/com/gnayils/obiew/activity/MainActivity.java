@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.bmpldr.BitmapLoader;
 import com.gnayils.obiew.interfaces.BasePresenter;
@@ -89,10 +90,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 String[] coverImageUrls = coverImageUrl.split(";");
                 coverImageUrl = coverImageUrls[(int) (Math.random() * coverImageUrls.length)];
             }
-            BitmapLoader.getInstance().loadBitmap(coverImageUrl, coverImageView);
-
+            Glide.with(this).load(coverImageUrl).into(coverImageView);
         }
-        BitmapLoader.getInstance().loadBitmap(LoginUser.getUser().avatar_large, avatarView.avatarCircleImageView);
+        Glide.with(this).load(LoginUser.getUser().avatar_large).into(avatarView.avatarCircleImageView);
         screenNameTextView.setText(LoginUser.getUser().screen_name);
         descriptionTextView.setText(LoginUser.getUser().description == null || LoginUser.getUser().description.isEmpty() ? "暂无介绍" : LoginUser.getUser().description);
         statusCountButton.setText(LoginUser.getUser().statuses_count + "\n微博");

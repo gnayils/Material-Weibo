@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.activity.PicturePagerActivity;
 import com.gnayils.obiew.weibo.bean.PicUrls;
@@ -66,7 +67,7 @@ public class StatusPicturesView extends ViewGroup implements View.OnClickListene
             if(i < picUrlsList.size()) {
                 PicUrls picUrls = picUrlsList.get(i);
                 child.setVisibility(View.VISIBLE);
-                BitmapLoader.getInstance().loadBitmap(picUrls.middleThumbnailPic(), (ImageView) child);
+                Glide.with(getContext()).load(picUrls.middleThumbnailPic()).into((ImageView)child);
             }
         }
 

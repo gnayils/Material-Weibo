@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.bmpldr.BitmapLoader;
 import com.gnayils.obiew.interfaces.BasePresenter;
@@ -101,10 +102,9 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
                 String[] coverImageUrls = coverImageUrl.split(";");
                 coverImageUrl = coverImageUrls[(int) (Math.random() * coverImageUrls.length)];
             }
-            BitmapLoader.getInstance().loadBitmap(coverImageUrl, coverImageView);
-
+            Glide.with(this).load(coverImageUrl).into(coverImageView);
         }
-        BitmapLoader.getInstance().loadBitmap(user.avatar_large, avatarView.avatarCircleImageView);
+        Glide.with(this).load(user.avatar_large).into(avatarView.avatarCircleImageView);
         screenNameTextView.setText(user.screen_name);
         descriptionTextView.setText(user.description);
 
