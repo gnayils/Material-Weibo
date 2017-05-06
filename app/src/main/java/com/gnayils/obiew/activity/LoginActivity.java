@@ -165,24 +165,14 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         });
             } else if(msg.what == MESSAGE_LOGIN_USER_OBTAINED) {
-                Glide.with(LoginActivity.this).load(LoginUser.getUser().avatar_large).listener(new RequestListener<String, GlideDrawable>() {
+                Glide.with(LoginActivity.this).load(LoginUser.getUser().avatar_large).into(avatarView.avatarCircleImageView);
+                postDelayed(new Runnable() {
                     @Override
-                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        return false;
+                    public void run() {
+                        MainActivity.start(LoginActivity.this);
+                        LoginActivity.this.finish();
                     }
-
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                MainActivity.start(LoginActivity.this);
-                                LoginActivity.this.finish();
-                            }
-                        }, 1000);
-                        return false;
-                    }
-                }).into(avatarView.avatarCircleImageView);
+                }, 1000);
             }
         }
     };

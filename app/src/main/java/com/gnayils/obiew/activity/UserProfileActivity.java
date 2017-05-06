@@ -102,7 +102,7 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
                 String[] coverImageUrls = coverImageUrl.split(";");
                 coverImageUrl = coverImageUrls[(int) (Math.random() * coverImageUrls.length)];
             }
-            Glide.with(this).load(coverImageUrl).into(coverImageView);
+            Glide.with(this).load(coverImageUrl).placeholder(R.drawable.bg_cover_default).into(coverImageView);
         }
         Glide.with(this).load(user.avatar_large).into(avatarView.avatarCircleImageView);
         screenNameTextView.setText(user.screen_name);

@@ -38,6 +38,7 @@ public class PicturePagerActivity extends FragmentActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setStatusBarColor(getResources().getColor(android.R.color.black));
         pictureUrls = (List<PicUrls>) getIntent().getSerializableExtra(ARGS_KEY_PICTURE_URLS);
         currentPicturePosition = getIntent().getIntExtra(ARGS_KEY_CURRENT_PICTURE_POSITION, 0);
         setContentView(R.layout.activity_picture_pager);

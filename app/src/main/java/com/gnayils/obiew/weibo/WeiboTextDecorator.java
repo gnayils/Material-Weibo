@@ -82,7 +82,7 @@ public class WeiboTextDecorator {
         Matcher emotionKeyMatcher = Pattern.compile("\\[\\S+?\\]").matcher(string);
         while(emotionKeyMatcher.find()) {
             String emotionKey = emotionKeyMatcher.group();
-            Bitmap bitmap = EmotionLibrary.get(emotionKey);
+            Bitmap bitmap = EmotionDB.get(emotionKey, 2);
             if(bitmap == null) {
                 continue;
             } else {

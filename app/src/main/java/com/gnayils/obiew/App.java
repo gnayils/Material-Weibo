@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.gnayils.obiew.activity.LoginActivity;
 import com.gnayils.obiew.bmpldr.BitmapLoader;
+import com.gnayils.obiew.weibo.EmotionDB;
 import com.gnayils.obiew.weibo.TokenKeeper;
 import com.gnayils.obiew.weibo.bean.APIError;
 
@@ -26,6 +27,7 @@ public class App extends Application {
         super.onCreate();
         application = this;
         EventBus.getDefault().register(this);
+        EmotionDB.initialize(this);
     }
 
     public static Context context() {
@@ -49,5 +51,11 @@ public class App extends Application {
                 Log.w("onAPIError", "api error handler cannot deal with this error code: " + apiError.error_code);
                 break;
         }
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        EmotionDB.destroy();
     }
 }

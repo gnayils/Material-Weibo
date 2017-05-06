@@ -1,12 +1,17 @@
 package com.gnayils.obiew.view;
 
 import android.content.Context;
+import android.text.Layout;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.activity.PicturePagerActivity;
 import com.gnayils.obiew.weibo.bean.PicUrls;
@@ -42,6 +47,7 @@ public class StatusPicturesView extends ViewGroup implements View.OnClickListene
         super(context, attrs, defStyleAttr, defStyleRes);
         for (int i = 0; i < 9; i++) {
             ForegroundImageView imageView = new ForegroundImageView(getContext());
+            imageView.setLayoutParams(new MarginLayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setForegroundResource(R.drawable.fg_status_picture_thumbnail_mask);
             imageView.setBackgroundResource(R.drawable.bg_status_picture_thumbnail);
@@ -84,20 +90,23 @@ public class StatusPicturesView extends ViewGroup implements View.OnClickListene
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-
         int imageSize = (MeasureSpec.getSize(widthMeasureSpec) - MARGIN_IN_IMAGES * 2 - getPaddingLeft() - getPaddingRight()) / 3 ;
-
         if(imageViewVisibleCount > 0) {
             for (int i = 0; i < imageViewVisibleCount; i++) {
                 View child = getChildAt(i);
                 if(imageViewVisibleCount == 1) {
-                    child.setLayoutParams(new MarginLayoutParams(MarginLayoutParams.MATCH_PARENT, dp2px(getContext(), 200)));
+                    LayoutParams layoutParams = child.getLayoutParams();
+                    layoutParams.width = (int) (imageSize * 3 * 0.625f);
+                    layoutParams.height = (int) (layoutParams.width * 0.75f);
+                    child.setLayoutParams(layoutParams);
                 } else {
-                    child.setLayoutParams(new MarginLayoutParams(imageSize, imageSize));
+                    LayoutParams layoutParams = child.getLayoutParams();
+                    layoutParams.width = imageSize;
+                    layoutParams.height = imageSize;
+                    child.setLayoutParams(layoutParams);
                 }
                 measureChildWithMargins(child, widthMeasureSpec, 0, heightMeasureSpec, 0);
             }
-
             int rows = (int) Math.ceil(imageViewVisibleCount / 3d);
             View child = getChildAt(0);
             setMeasuredDimension(widthMeasureSpec, resolveSizeAndState(child.getMeasuredHeight() * rows + (rows - 1) * MARGIN_IN_IMAGES + getPaddingTop() + getPaddingBottom(), heightMeasureSpec, child.getMeasuredState()));
@@ -131,13 +140,11 @@ public class StatusPicturesView extends ViewGroup implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        int position = 0;
-        for(int i=0; i<imageViewVisibleCount; i++) {
+        for(int i = 0; i < imageViewVisibleCount; i ++) {
             if(v == getChildAt(i)) {
-                position = i;
+                PicturePagerActivity.start(getContext(), i, picUrlsList);
                 break;
             }
         }
-        PicturePagerActivity.start(getContext(), position, picUrlsList);
     }
 }

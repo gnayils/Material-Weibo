@@ -15,6 +15,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <meta-data
+            android:name="com.gnayils.obiew.glide.MyGlideModule"
+            android:value="GlideModule" />
+
         <activity android:name=".activity.TestActivity" >
         </activity>
         <activity android:name=".activity.SplashActivity"/>
