@@ -12,10 +12,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.gnayils.obiew.App;
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.bmpldr.BitmapLoader;
-import com.gnayils.obiew.weibo.WeiboTextDecorator;
+import com.gnayils.obiew.weibo.TextDecorator;
 import com.gnayils.obiew.weibo.Weibo;
-import com.gnayils.obiew.weibo.bean.Comment;
 import com.gnayils.obiew.weibo.bean.Repost;
 
 import static com.gnayils.obiew.util.ViewUtils.dp2px;
@@ -31,8 +29,8 @@ public class RepostView extends CardView {
     private RelativeLayout rootView;
     private AvatarView userAvatarView;
     private TextView screenNameTextView;
-    private TextView statusTimeTextView;
-    private TextView commentTextTextView;
+    private TextView repostTimeTextView;
+    private TextView repostTextTextView;
 
     public RepostView(Context context) {
         this(context, null);
@@ -65,30 +63,30 @@ public class RepostView extends CardView {
         userNameTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, userAvatarView.getId());
         screenNameTextView.setLayoutParams(userNameTextViewLayoutParams);
 
-        statusTimeTextView = new TextView(context);
-        statusTimeTextView.setText("15分钟前");
-        statusTimeTextView.setId(View.generateViewId());
-        statusTimeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        statusTimeTextView.setTextColor(getResources().getColor(R.color.colorSecondaryText));
+        repostTimeTextView = new TextView(context);
+        repostTimeTextView.setText("15分钟前");
+        repostTimeTextView.setId(View.generateViewId());
+        repostTimeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+        repostTimeTextView.setTextColor(getResources().getColor(R.color.colorSecondaryText));
         RelativeLayout.LayoutParams statusTimeTextViewLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         statusTimeTextViewLayoutParams.setMargins(dp2px(context, 8), 0, 0, dp2px(context, 4));
         statusTimeTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, userAvatarView.getId());
         statusTimeTextViewLayoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, userAvatarView.getId());
-        statusTimeTextView.setLayoutParams(statusTimeTextViewLayoutParams);
+        repostTimeTextView.setLayoutParams(statusTimeTextViewLayoutParams);
 
-        commentTextTextView = new TextView(context);
-        commentTextTextView.setText("微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发");
-        commentTextTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        repostTextTextView = new TextView(context);
+        repostTextTextView.setText("微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发");
+        repostTextTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         RelativeLayout.LayoutParams commentTextTextViewLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         commentTextTextViewLayoutParams.addRule(RelativeLayout.BELOW, userAvatarView.getId());
         commentTextTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, userAvatarView.getId());
         commentTextTextViewLayoutParams.setMargins(dp2px(context, 8), dp2px(context, 8), 0, 0);
-        commentTextTextView.setLayoutParams(commentTextTextViewLayoutParams);
+        repostTextTextView.setLayoutParams(commentTextTextViewLayoutParams);
 
         rootView.addView(userAvatarView);
         rootView.addView(screenNameTextView);
-        rootView.addView(statusTimeTextView);
-        rootView.addView(commentTextTextView);
+        rootView.addView(repostTimeTextView);
+        rootView.addView(repostTextTextView);
 
         addView(rootView);
     }
@@ -114,7 +112,7 @@ public class RepostView extends CardView {
             screenNameTextView.setTextColor(App.resources().getColor(R.color.colorPrimaryText));
         }
         screenNameTextView.setText(repost.user.screen_name);
-        statusTimeTextView.setText(Weibo.Date.format(repost.created_at));
-        commentTextTextView.setText(WeiboTextDecorator.decorate(repost.text), TextView.BufferType.SPANNABLE);
+        repostTimeTextView.setText(Weibo.Date.format(repost.created_at));
+        repostTextTextView.setText(repost.getSpannableText(), TextView.BufferType.SPANNABLE);
     }
 }

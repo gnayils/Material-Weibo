@@ -1,5 +1,8 @@
 package com.gnayils.obiew.weibo.bean;
 
+import android.text.SpannableString;
+
+import com.gnayils.obiew.weibo.TextDecorator;
 import com.gnayils.obiew.weibo.Weibo;
 
 import java.io.Serializable;
@@ -17,6 +20,7 @@ public class Repost implements Comparable<Repost>, Serializable {
     public String mid;
     public String idstr;
     public String text;
+    private transient SpannableString spannableText;
     public int source_allowclick;
     public int source_type;
     public String source;
@@ -46,6 +50,17 @@ public class Repost implements Comparable<Repost>, Serializable {
     public List<?> darwin_tags;
     public List<?> hot_weibo_tags;
     public List<?> text_tag_tips;
+
+    public SpannableString getSpannableText() {
+        if(spannableText == null) {
+            spannableText = TextDecorator.decorate(text);
+        }
+        return spannableText;
+    }
+
+    public void setSpannableText(SpannableString spannableText) {
+        this.spannableText = spannableText;
+    }
 
     @Override
     public boolean equals(Object another) {

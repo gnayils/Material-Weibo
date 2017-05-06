@@ -12,8 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.gnayils.obiew.App;
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.bmpldr.BitmapLoader;
-import com.gnayils.obiew.weibo.WeiboTextDecorator;
+import com.gnayils.obiew.weibo.TextDecorator;
 import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.bean.Comment;
 
@@ -114,6 +113,6 @@ public class CommentView extends CardView {
         }
         screenNameTextView.setText(comment.user.screen_name);
         statusTimeTextView.setText(Weibo.Date.format(comment.created_at));
-        commentTextTextView.setText(WeiboTextDecorator.decorate(comment.text), TextView.BufferType.SPANNABLE);
+        commentTextTextView.setText(comment.getSpannableText(), TextView.BufferType.SPANNABLE);
     }
 }

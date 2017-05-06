@@ -1,5 +1,8 @@
 package com.gnayils.obiew.weibo.bean;
 
+import android.text.SpannableString;
+
+import com.gnayils.obiew.weibo.TextDecorator;
 import com.gnayils.obiew.weibo.Weibo;
 
 import java.io.Serializable;
@@ -16,6 +19,7 @@ public class Comment implements Comparable<Comment>, Serializable{
     public long rootid;
     public int floor_number;
     public String text;
+    private transient SpannableString spannableText;
     public int source_allowclick;
     public int source_type;
     public String source;
@@ -25,6 +29,17 @@ public class Comment implements Comparable<Comment>, Serializable{
     public Status status;
     public Comment reply_comment;
     public String reply_original_text;
+
+    public SpannableString getSpannableText() {
+        if(spannableText == null) {
+            spannableText = TextDecorator.decorate(text);
+        }
+        return spannableText;
+    }
+
+    public void setSpannableText(SpannableString spannableText) {
+        this.spannableText = spannableText;
+    }
 
     @Override
     public boolean equals(Object another) {

@@ -3,6 +3,7 @@ package com.gnayils.obiew.presenter;
 import android.util.Log;
 
 import com.gnayils.obiew.interfaces.RepostInterface;
+import com.gnayils.obiew.weibo.TextDecorator;
 import com.gnayils.obiew.weibo.api.StatusAPI;
 import com.gnayils.obiew.weibo.api.WeiboAPI;
 import com.gnayils.obiew.weibo.bean.RepostTimeline;
@@ -11,6 +12,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
+import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -44,6 +46,14 @@ public class RepostPresenter implements RepostInterface.Presenter {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<RepostTimeline, RepostTimeline>(){
+
+                    @Override
+                    public RepostTimeline call(RepostTimeline repostTimeline) {
+                        TextDecorator.decorate(repostTimeline);
+                        return repostTimeline;
+                    }
+                })
                 .subscribe(new Subscriber<RepostTimeline>() {
                     @Override
                     public void onCompleted() {

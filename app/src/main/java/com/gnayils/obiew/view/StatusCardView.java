@@ -18,8 +18,7 @@ import com.gnayils.obiew.activity.StatusDetailActivity;
 import com.gnayils.obiew.activity.UserProfileActivity;
 import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.bean.Status;
-import com.gnayils.obiew.bmpldr.BitmapLoader;
-import com.gnayils.obiew.weibo.WeiboTextDecorator;
+import com.gnayils.obiew.weibo.TextDecorator;
 import com.gnayils.obiew.weibo.TouchableLinkMovementMethod;
 
 import static com.gnayils.obiew.util.ViewUtils.*;
@@ -240,16 +239,14 @@ public class StatusCardView extends CardView {
         }
         screenNameTextView.setText(status.user.screen_name);
         statusTimeTextView.setText(Weibo.Date.format(status.created_at));
-        Spannable statusSource = (Spannable) Html.fromHtml(status.source);
-        WeiboTextDecorator.replaceUrlSpan(statusSource);
-        statusSourceTextView.setText(statusSource);
-        statusTextTextView.setText(WeiboTextDecorator.decorate(status.text), TextView.BufferType.SPANNABLE);
+        statusSourceTextView.setText(status.getSpannableSource());
+        statusTextTextView.setText(status.getSpannableText(), TextView.BufferType.SPANNABLE);
         statusPicturesView.setPictureUrls(status.pic_urls);
         if(status.retweeted_status == null) {
             retweetedStatusView.setVisibility(View.GONE);
         } else {
             retweetedStatusView.setVisibility(View.VISIBLE);
-            retweetedStatusTextTextView.setText(WeiboTextDecorator.decorate("@" + status.retweeted_status.user.screen_name +  ": " + status.retweeted_status.text), TextView.BufferType.SPANNABLE);
+            retweetedStatusTextTextView.setText(status.retweeted_status.getSpannableText(), TextView.BufferType.SPANNABLE);
             retweetedStatusPicturesView.setPictureUrls(status.retweeted_status.pic_urls);
         }
         repostButton.setText(String.valueOf(status.reposts_count));

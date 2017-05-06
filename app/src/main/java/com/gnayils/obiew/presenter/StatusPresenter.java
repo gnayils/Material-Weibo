@@ -3,6 +3,7 @@ package com.gnayils.obiew.presenter;
 import android.util.Log;
 
 import com.gnayils.obiew.interfaces.StatusInterface;
+import com.gnayils.obiew.weibo.TextDecorator;
 import com.gnayils.obiew.weibo.api.StatusAPI;
 import com.gnayils.obiew.weibo.api.WeiboAPI;
 import com.gnayils.obiew.weibo.bean.Status;
@@ -15,6 +16,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
+import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -49,6 +51,14 @@ public class StatusPresenter implements StatusInterface.Presenter {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<StatusTimeline, StatusTimeline>() {
+
+                    @Override
+                    public StatusTimeline call(StatusTimeline statusTimeline) {
+                        TextDecorator.decorate(statusTimeline);
+                        return statusTimeline;
+                    }
+                })
                 .subscribe(new Subscriber<StatusTimeline>(){
 
                     @Override

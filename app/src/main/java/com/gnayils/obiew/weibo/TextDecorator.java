@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.Browser;
 import android.provider.ContactsContract;
+import android.text.Html;
 import android.text.Layout;
 import android.text.Selection;
 import android.text.Spannable;
@@ -27,6 +28,12 @@ import com.gnayils.obiew.App;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.bmpldr.BitmapLoader;
 import com.gnayils.obiew.view.CenteredImageSpan;
+import com.gnayils.obiew.weibo.bean.Comment;
+import com.gnayils.obiew.weibo.bean.CommentTimeline;
+import com.gnayils.obiew.weibo.bean.Repost;
+import com.gnayils.obiew.weibo.bean.RepostTimeline;
+import com.gnayils.obiew.weibo.bean.Status;
+import com.gnayils.obiew.weibo.bean.StatusTimeline;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,16 +44,44 @@ import java.util.regex.Pattern;
  * Created by Gnayils on 02/02/2017.
  */
 
-public class WeiboTextDecorator {
+public class TextDecorator {
 
+    public static void decorate(StatusTimeline statusTimeline) {
+        if(statusTimeline != null && statusTimeline.statuses != null) {
+            for(Status status : statusTimeline.statuses) {
+                status.setSpannableText(decorate(status.text));
+                status.setSpannableSource(replaceUrlSpan((Spannable) Html.fromHtml(status.source)));
+                if(status.retweeted_status != null && status.retweeted_status.text != null && !status.retweeted_status.text.isEmpty()) {
+                    status.retweeted_status.setSpannableText(decorate("@" + status.retweeted_status.user.screen_name +  ": " + status.retweeted_status.text));
+                }
+            }
+        }
+    }
+
+    public static void decorate(CommentTimeline commentTimeline) {
+        if(commentTimeline != null && commentTimeline.comments != null) {
+            for(Comment comment : commentTimeline.comments) {
+                comment.setSpannableText(decorate(comment.text));
+            }
+        }
+    }
+
+    public static void decorate(RepostTimeline repostTimeline) {
+        if(repostTimeline != null && repostTimeline.reposts != null) {
+            for(Repost repost : repostTimeline.reposts) {
+                repost.setSpannableText(decorate(repost.text));
+            }
+        }
+    }
 
     public static SpannableString decorate(String text) {
-
-        SpannableString spannableString = decorateWebUrls(text);
-        decorateTopics(spannableString);
-        decorateMentions(spannableString);
-        decorateEmotions(spannableString);
-
+        SpannableString spannableString = null;
+        if(text != null && !text.isEmpty()) {
+            spannableString = decorateWebUrls(text);
+            decorateTopics(spannableString);
+            decorateMentions(spannableString);
+            decorateEmotions(spannableString);
+        }
         return spannableString;
     }
 
@@ -102,6 +137,8 @@ public class WeiboTextDecorator {
         }
         return spannable;
     }
+
+
 
     public static class LinkSpan extends TouchableSpan {
 

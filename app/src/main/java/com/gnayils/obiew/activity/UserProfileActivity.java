@@ -18,6 +18,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.bmpldr.BitmapLoader;
 import com.gnayils.obiew.interfaces.BasePresenter;
@@ -39,7 +42,7 @@ import butterknife.ButterKnife;
  * Created by Gnayils on 26/03/2017.
  */
 
-public class UserProfileActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener, StatusInterface.View {
+public class UserProfileActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener, SwipeRefreshLayout.OnRefreshListener, StatusInterface.View {
 
     public static final String ARGS_KEY_USER = "ARGS_KEY_USER";
 
@@ -102,7 +105,7 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
                 String[] coverImageUrls = coverImageUrl.split(";");
                 coverImageUrl = coverImageUrls[(int) (Math.random() * coverImageUrls.length)];
             }
-            Glide.with(this).load(coverImageUrl).placeholder(R.drawable.bg_cover_default).into(coverImageView);
+            Glide.with(this).load(coverImageUrl).into(coverImageView);
         }
         Glide.with(this).load(user.avatar_large).into(avatarView.avatarCircleImageView);
         screenNameTextView.setText(user.screen_name);
@@ -113,13 +116,7 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
         statusPresenter = new StatusPresenter(this);
         viewPager.setAdapter(new ViewPagerAdapter());
         tabLayout.setupWithViewPager(viewPager);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                statusPresenter.loadStatusTimeline(true, user, Status.FEATURE_ALL);
-                statusPresenter.loadStatusTimeline(true, user, Status.FEATURE_IMAGE);
-            }
-        });
+        swipeRefreshLayout.setOnRefreshListener(this);
         statusTimelineView.setOnLoadMoreListener(new LoadMoreRecyclerView.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
@@ -132,6 +129,7 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
                 statusPresenter.loadStatusTimeline(false, user, Status.FEATURE_IMAGE);
             }
         });
+        onRefresh();
     }
 
     @Override
@@ -149,6 +147,12 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
         } else if(verticalOffset == 0) {
             tabLayout.setElevation(0);
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        statusPresenter.loadStatusTimeline(true, user, Status.FEATURE_ALL);
+        statusPresenter.loadStatusTimeline(true, user, Status.FEATURE_IMAGE);
     }
 
     @Override

@@ -36,7 +36,7 @@ import com.gnayils.obiew.weibo.bean.StatusTimeline;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, StatusInterface.View {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener, StatusInterface.View {
 
     @Bind(R.id.toolbar)
     protected Toolbar toolbar;
@@ -100,12 +100,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         followerCountButton.setText(LoginUser.getUser().followers_count + "\n粉丝");
 
         statusPresenter = new StatusPresenter(this);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                statusPresenter.loadStatusTimeline(true);
-            }
-        });
+        swipeRefreshLayout.setOnRefreshListener(this);
         statusTimelineView.setOnLoadMoreListener(new StatusTimelineView.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
@@ -120,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .setAction("Action", null).show();
             }
         });
+        onRefresh();
     }
 
     @Override
@@ -174,6 +170,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onRefresh() {
+        statusPresenter.loadStatusTimeline(true);
     }
 
     @Override

@@ -34,7 +34,7 @@ import com.gnayils.obiew.weibo.bean.Status;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class StatusDetailActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener, CommentInterface.View, RepostInterface.View {
+public class StatusDetailActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener, SwipeRefreshLayout.OnRefreshListener, CommentInterface.View, RepostInterface.View {
 
     public static final String ARGS_KEY_STATUS = "ARGS_KEY_STATUS";
 
@@ -75,13 +75,7 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
                 return 0 > appBarCurrentVerticalOffset;
             }
         });
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                commentPresenter.loadCommentTimeline(status.id, true);
-                repostPresenter.loadRepostTimeline(status.id, true);
-            }
-        });
+        swipeRefreshLayout.setOnRefreshListener(this);
         appBarLayout.addOnOffsetChangedListener(this);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
@@ -111,6 +105,7 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
                 repostPresenter.loadRepostTimeline(status.id, false);
             }
         });
+        onRefresh();
     }
 
 
@@ -119,6 +114,12 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
         super.onStop();
         this.commentPresenter.unsubscribe();
         this.repostPresenter.unsubscribe();
+    }
+
+    @Override
+    public void onRefresh() {
+        commentPresenter.loadCommentTimeline(status.id, true);
+        repostPresenter.loadRepostTimeline(status.id, true);
     }
 
     @Override

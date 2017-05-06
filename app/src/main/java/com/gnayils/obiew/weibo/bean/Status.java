@@ -1,5 +1,11 @@
 package com.gnayils.obiew.weibo.bean;
 
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+
+import com.gnayils.obiew.MySpannableString;
+import com.gnayils.obiew.weibo.TextDecorator;
 import com.gnayils.obiew.weibo.Weibo;
 
 import java.io.Serializable;
@@ -17,10 +23,12 @@ public class Status implements Comparable<Status>, Serializable {
     public String mid;
     public String idstr;
     public String text;
+    private transient SpannableString spannableText;
     public int textLength;
     public int source_allowclick;
     public int source_type;
     public String source;
+    private transient Spannable spannableSource;
     public boolean favorited;
     public boolean truncated;
     public String in_reply_to_status_id;
@@ -62,6 +70,28 @@ public class Status implements Comparable<Status>, Serializable {
     public static final int FEATURE_MUSIC = 4;
 
     public static final int FEATURES_COUNT = 5;
+
+    public SpannableString getSpannableText() {
+        if(spannableText == null) {
+            spannableText = TextDecorator.decorate(text);
+        }
+        return spannableText;
+    }
+
+    public void setSpannableText(SpannableString spannableText) {
+        this.spannableText = spannableText;
+    }
+
+    public Spannable getSpannableSource() {
+        if(spannableSource == null) {
+            spannableSource = TextDecorator.replaceUrlSpan((Spannable) Html.fromHtml(source));
+        }
+        return spannableSource;
+    }
+
+    public void setSpannableSource(Spannable spannableSource) {
+        this.spannableSource = spannableSource;
+    }
 
     @Override
     public boolean equals(Object another) {

@@ -3,14 +3,17 @@ package com.gnayils.obiew.presenter;
 import android.util.Log;
 
 import com.gnayils.obiew.interfaces.CommentInterface;
+import com.gnayils.obiew.weibo.TextDecorator;
 import com.gnayils.obiew.weibo.api.CommentAPI;
 import com.gnayils.obiew.weibo.api.WeiboAPI;
 import com.gnayils.obiew.weibo.bean.CommentTimeline;
+import com.gnayils.obiew.weibo.bean.StatusTimeline;
 
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
+import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -43,6 +46,14 @@ public class CommentPresenter implements CommentInterface.Presenter {
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<CommentTimeline, CommentTimeline>() {
+
+                    @Override
+                    public CommentTimeline call(CommentTimeline commentTimeline) {
+                        TextDecorator.decorate(commentTimeline);
+                        return commentTimeline;
+                    }
+                })
                 .subscribe(new Subscriber<CommentTimeline>() {
                     @Override
                     public void onCompleted() {
