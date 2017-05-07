@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.gnayils.obiew.interfaces.StatusInterface;
 import com.gnayils.obiew.weibo.TextDecorator;
+import com.gnayils.obiew.weibo.VideoURLFinder;
 import com.gnayils.obiew.weibo.api.StatusAPI;
 import com.gnayils.obiew.weibo.api.WeiboAPI;
 import com.gnayils.obiew.weibo.bean.Status;
@@ -12,11 +13,14 @@ import com.gnayils.obiew.weibo.bean.User;
 
 import java.util.Arrays;
 
+import rx.Scheduler;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -47,18 +51,25 @@ public class StatusPresenter implements StatusInterface.Presenter {
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
+                        System.out.println("doOnSubscribe : " + Thread.currentThread().getName());
                         statusView.showStatusLoadingIndicator(isLoadingLatest, true);
                     }
                 })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<StatusTimeline, StatusTimeline>() {
-
+                .doOnNext(new Action1<StatusTimeline>() {
                     @Override
-                    public StatusTimeline call(StatusTimeline statusTimeline) {
-                        TextDecorator.decorate(statusTimeline);
-                        return statusTimeline;
+                    public void call(StatusTimeline statusTimeline) {
+                        System.out.println("first doOnNext : " + Thread.currentThread().getName());
+                        VideoURLFinder.find(statusTimeline);
                     }
                 })
+                .doOnNext(new Action1<StatusTimeline>() {
+                    @Override
+                    public void call(StatusTimeline statusTimeline) {
+                        System.out.println("doOnNext : " + Thread.currentThread().getName());
+                        TextDecorator.decorate(statusTimeline);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<StatusTimeline>(){
 
                     @Override
@@ -74,6 +85,7 @@ public class StatusPresenter implements StatusInterface.Presenter {
 
                     @Override
                     public void onNext(StatusTimeline timeline) {
+                        System.out.println("subscribe : " + Thread.currentThread().getName());
                         homeTimelineSinceId = timeline.max_id;
                         statusView.show(timeline, Status.FEATURE_ALL);
                     }

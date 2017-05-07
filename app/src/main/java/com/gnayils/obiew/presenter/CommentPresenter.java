@@ -13,6 +13,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
@@ -45,15 +46,13 @@ public class CommentPresenter implements CommentInterface.Presenter {
                         commentView.showCommentLoadingIndicator(isLoadingLatest,true);
                     }
                 })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<CommentTimeline, CommentTimeline>() {
-
+                .doOnNext(new Action1<CommentTimeline>() {
                     @Override
-                    public CommentTimeline call(CommentTimeline commentTimeline) {
+                    public void call(CommentTimeline commentTimeline) {
                         TextDecorator.decorate(commentTimeline);
-                        return commentTimeline;
                     }
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<CommentTimeline>() {
                     @Override
                     public void onCompleted() {

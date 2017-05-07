@@ -2,8 +2,6 @@ package com.gnayils.obiew.view;
 
 import android.content.Context;
 import android.support.v7.widget.CardView;
-import android.text.Html;
-import android.text.Spannable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -18,8 +16,7 @@ import com.gnayils.obiew.activity.StatusDetailActivity;
 import com.gnayils.obiew.activity.UserProfileActivity;
 import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.bean.Status;
-import com.gnayils.obiew.weibo.TextDecorator;
-import com.gnayils.obiew.weibo.TouchableLinkMovementMethod;
+import com.gnayils.obiew.weibo.WebURLMovementMethod;
 
 import static com.gnayils.obiew.util.ViewUtils.*;
 /**
@@ -141,7 +138,7 @@ public class StatusCardView extends CardView {
             statusTextTextView.setId(View.generateViewId());
             statusTextTextView.setText("微博内容微博内容微博内容微博内容微博内容微博内容微博内容微博内容微博内容");
             statusTextTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-            statusTextTextView.setOnTouchListener(TouchableLinkMovementMethod.getTouchListener());
+            statusTextTextView.setOnTouchListener(WebURLMovementMethod.getTouchListener());
             statusTextTextView.setPadding(dp2px(context, 8), dp2px(context, 4), dp2px(context, 8), dp2px(context, 4));
             LinearLayout.LayoutParams statusTextTextViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             statusTextTextView.setLayoutParams(statusTextTextViewLayoutParams);
@@ -162,7 +159,7 @@ public class StatusCardView extends CardView {
             retweetedStatusTextTextView = new TextView(context);
             retweetedStatusTextTextView.setText("微博内容微博内容微博内容微博内容微博内容微博内容微博内容微博内容微博内容");
             retweetedStatusTextTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-            retweetedStatusTextTextView.setOnTouchListener(TouchableLinkMovementMethod.getTouchListener());
+            retweetedStatusTextTextView.setOnTouchListener(WebURLMovementMethod.getTouchListener());
             retweetedStatusTextTextView.setPadding(dp2px(context, 8), dp2px(context, 4), dp2px(context, 8), dp2px(context, 4));
             LinearLayout.LayoutParams retweetedStatusTextTextViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             retweetedStatusTextTextView.setLayoutParams(retweetedStatusTextTextViewLayoutParams);

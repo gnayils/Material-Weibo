@@ -7,6 +7,7 @@ import com.gnayils.obiew.weibo.Weibo;
 
 import java.io.Serializable;
 import java.text.ParseException;
+import java.util.Objects;
 
 /**
  * Created by Gnayils on 12/03/2017.
@@ -54,7 +55,7 @@ public class Comment implements Comparable<Comment>, Serializable{
 
     @Override
     public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+        return Objects.hash(id);
     }
 
     @Override

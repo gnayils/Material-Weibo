@@ -3,8 +3,6 @@ package com.gnayils.obiew.weibo;
 import android.text.Layout;
 import android.text.Selection;
 import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.SpannedString;
 import android.text.method.LinkMovementMethod;
 import android.text.method.MovementMethod;
 import android.view.MotionEvent;
@@ -15,14 +13,14 @@ import android.widget.TextView;
  * Created by Gnayils on 18/02/2017.
  */
 
-public class TouchableLinkMovementMethod extends LinkMovementMethod {
+public class WebURLMovementMethod extends LinkMovementMethod {
 
-    private static LinkMovementMethod instance = new TouchableLinkMovementMethod();
+    private static LinkMovementMethod instance = new WebURLMovementMethod();
     private static TouchListener listener = new TouchListener();
 
     private TouchableSpan pressedSpan;
 
-    private TouchableLinkMovementMethod() {
+    private WebURLMovementMethod() {
 
     }
 

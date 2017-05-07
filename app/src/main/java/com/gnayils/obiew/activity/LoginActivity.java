@@ -126,7 +126,7 @@ public class LoginActivity extends AppCompatActivity {
                                         }).start();
                             }
                         })
-                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber<AccessToken>() {
                             @Override
                             public void onCompleted() {
@@ -147,6 +147,7 @@ public class LoginActivity extends AppCompatActivity {
             } else if (msg.what == MESSAGE_ACCESS_TOKEN_OBTAINED) {
                 WeiboAPI.get(UserAPI.class)
                         .show(TokenKeeper.getUid())
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber<User>() {
                             @Override
                             public void onCompleted() {

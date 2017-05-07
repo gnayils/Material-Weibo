@@ -81,8 +81,7 @@ public class WeiboAPI {
                         return ((Observable) result)
                                 .subscribeOn(Schedulers.io())
                                 .unsubscribeOn(Schedulers.io())
-                                .doOnError(new RetrofitErrorHandler())
-                                .observeOn(AndroidSchedulers.mainThread());
+                                .doOnError(new RetrofitErrorHandler());
                     } else {
                         Log.e(TAG, "all method in the retrofit instance must be return a Observable instance");
                         return null;

@@ -8,6 +8,7 @@ import com.gnayils.obiew.weibo.Weibo;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Gnayils on 18/03/2017.
@@ -75,7 +76,7 @@ public class Repost implements Comparable<Repost>, Serializable {
 
     @Override
     public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+        return Objects.hash(id);
     }
 
     @Override

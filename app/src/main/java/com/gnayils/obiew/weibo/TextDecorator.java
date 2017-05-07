@@ -1,32 +1,14 @@
 package com.gnayils.obiew.weibo;
 
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
-import android.provider.Browser;
-import android.provider.ContactsContract;
 import android.text.Html;
-import android.text.Layout;
-import android.text.Selection;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.TextPaint;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.text.style.ImageSpan;
-import android.text.style.StyleSpan;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
-import android.util.Patterns;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.TextView;
 
 import com.gnayils.obiew.App;
-import com.gnayils.obiew.R;
-import com.gnayils.obiew.bmpldr.BitmapLoader;
 import com.gnayils.obiew.view.CenteredImageSpan;
 import com.gnayils.obiew.weibo.bean.Comment;
 import com.gnayils.obiew.weibo.bean.CommentTimeline;
@@ -45,6 +27,8 @@ import java.util.regex.Pattern;
  */
 
 public class TextDecorator {
+
+    public static final Pattern WEB_URL = Pattern.compile("(http|ftp|https):\\/\\/[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,@?^=%&amp;:/~\\+#]*[\\w\\-\\@?^=%&amp;/~\\+#])?");
 
     public static void decorate(StatusTimeline statusTimeline) {
         if(statusTimeline != null && statusTimeline.statuses != null) {
@@ -77,7 +61,7 @@ public class TextDecorator {
     public static SpannableString decorate(String text) {
         SpannableString spannableString = null;
         if(text != null && !text.isEmpty()) {
-            spannableString = decorateWebUrls(text);
+            spannableString = decorateURLs(text);
             decorateTopics(spannableString);
             decorateMentions(spannableString);
             decorateEmotions(spannableString);
@@ -85,19 +69,19 @@ public class TextDecorator {
         return spannableString;
     }
 
-    private static SpannableString decorateWebUrls(String text) {
-        List<LinkSpan> webUrlLinkSpans = new ArrayList<>();
+    private static SpannableString decorateURLs(String text) {
+        List<WebURLSpan> webUrlSpans = new ArrayList<>();
         Matcher httpMatcher;
         String replacement = "网页链接";
-        while((httpMatcher = Patterns.WEB_URL.matcher(text)).find()) {
-            String webUrl = httpMatcher.group();
-            text = text.replace(webUrl, replacement);
-            LinkSpan linkSpan = new LinkSpan(webUrl, httpMatcher.start(), httpMatcher.end() - (webUrl.length() - replacement.length()));
-            webUrlLinkSpans.add(linkSpan);
+        while((httpMatcher = WEB_URL.matcher(text)).find()) {
+            String webURL = httpMatcher.group();
+            text = text.replace(webURL, replacement);
+            WebURLSpan webURLSpan = new WebURLSpan(webURL, httpMatcher.start(), httpMatcher.end() - (webURL.length() - replacement.length()));
+            webUrlSpans.add(webURLSpan);
         }
         SpannableString spannableString = new SpannableString(text);
-        for(LinkSpan linkSpan : webUrlLinkSpans) {
-            spannableString.setSpan(linkSpan, linkSpan.start, linkSpan.end, linkSpan.flag);
+        for(WebURLSpan webURLSpan : webUrlSpans) {
+            spannableString.setSpan(webURLSpan, webURLSpan.start, webURLSpan.end, webURLSpan.flag);
         }
         return spannableString;
     }
@@ -131,7 +115,7 @@ public class TextDecorator {
         for (URLSpan urlSpan : urlSpans) {
             int start = spannable.getSpanStart(urlSpan);
             int end = spannable.getSpanEnd(urlSpan);
-            LinkSpan linkSpan = new LinkSpan(urlSpan.getURL(), start, end);
+            WebURLSpan linkSpan = new WebURLSpan(urlSpan.getURL(), start, end);
             spannable.removeSpan(urlSpan);
             spannable.setSpan(linkSpan, start, end, linkSpan.flag);
         }
@@ -140,35 +124,4 @@ public class TextDecorator {
 
 
 
-    public static class LinkSpan extends TouchableSpan {
-
-        public String url;
-        public int start;
-        public int end;
-        public int flag = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
-
-        public LinkSpan(String url, int start, int end) {
-            super(App.resources().getColor(R.color.colorLink), App.resources().getColor(R.color.colorLink), App.resources().getColor(R.color.colorLinkBackground));
-            this.url = url;
-            this.start = start;
-            this.end = end;
-        }
-
-        @Override
-        public void onClick(View widget) {
-            Uri uri = Uri.parse(url);
-            Context context = widget.getContext();
-            if (uri.getScheme().startsWith("http")) {
-                Intent intent = new Intent();
-                intent.setAction("android.intent.action.VIEW");
-                intent.setData(uri);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);
-            } else {
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                intent.putExtra(Browser.EXTRA_APPLICATION_ID, context.getPackageName());
-                context.startActivity(intent);
-            }
-        }
-    }
 }

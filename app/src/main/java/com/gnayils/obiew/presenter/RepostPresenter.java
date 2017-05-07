@@ -12,6 +12,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
@@ -45,15 +46,13 @@ public class RepostPresenter implements RepostInterface.Presenter {
                         repostView.showRepostLoadingIndicator(isLoadingLatest, true);
                     }
                 })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<RepostTimeline, RepostTimeline>(){
-
+                .doOnNext(new Action1<RepostTimeline>() {
                     @Override
-                    public RepostTimeline call(RepostTimeline repostTimeline) {
+                    public void call(RepostTimeline repostTimeline) {
                         TextDecorator.decorate(repostTimeline);
-                        return repostTimeline;
                     }
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<RepostTimeline>() {
                     @Override
                     public void onCompleted() {

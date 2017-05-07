@@ -10,7 +10,9 @@ import com.gnayils.obiew.weibo.Weibo;
 
 import java.io.Serializable;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Gnayils on 16/11/2016.
@@ -62,6 +64,7 @@ public class Status implements Comparable<Status>, Serializable {
     public List<?> darwin_tags;
     public List<?> hot_weibo_tags;
     public List<?> text_tag_tips;
+    public List<URL> urls = new ArrayList<>();
 
     public static final int FEATURE_ALL = 0;
     public static final int FEATURE_ORIGINAL = 1;
@@ -72,7 +75,7 @@ public class Status implements Comparable<Status>, Serializable {
     public static final int FEATURES_COUNT = 5;
 
     public SpannableString getSpannableText() {
-        if(spannableText == null) {
+        if (spannableText == null) {
             spannableText = TextDecorator.decorate(text);
         }
         return spannableText;
@@ -83,7 +86,7 @@ public class Status implements Comparable<Status>, Serializable {
     }
 
     public Spannable getSpannableSource() {
-        if(spannableSource == null) {
+        if (spannableSource == null) {
             spannableSource = TextDecorator.replaceUrlSpan((Spannable) Html.fromHtml(source));
         }
         return spannableSource;
@@ -97,7 +100,7 @@ public class Status implements Comparable<Status>, Serializable {
     public boolean equals(Object another) {
         if (another == this) {
             return true;
-        }else if (!(another instanceof Status)) {
+        } else if (!(another instanceof Status)) {
             return false;
         }
         Status anotherStatus = (Status) another;
@@ -106,7 +109,7 @@ public class Status implements Comparable<Status>, Serializable {
 
     @Override
     public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+        return Objects.hash(id);
     }
 
     @Override
