@@ -61,7 +61,7 @@ public class ApiTest {
         String regex = "http:\\/\\/t\\.cn\\/\\w{7}";
         assertTrue(Pattern.matches(regex, "http://t.cn/RaUUb1v"));
 
-        String text = "{\"urls\":[{\"result\":true,\"url_short\":\"http://t.cn/RaUUb1v\",\"url_long\":\"http://video.weibo.com/show?fid=1034:fefc87144b09http://t.cn/RaUUb1vce6b63ac4f41e260c354\",\"type\":39,\"transcode\":0}]}";
+        String text = "{\"videoUrls\":[{\"result\":true,\"url_short\":\"http://t.cn/RaUUb1v\",\"url_long\":\"http://video.weibo.com/show?fid=1034:fefc87144b09http://t.cn/RaUUb1vce6b63ac4f41e260c354\",\"type\":39,\"transcode\":0}]}";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(text);
         while (matcher.find()) {

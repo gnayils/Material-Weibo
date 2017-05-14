@@ -5,6 +5,7 @@ import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ import com.gnayils.obiew.activity.UserProfileActivity;
 import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.weibo.WebURLMovementMethod;
+import com.gnayils.obiew.weibo.bean.Video;
 
 import static com.gnayils.obiew.util.ViewUtils.*;
 /**
@@ -37,10 +39,12 @@ public class StatusCardView extends CardView {
     public TextView statusSourceTextView;
     public TextView statusTextTextView;
     public StatusPicturesView statusPicturesView;
+    public VideoPreviewView videoPreviewView;
 
     public LinearLayout retweetedStatusView;
     public TextView retweetedStatusTextTextView;
     public StatusPicturesView retweetedStatusPicturesView;
+    public VideoPreviewView retweetedVideoPreviewView;
 
     public LinearLayout commentLayout;
     public CenteredDrawableButton repostButton;
@@ -148,6 +152,11 @@ public class StatusCardView extends CardView {
             LinearLayout.LayoutParams statusPicturesViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             statusPicturesView.setLayoutParams(statusPicturesViewLayoutParams);
 
+            videoPreviewView = new VideoPreviewView(context);
+            videoPreviewView.setPadding(dp2px(context, 8), dp2px(context, 4), dp2px(context, 8), dp2px(context, 4));
+            LinearLayout.LayoutParams videoPreviewViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp2px(context, 200));
+            videoPreviewView.setLayoutParams(videoPreviewViewLayoutParams);
+
             retweetedStatusView = new LinearLayout(context);
             retweetedStatusView.setId(View.generateViewId());
             retweetedStatusView.setOnClickListener(statusViewOnClickListener);
@@ -167,8 +176,13 @@ public class StatusCardView extends CardView {
             retweetedStatusPicturesView.setPadding(dp2px(context, 8), dp2px(context, 4), dp2px(context, 8), dp2px(context, 4));
             LinearLayout.LayoutParams retweetedStatusPicturesViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             retweetedStatusPicturesView.setLayoutParams(retweetedStatusPicturesViewLayoutParams);
+            retweetedVideoPreviewView = new VideoPreviewView(context);
+            retweetedVideoPreviewView.setPadding(dp2px(context, 8), dp2px(context, 4), dp2px(context, 8), dp2px(context, 4));
+            LinearLayout.LayoutParams retweetedVideoPreviewViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp2px(context, 200));
+            retweetedVideoPreviewView.setLayoutParams(retweetedVideoPreviewViewLayoutParams);
             retweetedStatusView.addView(retweetedStatusTextTextView);
             retweetedStatusView.addView(retweetedStatusPicturesView);
+            retweetedStatusView.addView(retweetedVideoPreviewView);
 
             commentLayout = new LinearLayout(context);
             commentLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -208,6 +222,7 @@ public class StatusCardView extends CardView {
         rootView.addView(userInfoLayout);
         rootView.addView(statusTextTextView);
         rootView.addView(statusPicturesView);
+        rootView.addView(videoPreviewView);
         rootView.addView(retweetedStatusView);
         rootView.addView(commentLayout);
 
@@ -239,12 +254,14 @@ public class StatusCardView extends CardView {
         statusSourceTextView.setText(status.getSpannableSource());
         statusTextTextView.setText(status.getSpannableText(), TextView.BufferType.SPANNABLE);
         statusPicturesView.setPictureUrls(status.pic_urls);
+        videoPreviewView.show(status.videoUrls);
         if(status.retweeted_status == null) {
             retweetedStatusView.setVisibility(View.GONE);
         } else {
             retweetedStatusView.setVisibility(View.VISIBLE);
             retweetedStatusTextTextView.setText(status.retweeted_status.getSpannableText(), TextView.BufferType.SPANNABLE);
             retweetedStatusPicturesView.setPictureUrls(status.retweeted_status.pic_urls);
+            retweetedVideoPreviewView.show(status.retweeted_status.videoUrls);
         }
         repostButton.setText(String.valueOf(status.reposts_count));
         commentButton.setText(String.valueOf(status.comments_count));

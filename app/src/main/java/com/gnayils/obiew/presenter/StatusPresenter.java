@@ -1,5 +1,6 @@
 package com.gnayils.obiew.presenter;
 
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.gnayils.obiew.interfaces.StatusInterface;
@@ -13,14 +14,12 @@ import com.gnayils.obiew.weibo.bean.User;
 
 import java.util.Arrays;
 
-import rx.Scheduler;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.exceptions.Exceptions;
 import rx.functions.Action0;
 import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -51,22 +50,35 @@ public class StatusPresenter implements StatusInterface.Presenter {
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        System.out.println("doOnSubscribe : " + Thread.currentThread().getName());
                         statusView.showStatusLoadingIndicator(isLoadingLatest, true);
                     }
                 })
-                .doOnNext(new Action1<StatusTimeline>() {
+                .doOnUnsubscribe(new Action0() {
                     @Override
-                    public void call(StatusTimeline statusTimeline) {
-                        System.out.println("first doOnNext : " + Thread.currentThread().getName());
-                        VideoURLFinder.find(statusTimeline);
+                    public void call() {
+                        statusView.showStatusLoadingIndicator(isLoadingLatest, false);
                     }
                 })
                 .doOnNext(new Action1<StatusTimeline>() {
                     @Override
                     public void call(StatusTimeline statusTimeline) {
-                        System.out.println("doOnNext : " + Thread.currentThread().getName());
+                        Log.d(TAG, "VideoURLFinder find start");
+                        long startTime = SystemClock.uptimeMillis();
+                        try {
+                            VideoURLFinder.find(statusTimeline);
+                        } catch (Throwable throwable) {
+                            throw Exceptions.propagate(throwable);
+                        }
+                        Log.d(TAG, "VideoURLFinder find end, took times: " + (SystemClock.uptimeMillis() - startTime));
+                    }
+                })
+                .doOnNext(new Action1<StatusTimeline>() {
+                    @Override
+                    public void call(StatusTimeline statusTimeline) {
+                        Log.d(TAG, "TextDecorator decorate start");
+                        long startTime = SystemClock.uptimeMillis();
                         TextDecorator.decorate(statusTimeline);
+                        Log.d(TAG, "TextDecorator decorate end, took times: " + (SystemClock.uptimeMillis() - startTime));
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -80,12 +92,12 @@ public class StatusPresenter implements StatusInterface.Presenter {
                     @Override
                     public void onError(Throwable e) {
                         statusView.showStatusLoadingIndicator(isLoadingLatest, false);
-                        Log.e(TAG, "update status time line failed: ", e);
+                        Log.e(TAG, "update status timeline failed: ", e);
                     }
 
                     @Override
                     public void onNext(StatusTimeline timeline) {
-                        System.out.println("subscribe : " + Thread.currentThread().getName());
+                        Log.d(TAG, "update status timeline successful");
                         homeTimelineSinceId = timeline.max_id;
                         statusView.show(timeline, Status.FEATURE_ALL);
                     }
@@ -103,7 +115,35 @@ public class StatusPresenter implements StatusInterface.Presenter {
                         statusView.showStatusLoadingIndicator(isLoadingLatest, true);
                     }
                 })
-                .subscribeOn(AndroidSchedulers.mainThread())
+                .doOnUnsubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        statusView.showStatusLoadingIndicator(isLoadingLatest, false);
+                    }
+                })
+                .doOnNext(new Action1<StatusTimeline>() {
+                    @Override
+                    public void call(StatusTimeline statusTimeline) {
+                        Log.d(TAG, "VideoURLFinder find start");
+                        long startTime = SystemClock.uptimeMillis();
+                        try {
+                            VideoURLFinder.find(statusTimeline);
+                        } catch (Throwable throwable) {
+                            throw Exceptions.propagate(throwable);
+                        }
+                        Log.d(TAG, "VideoURLFinder find end, took times: " + (SystemClock.uptimeMillis() - startTime));
+                    }
+                })
+                .doOnNext(new Action1<StatusTimeline>() {
+                    @Override
+                    public void call(StatusTimeline statusTimeline) {
+                        Log.d(TAG, "TextDecorator decorate start");
+                        long startTime = SystemClock.uptimeMillis();
+                        TextDecorator.decorate(statusTimeline);
+                        Log.d(TAG, "TextDecorator decorate end, took times: " + (SystemClock.uptimeMillis() - startTime));
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<StatusTimeline>(){
 
                     @Override
@@ -114,11 +154,12 @@ public class StatusPresenter implements StatusInterface.Presenter {
                     @Override
                     public void onError(Throwable e) {
                         statusView.showStatusLoadingIndicator(isLoadingLatest, false);
-                        Log.e(TAG, "update status time line failed: ", e);
+                        Log.e(TAG, "update status timeline failed: ", e);
                     }
 
                     @Override
                     public void onNext(StatusTimeline timeline) {
+                        Log.d(TAG, "update status timeline successful");
                         statusView.show(timeline, feature);
                     }
                 });

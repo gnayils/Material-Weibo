@@ -64,7 +64,7 @@ public class StatusPicturesView extends ViewGroup implements View.OnClickListene
         }
         if(picUrlsList.size() > getChildCount()) {
             setVisibility(View.GONE);
-            throw new IllegalArgumentException("picture urls too much for the StatusPicturesView");
+            throw new IllegalArgumentException("picture videoUrls too much for the StatusPicturesView");
         }
         this.picUrlsList = picUrlsList;
         for (int i = 0; i < getChildCount(); i++) {

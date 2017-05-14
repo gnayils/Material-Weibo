@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.LruCache;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,6 +28,7 @@ public class EmotionDB extends SQLiteOpenHelper {
 
     private static EmotionDB instance;
     private static BitmapFactory.Options options;
+    private static LruCache<String, Bitmap> cache;
 
     private Context context;
 
@@ -86,23 +88,44 @@ public class EmotionDB extends SQLiteOpenHelper {
         if(instance == null) {
             instance = new EmotionDB(context);
             options = new BitmapFactory.Options();
+            cache  = new LruCache<String, Bitmap>(1024) {
+
+                @Override
+                protected int sizeOf(String key, Bitmap value) {
+                    return value.getByteCount() / 1024;
+                }
+            };
         }
     }
 
     public static Bitmap get(String phrase, int inSampleSize) {
         Bitmap bitmap = null;
         if(instance != null) {
-            Cursor cursor = instance.getReadableDatabase().query("emotion", new String[]{"_id", "phrase", "image"}, "phrase=?", new String[]{phrase}, null, null,null);
+            String key = phrase + "," + inSampleSize;
+            bitmap = getFromCache(key);
+            if(bitmap != null) {
+                return bitmap;
+            }
+            Cursor cursor = instance.getReadableDatabase().query("emotion", new String[]{"image"}, "phrase=?", new String[]{phrase}, null, null,null);
             if(cursor.moveToNext()) {
                 byte[] bytes = cursor.getBlob(cursor.getColumnIndex("image"));
                 options.inSampleSize = inSampleSize;
                 bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+                putToCache(key, bitmap);
             }
-            if(cursor != null) {
-                cursor.close();
-            }
+            cursor.close();
         }
         return bitmap;
+    }
+
+    private static Bitmap getFromCache(String key) {
+        return cache.get(key);
+    }
+
+    private static void putToCache(String key, Bitmap bitmap) {
+        if(getFromCache(key) == null) {
+            cache.put(key, bitmap);
+        }
     }
 
     public static void destroy() {

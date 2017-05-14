@@ -16,6 +16,8 @@ public class URL implements Serializable {
     public int type;
     public int transcode;
 
+    public Video video;
+
     public static final int TYPE_NORMAL = 0;
     public static final int TYPE_VIDEO = 1;
     public static final int TYPE_MUSIC = 2;
@@ -37,5 +39,11 @@ public class URL implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(url_short);
+    }
+
+
+    @Override
+    public String toString() {
+        return "url_short: " + url_short + ", url_long: " + url_long;
     }
 }
