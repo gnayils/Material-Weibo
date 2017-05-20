@@ -6,7 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -19,31 +19,26 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.bmpldr.BitmapLoadAdapter;
-import com.gnayils.obiew.bmpldr.BitmapLoader;
-import com.gnayils.obiew.bmpldr.BitmapLoadListener;
 import com.gnayils.obiew.util.URLParser;
 import com.gnayils.obiew.view.AvatarView;
-import com.gnayils.obiew.view.CircleImageView;
-import com.gnayils.obiew.weibo.LoginUser;
-import com.gnayils.obiew.weibo.TokenKeeper;
+import com.gnayils.obiew.weibo.Account;
 import com.gnayils.obiew.weibo.api.AuthorizeAPI;
 import com.gnayils.obiew.weibo.api.UserAPI;
 import com.gnayils.obiew.weibo.api.WeiboAPI;
 import com.gnayils.obiew.weibo.bean.AccessToken;
 import com.gnayils.obiew.weibo.bean.User;
 
+import java.io.ByteArrayOutputStream;
 import java.net.URL;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.exceptions.Exceptions;
 import rx.functions.Action0;
+import rx.functions.Action1;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -69,10 +64,11 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
-        String accessToken = TokenKeeper.getToken();
-        if (accessToken != null && !accessToken.isEmpty()) {
+        if (Account.loadCache(this)) {
             webView.setVisibility(View.INVISIBLE);
-            handler.dispatchMessage(handler.obtainMessage(MESSAGE_ACCESS_TOKEN_OBTAINED));
+            Bitmap avatar = BitmapFactory.decodeByteArray(Account.user.avatarBytes, 0, Account.user.avatarBytes.length);
+            avatarView.avatarCircleImageView.setImageBitmap(avatar);
+            handler.sendMessageDelayed(handler.obtainMessage(MESSAGE_LOGIN_USER_OBTAINED), 1000);
             return;
         }
 
@@ -140,13 +136,30 @@ public class LoginActivity extends AppCompatActivity {
 
                             @Override
                             public void onNext(AccessToken accessToken) {
-                                TokenKeeper.write(accessToken);
+                                Account.accessToken = accessToken;
                                 dispatchMessage(obtainMessage(MESSAGE_ACCESS_TOKEN_OBTAINED));
                             }
                         });
             } else if (msg.what == MESSAGE_ACCESS_TOKEN_OBTAINED) {
                 WeiboAPI.get(UserAPI.class)
-                        .show(TokenKeeper.getUid())
+                        .show(Account.accessToken.uid)
+                        .doOnNext(new Action1<User>() {
+                            @Override
+                            public void call(User user) {
+                                try {
+                                    Account.user = user;
+                                    Bitmap avatar = Glide.with(LoginActivity.this)
+                                            .load(Account.user.avatar_large).asBitmap().into(-1, -1).get();
+                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                    if (avatar.compress(Bitmap.CompressFormat.PNG, 100, baos)) {
+                                        Account.user.avatarBytes = baos.toByteArray();
+                                        Account.cache(LoginActivity.this);
+                                    }
+                                } catch (Exception e) {
+                                    throw Exceptions.propagate(e);
+                                }
+                            }
+                        })
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber<User>() {
                             @Override
@@ -161,19 +174,12 @@ public class LoginActivity extends AppCompatActivity {
 
                             @Override
                             public void onNext(User user) {
-                                LoginUser.setUser(user);
-                                dispatchMessage(obtainMessage(MESSAGE_LOGIN_USER_OBTAINED));
+                                sendMessageDelayed(obtainMessage(MESSAGE_LOGIN_USER_OBTAINED), 1000);
                             }
                         });
             } else if(msg.what == MESSAGE_LOGIN_USER_OBTAINED) {
-                Glide.with(LoginActivity.this).load(LoginUser.getUser().avatar_large).into(avatarView.avatarCircleImageView);
-                postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        MainActivity.start(LoginActivity.this);
-                        LoginActivity.this.finish();
-                    }
-                }, 1000);
+                MainActivity.start(LoginActivity.this);
+                LoginActivity.this.finish();
             }
         }
     };

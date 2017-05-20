@@ -39,6 +39,7 @@ public class User implements Serializable {
     public boolean allow_all_comment;
     public String avatar_large;
     public String avatar_hd;
+    public byte[] avatarBytes;
     public String verified_reason;
     public String verified_trade;
     public String verified_reason_url;

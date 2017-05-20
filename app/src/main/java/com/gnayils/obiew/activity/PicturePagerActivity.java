@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.gnayils.obiew.R;
@@ -25,7 +26,7 @@ import butterknife.ButterKnife;
  * Created by Gnayils on 04/03/2017.
  */
 
-public class PicturePagerActivity extends FragmentActivity {
+public class PicturePagerActivity extends AppCompatActivity {
 
     public static final String ARGS_KEY_CURRENT_PICTURE_POSITION = "ARGS_KEY_CURRENT_PICTURE_POSITION";
     public static final String ARGS_KEY_PICTURE_URLS = "ARGS_KEY_PICTURE_URLS";

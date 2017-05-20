@@ -4,13 +4,11 @@ import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 
-import com.gnayils.obiew.MySpannableString;
 import com.gnayils.obiew.weibo.TextDecorator;
 import com.gnayils.obiew.weibo.Weibo;
 
 import java.io.Serializable;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 

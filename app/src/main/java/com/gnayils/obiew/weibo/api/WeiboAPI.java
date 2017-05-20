@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.gnayils.obiew.App;
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.weibo.TokenKeeper;
+import com.gnayils.obiew.weibo.Account;
 import com.gnayils.obiew.weibo.bean.APIError;
 
 import org.greenrobot.eventbus.EventBus;
@@ -25,16 +25,13 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
-import okio.Buffer;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.HttpException;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -118,13 +115,15 @@ public class WeiboAPI {
 
         @Override
         public Response intercept(Chain chain) throws IOException {
-            Request original = chain.request();
-            HttpUrl originalHttpUrl = original.url();
-            HttpUrl url = originalHttpUrl.newBuilder()
-                    .addQueryParameter("access_token", TokenKeeper.getToken())
-                    .build();
-            Request.Builder requestBuilder = original.newBuilder().url(url);
-            Request request = requestBuilder.build();
+            Request request = chain.request();
+            if(Account.accessToken != null) {
+                HttpUrl httpUrl = request.url();
+                HttpUrl url = httpUrl.newBuilder()
+                        .addQueryParameter("access_token", Account.accessToken.access_token)
+                        .build();
+                Request.Builder requestBuilder = request.newBuilder().url(url);
+                request = requestBuilder.build();
+            }
             return chain.proceed(request);
         }
     }

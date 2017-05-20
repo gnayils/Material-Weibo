@@ -12,7 +12,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,14 +21,13 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.bmpldr.BitmapLoader;
 import com.gnayils.obiew.interfaces.BasePresenter;
 import com.gnayils.obiew.interfaces.StatusInterface;
 import com.gnayils.obiew.interfaces.UserInterface;
 import com.gnayils.obiew.presenter.StatusPresenter;
 import com.gnayils.obiew.view.AvatarView;
 import com.gnayils.obiew.view.StatusTimelineView;
-import com.gnayils.obiew.weibo.LoginUser;
+import com.gnayils.obiew.weibo.Account;
 import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.weibo.bean.StatusTimeline;
 
@@ -84,20 +82,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         statusCountButton = (Button) headerView.findViewById(R.id.button_status_count);
         followCountButton = (Button) headerView.findViewById(R.id.button_follow_count);
         followerCountButton = (Button) headerView.findViewById(R.id.button_follower_count);
-        if(LoginUser.getUser().cover_image_phone != null && !LoginUser.getUser().cover_image_phone.isEmpty()) {
-            String coverImageUrl = LoginUser.getUser().cover_image_phone;
+        if(Account.user.cover_image_phone != null && !Account.user.cover_image_phone.isEmpty()) {
+            String coverImageUrl = Account.user.cover_image_phone;
             if(coverImageUrl.indexOf(";") != 0) {
                 String[] coverImageUrls = coverImageUrl.split(";");
                 coverImageUrl = coverImageUrls[(int) (Math.random() * coverImageUrls.length)];
             }
             Glide.with(this).load(coverImageUrl).into(coverImageView);
         }
-        Glide.with(this).load(LoginUser.getUser().avatar_large).into(avatarView.avatarCircleImageView);
-        screenNameTextView.setText(LoginUser.getUser().screen_name);
-        descriptionTextView.setText(LoginUser.getUser().description == null || LoginUser.getUser().description.isEmpty() ? "暂无介绍" : LoginUser.getUser().description);
-        statusCountButton.setText(LoginUser.getUser().statuses_count + "\n微博");
-        followCountButton.setText(LoginUser.getUser().friends_count + "\n关注");
-        followerCountButton.setText(LoginUser.getUser().followers_count + "\n粉丝");
+        Glide.with(this).load(Account.user.avatar_large).into(avatarView.avatarCircleImageView);
+        screenNameTextView.setText(Account.user.screen_name);
+        descriptionTextView.setText(Account.user.description == null || Account.user.description.isEmpty() ? "暂无介绍" : Account.user.description);
+        statusCountButton.setText(Account.user.statuses_count + "\n微博");
+        followCountButton.setText(Account.user.friends_count + "\n关注");
+        followerCountButton.setText(Account.user.followers_count + "\n粉丝");
 
         statusPresenter = new StatusPresenter(this);
         swipeRefreshLayout.setOnRefreshListener(this);

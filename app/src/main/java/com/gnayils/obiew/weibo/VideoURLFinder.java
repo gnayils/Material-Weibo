@@ -38,7 +38,8 @@ public class VideoURLFinder {
     public static final Pattern SHORT_URL = Pattern.compile("http:\\/\\/t\\.cn\\/\\w{7}");
     public static final String VIDEO_URL_PREFIX = "http://video.weibo.com/show";
 
-    public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.120 Safari/535.2";
+    //public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.120 Safari/535.2";
+    public static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36";
     public static final Map<String, String> COOKIES = new HashMap<>();
 
     static {
@@ -141,16 +142,13 @@ public class VideoURLFinder {
 
     public static void loadVideoInfo(URL url) {
         try {
-            Log.d(TAG, "load video information from url: " + url.url_short + "\t" + url.url_long);
-            Connection.Response response = Jsoup.connect(url.url_long).userAgent(USER_AGENT)
-                    .cookies(COOKIES).followRedirects(true).execute();
-            String redirectedUrl = response.url().toString();
-            Document document = Jsoup.connect(redirectedUrl).userAgent(USER_AGENT)
-                    .cookies(COOKIES).get();
+            Document document = Jsoup.connect(url.url_long).userAgent(USER_AGENT)
+                    .cookie("SUB", "_2AkMuSg_ndcPxrAFTnPwTzmzjaYpH-jydn2YRAn7uJhMyAxh77lMIqSUGMTnbUqRRKAkzLekoReEuO7dMAA..").get();
             Elements common_video_player = document.select("#playerRoom [node-type=\"common_video_player\"]");
             String action_data = common_video_player.attr("action-data");
+            Log.d(TAG, "action_data: " + action_data);
             Map<String, String> map = URLParser.parse(new java.net.URL(VIDEO_URL_PREFIX + "?" + action_data));
-            for (Map.Entry<String, String> entry : map.entrySet()) {
+            for(Map.Entry<String, String> entry : map.entrySet()) {
                 Log.d(TAG, entry.getKey() + "=" + entry.getValue());
             }
             Gson gson = new Gson();
@@ -158,7 +156,6 @@ public class VideoURLFinder {
             Log.d(TAG, "jsonElement: \n" + jsonElement.toString());
             Video video = gson.fromJson(jsonElement, Video.class);
             url.video = video;
-            Log.d(TAG, "video information: ");
         } catch (Exception e) {
             Log.e(TAG, "load video information failed from the url: " + url.url_long, e);
         }

@@ -6,9 +6,8 @@ import android.content.res.Resources;
 import android.util.Log;
 
 import com.gnayils.obiew.activity.LoginActivity;
-import com.gnayils.obiew.bmpldr.BitmapLoader;
+import com.gnayils.obiew.weibo.Account;
 import com.gnayils.obiew.weibo.EmotionDB;
-import com.gnayils.obiew.weibo.TokenKeeper;
 import com.gnayils.obiew.weibo.bean.APIError;
 
 import org.greenrobot.eventbus.EventBus;
@@ -44,7 +43,7 @@ public class App extends Application {
         switch (apiError.error_code) {
             case APIError.INVALID_ACCESS_TOKEN:
             case APIError.EXPIRED_TOKEN:
-                TokenKeeper.clear();
+                Account.clearCache(this);
                 LoginActivity.start(this);
                 break;
             default:

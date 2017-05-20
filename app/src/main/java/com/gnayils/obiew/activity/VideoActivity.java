@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
@@ -15,7 +17,11 @@ import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
 import com.gnayils.obiew.R;
+import com.gnayils.obiew.weibo.VideoURLFinder;
 import com.gnayils.obiew.weibo.bean.Video;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -48,24 +54,34 @@ public class VideoActivity extends AppCompatActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            currentPosition = savedInstanceState.getInt(STATE_CURRENT_POSITION, 0);
-        }
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_video);
         ButterKnife.bind(this);
         video = (Video) getIntent().getSerializableExtra(ARGS_KEY_VIDEO);
         MediaController mediaController = new MediaController(this);
         mediaController.setAnchorView(videoView);
         videoView.setMediaController(mediaController);
-        videoView.setVideoURI(Uri.parse(video.video_src));
-        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+        Map<String, String> header = new HashMap<>();
+        videoView.setVideoURI(Uri.parse(video.video_src), header);
+        videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
             @Override
-            public void onPrepared(MediaPlayer mp) {
-                coverImageView.setVisibility(View.GONE);
-                progressBar.setVisibility(View.GONE);
+            public boolean onInfo(MediaPlayer mp, int what, int extra) {
+                if(what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
+                    coverImageView.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
+                    return true;
+                }
+                return false;
             }
         });
         Glide.with(this).load(video.cover_img).dontAnimate().into(coverImageView);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        currentPosition = savedInstanceState.getInt(STATE_CURRENT_POSITION, 0);
     }
 
     @Override
@@ -91,7 +107,6 @@ public class VideoActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        videoView.suspend();
     }
 
     @Override
@@ -103,7 +118,6 @@ public class VideoActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        videoView.stopPlayback();
     }
 
     public static void start(Context context, Video video) {

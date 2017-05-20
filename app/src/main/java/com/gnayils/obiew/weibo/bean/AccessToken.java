@@ -1,10 +1,12 @@
 package com.gnayils.obiew.weibo.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by Gnayils on 19/03/2017.
  */
 
-public class AccessToken {
+public class AccessToken implements Serializable{
 
     public String uid;
     public String access_token;
