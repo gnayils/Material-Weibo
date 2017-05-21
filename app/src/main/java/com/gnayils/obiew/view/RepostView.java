@@ -76,7 +76,7 @@ public class RepostView extends CardView {
 
         repostTextTextView = new TextView(context);
         repostTextTextView.setText("微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发");
-        repostTextTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        repostTextTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.repost_text_size));
         RelativeLayout.LayoutParams commentTextTextViewLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         commentTextTextViewLayoutParams.addRule(RelativeLayout.BELOW, userAvatarView.getId());
         commentTextTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, userAvatarView.getId());

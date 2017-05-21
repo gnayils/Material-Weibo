@@ -72,9 +72,13 @@ public class Status implements Comparable<Status>, Serializable {
 
     public static final int FEATURES_COUNT = 5;
 
-    public SpannableString getSpannableText() {
+    public SpannableString getSpannableText(boolean isRetweetedStatus) {
         if (spannableText == null) {
-            spannableText = TextDecorator.decorate(text);
+            String statusText = text;
+            if(isRetweetedStatus) {
+                statusText = "@" + user.screen_name +  ": " + text;
+            }
+            spannableText = TextDecorator.decorate(statusText);
         }
         return spannableText;
     }

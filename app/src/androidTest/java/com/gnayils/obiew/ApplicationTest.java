@@ -32,17 +32,6 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
         Log.v(TAG, "Large Memory class: " + am.getLargeMemoryClass());
     }
 
-    public void testEmotionResource() {
-        String[] arrays = getContext().getResources().getStringArray(R.array.emotion_map);
-        for (String string : arrays) {
-            try {
-                R.drawable.class.getDeclaredField(string.split(",")[1]);
-            } catch (NoSuchFieldException e) {
-                System.out.println(string + " not found");
-            }
-        }
-    }
-
     public void testRxJavaThreadPolicy() {
         Observable
                 .create(new Observable.OnSubscribe<String>() {

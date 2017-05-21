@@ -82,6 +82,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         statusCountButton = (Button) headerView.findViewById(R.id.button_status_count);
         followCountButton = (Button) headerView.findViewById(R.id.button_follow_count);
         followerCountButton = (Button) headerView.findViewById(R.id.button_follower_count);
+        avatarView.avatarCircleImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UserProfileActivity.start(MainActivity.this, Account.user);
+            }
+        });
         if(Account.user.cover_image_phone != null && !Account.user.cover_image_phone.isEmpty()) {
             String coverImageUrl = Account.user.cover_image_phone;
             if(coverImageUrl.indexOf(";") != 0) {
@@ -96,7 +102,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         statusCountButton.setText(Account.user.statuses_count + "\n微博");
         followCountButton.setText(Account.user.friends_count + "\n关注");
         followerCountButton.setText(Account.user.followers_count + "\n粉丝");
-
         statusPresenter = new StatusPresenter(this);
         swipeRefreshLayout.setOnRefreshListener(this);
         statusTimelineView.setOnLoadMoreListener(new StatusTimelineView.OnLoadMoreListener() {

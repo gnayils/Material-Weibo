@@ -174,6 +174,8 @@ public class LoginActivity extends AppCompatActivity {
 
                             @Override
                             public void onNext(User user) {
+                                Bitmap avatar = BitmapFactory.decodeByteArray(Account.user.avatarBytes, 0, Account.user.avatarBytes.length);
+                                avatarView.avatarCircleImageView.setImageBitmap(avatar);
                                 sendMessageDelayed(obtainMessage(MESSAGE_LOGIN_USER_OBTAINED), 1000);
                             }
                         });

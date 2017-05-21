@@ -9,6 +9,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.LruCache;
 
+import com.gnayils.obiew.R;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -31,6 +33,7 @@ public class EmotionDB extends SQLiteOpenHelper {
     private static LruCache<String, Bitmap> cache;
 
     private Context context;
+    private float emotionSize;
 
     public EmotionDB(Context context) {
         this(context, DATABASE_NAME, null, VERSION, null);
@@ -43,6 +46,7 @@ public class EmotionDB extends SQLiteOpenHelper {
         if(!destDatabaseFile.exists()) {
             copyDataBase(destDatabaseFile);
         }
+        emotionSize = context.getResources().getDimension(R.dimen.emotion_size);
     }
 
     @Override
@@ -88,6 +92,7 @@ public class EmotionDB extends SQLiteOpenHelper {
         if(instance == null) {
             instance = new EmotionDB(context);
             options = new BitmapFactory.Options();
+            options.inSampleSize = 1;
             cache  = new LruCache<String, Bitmap>(1024) {
 
                 @Override
@@ -98,22 +103,21 @@ public class EmotionDB extends SQLiteOpenHelper {
         }
     }
 
-    public static Bitmap get(String phrase, int inSampleSize) {
+    public static Bitmap get(String phrase) {
         Bitmap bitmap = null;
         if(instance != null) {
-            String key = phrase + "," + inSampleSize;
+            String key = phrase;
             bitmap = getFromCache(key);
-            if(bitmap != null) {
-                return bitmap;
+            if(bitmap == null) {
+                Cursor cursor = instance.getReadableDatabase().query("emotion", new String[]{"image"}, "phrase=?", new String[]{phrase}, null, null,null);
+                if(cursor.moveToNext()) {
+                    byte[] bytes = cursor.getBlob(cursor.getColumnIndex("image"));
+                    bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
+                    bitmap = Bitmap.createScaledBitmap(bitmap, (int)instance.emotionSize + 1, (int) instance.emotionSize + 1, false);
+                    putToCache(key, bitmap);
+                }
+                cursor.close();
             }
-            Cursor cursor = instance.getReadableDatabase().query("emotion", new String[]{"image"}, "phrase=?", new String[]{phrase}, null, null,null);
-            if(cursor.moveToNext()) {
-                byte[] bytes = cursor.getBlob(cursor.getColumnIndex("image"));
-                options.inSampleSize = inSampleSize;
-                bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
-                putToCache(key, bitmap);
-            }
-            cursor.close();
         }
         return bitmap;
     }

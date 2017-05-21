@@ -76,7 +76,7 @@ public class CommentView extends CardView {
 
         commentTextTextView = new TextView(context);
         commentTextTextView.setText("微博评论微博评论微博评论微博评论微博评论微博评论微博评论微博评论微博评论微博评论微博评论微博评论微博评论微博评论");
-        commentTextTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        commentTextTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.comment_text_size));
         RelativeLayout.LayoutParams commentTextTextViewLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         commentTextTextViewLayoutParams.addRule(RelativeLayout.BELOW, userAvatarView.getId());
         commentTextTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, userAvatarView.getId());

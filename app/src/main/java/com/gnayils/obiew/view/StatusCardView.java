@@ -15,6 +15,7 @@ import com.gnayils.obiew.App;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.activity.StatusDetailActivity;
 import com.gnayils.obiew.activity.UserProfileActivity;
+import com.gnayils.obiew.weibo.TextDecorator;
 import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.weibo.WebURLMovementMethod;
@@ -100,7 +101,6 @@ public class StatusCardView extends CardView {
                 RelativeLayout.LayoutParams avatarViewLayoutParams = new RelativeLayout.LayoutParams(dp2px(context, 48), dp2px(context, 48));
                 avatarViewLayoutParams.addRule(RelativeLayout.ALIGN_LEFT | RelativeLayout.ALIGN_TOP);
                 userAvatarView.setLayoutParams(avatarViewLayoutParams);
-                userAvatarView.avatarCircleImageView.setForegroundResource(R.drawable.fg_avatar_mask);
                 userAvatarView.avatarCircleImageView.setOnClickListener(avatarCircleImageViewOnClickListener);
 
                 screenNameTextView = new TextView(context);
@@ -141,7 +141,7 @@ public class StatusCardView extends CardView {
             statusTextTextView = new TextView(context);
             statusTextTextView.setId(View.generateViewId());
             statusTextTextView.setText("微博内容微博内容微博内容微博内容微博内容微博内容微博内容微博内容微博内容");
-            statusTextTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+            statusTextTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.status_text_size));
             statusTextTextView.setOnTouchListener(WebURLMovementMethod.getTouchListener());
             statusTextTextView.setPadding(dp2px(context, 8), dp2px(context, 4), dp2px(context, 8), dp2px(context, 4));
             LinearLayout.LayoutParams statusTextTextViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -167,7 +167,7 @@ public class StatusCardView extends CardView {
             retweetedStatusView.setLayoutParams(retweetedStatusViewLayoutParams);
             retweetedStatusTextTextView = new TextView(context);
             retweetedStatusTextTextView.setText("微博内容微博内容微博内容微博内容微博内容微博内容微博内容微博内容微博内容");
-            retweetedStatusTextTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+            retweetedStatusTextTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.status_text_size));
             retweetedStatusTextTextView.setOnTouchListener(WebURLMovementMethod.getTouchListener());
             retweetedStatusTextTextView.setPadding(dp2px(context, 8), dp2px(context, 4), dp2px(context, 8), dp2px(context, 4));
             LinearLayout.LayoutParams retweetedStatusTextTextViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -252,14 +252,14 @@ public class StatusCardView extends CardView {
         screenNameTextView.setText(status.user.screen_name);
         statusTimeTextView.setText(Weibo.Date.format(status.created_at));
         statusSourceTextView.setText(status.getSpannableSource());
-        statusTextTextView.setText(status.getSpannableText(), TextView.BufferType.SPANNABLE);
+        statusTextTextView.setText(status.getSpannableText(false), TextView.BufferType.SPANNABLE);
         statusPicturesView.setPictureUrls(status.pic_urls);
         videoPreviewView.show(status.videoUrls);
         if(status.retweeted_status == null) {
             retweetedStatusView.setVisibility(View.GONE);
         } else {
             retweetedStatusView.setVisibility(View.VISIBLE);
-            retweetedStatusTextTextView.setText(status.retweeted_status.getSpannableText(), TextView.BufferType.SPANNABLE);
+            retweetedStatusTextTextView.setText(status.retweeted_status.getSpannableText(true), TextView.BufferType.SPANNABLE);
             retweetedStatusPicturesView.setPictureUrls(status.retweeted_status.pic_urls);
             retweetedVideoPreviewView.show(status.retweeted_status.videoUrls);
         }

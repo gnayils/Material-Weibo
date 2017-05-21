@@ -101,7 +101,7 @@ public class TextDecorator {
         Matcher emotionKeyMatcher = Pattern.compile("\\[\\S+?\\]").matcher(string);
         while(emotionKeyMatcher.find()) {
             String emotionKey = emotionKeyMatcher.group();
-            Bitmap bitmap = EmotionDB.get(emotionKey, 2);
+            Bitmap bitmap = EmotionDB.get(emotionKey);
             if(bitmap == null) {
                 continue;
             } else {

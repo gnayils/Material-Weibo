@@ -49,7 +49,7 @@ public class User implements Serializable {
     public int online_status;
     public int bi_followers_count;
     public String lang;
-    public int star;
+    public long star;
     public int mbtype;
     public int mbrank;
     public int block_word;

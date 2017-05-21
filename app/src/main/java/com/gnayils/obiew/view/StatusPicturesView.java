@@ -1,21 +1,16 @@
 package com.gnayils.obiew.view;
 
 import android.content.Context;
-import android.text.Layout;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.activity.PicturePagerActivity;
 import com.gnayils.obiew.weibo.bean.PicUrls;
-import com.gnayils.obiew.bmpldr.BitmapLoader;
+
 import static com.gnayils.obiew.util.ViewUtils.*;
 
 import java.util.List;
@@ -46,7 +41,7 @@ public class StatusPicturesView extends ViewGroup implements View.OnClickListene
     public StatusPicturesView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         for (int i = 0; i < 9; i++) {
-            ForegroundImageView imageView = new ForegroundImageView(getContext());
+            GiFHintImageView imageView = new GiFHintImageView(getContext());
             imageView.setLayoutParams(new MarginLayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setForegroundResource(R.drawable.fg_status_picture_thumbnail_mask);
@@ -73,7 +68,9 @@ public class StatusPicturesView extends ViewGroup implements View.OnClickListene
             if(i < picUrlsList.size()) {
                 PicUrls picUrls = picUrlsList.get(i);
                 child.setVisibility(View.VISIBLE);
-                Glide.with(getContext()).load(picUrls.middleThumbnailPic()).into((ImageView)child);
+                GiFHintImageView imageView = (GiFHintImageView)child;
+                imageView.setHintVisible(picUrls.isGif());
+                Glide.with(getContext()).load(picUrls.middle()).asBitmap().into(imageView);
             }
         }
 

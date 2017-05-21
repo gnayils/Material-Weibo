@@ -2,20 +2,12 @@ package com.gnayils.obiew.view;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.gnayils.obiew.R;
-import com.gnayils.obiew.bmpldr.BitmapLoadAdapter;
-import com.gnayils.obiew.bmpldr.BitmapLoader;
 import com.gnayils.obiew.weibo.bean.PicUrls;
 import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.weibo.bean.StatusTimeline;
@@ -76,7 +68,9 @@ public class ImageTimelineView extends LoadMoreRecyclerView {
 
         @Override
         public void onBindActualViewHolder(RecyclerView.ViewHolder holder, int position) {
-            Glide.with(getContext()).load(picUrlsList.get(position).middleThumbnailPic()).into(((ImageCardViewHolder) holder).imageView);
+            GiFHintImageView imageView = ((ImageCardViewHolder) holder).imageView;
+            imageView.setHintVisible(picUrlsList.get(position).isGif());
+            Glide.with(getContext()).load(picUrlsList.get(position).middle()).asBitmap().into(imageView);
         }
 
         public void addTimeline(StatusTimeline statusTimeline) {
@@ -97,7 +91,7 @@ public class ImageTimelineView extends LoadMoreRecyclerView {
 
     class ImageCardViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView imageView;
+        GiFHintImageView imageView;
 
         ImageCardViewHolder(PictureCardView pictureCardView) {
             super(pictureCardView);

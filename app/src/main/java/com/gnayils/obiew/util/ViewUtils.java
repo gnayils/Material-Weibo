@@ -12,6 +12,7 @@ import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.util.DisplayMetrics;
+import android.util.Size;
 import android.util.TypedValue;
 
 import com.gnayils.obiew.App;
@@ -30,11 +31,11 @@ public class ViewUtils {
     }
 
     public static int dp2px(Context context, int dp) {
-        return (int) (dp * ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT));
+        return (int) (dp * context.getResources().getDisplayMetrics().density);
     }
 
     public static int px2dp(Context context, int px) {
-        return (int) (px / ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT));
+        return (int) (px / context.getResources().getDisplayMetrics().density);
     }
 
     public static int getStatusBarHeight(Context context) {
@@ -52,6 +53,10 @@ public class ViewUtils {
             return TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics());
         }
         return 0;
+    }
+
+    public static Size getScreenSize(Context context) {
+        return new Size(context.getResources().getDisplayMetrics().widthPixels, context.getResources().getDisplayMetrics().heightPixels);
     }
 
     public static Drawable getDrawableByAttribute(Context context, int attrId) {

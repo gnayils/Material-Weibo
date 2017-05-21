@@ -15,7 +15,7 @@ import com.gnayils.obiew.R;
 
 public class PictureCardView extends CardView {
 
-    public ForegroundImageView imageView;
+    public GiFHintImageView imageView;
 
     public PictureCardView(Context context) {
         this(context, null);
@@ -27,7 +27,7 @@ public class PictureCardView extends CardView {
 
     public PictureCardView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        imageView = new ForegroundImageView(context);
+        imageView = new GiFHintImageView(context);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         imageView.setForegroundResource(R.drawable.fg_status_picture_thumbnail_mask);
         imageView.setClickable(true);

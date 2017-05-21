@@ -41,6 +41,7 @@ public class AvatarView extends FrameLayout {
         super(context, attrs, defStyleAttr, defStyleRes);
 
         avatarCircleImageView = new CircleImageView(context);
+        avatarCircleImageView.setForegroundResource(R.drawable.fg_avatar_mask);
         avatarCircleImageView.setImageResource(R.drawable.ic_avatar_default);
         LayoutParams avatarCircleImageViewLayoutParam = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         avatarCircleImageViewLayoutParam.gravity = Gravity.CENTER;
