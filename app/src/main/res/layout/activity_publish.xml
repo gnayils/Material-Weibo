@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linear_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <EditText
+            android:id="@+id/edit_text_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#75f1f1f1"
+            android:gravity="top"
+            android:inputType="textMultiLine|textNoSuggestions"
+            android:padding="8dp" />
+
+    </ScrollView>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/layout_selected_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            android:orientation="horizontal">
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <LinearLayout
+        android:id="@+id/linear_layout_function_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:elevation="4dp"
+        android:background="@color/grey_300"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/image_button_emotion"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackground"
+            android:src="@drawable/ic_menu_emotion"
+            android:tint="?attr/colorPrimary" />
+
+        <ImageButton
+            android:id="@+id/image_button_gallery"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackground"
+            android:src="@drawable/ic_menu_gallery"
+            android:tint="?attr/colorPrimary" />
+
+        <ImageButton
+            android:id="@+id/image_button_mention"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackground"
+            android:src="@drawable/ic_menu_mention"
+            android:tint="?attr/colorPrimary" />
+
+        <ImageButton
+            android:id="@+id/image_button_topic"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackground"
+            android:src="@drawable/ic_menu_topic"
+            android:tint="?attr/colorPrimary" />
+
+        <ImageButton
+            android:id="@+id/image_button_backspace"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_menu_backspace"
+            android:tint="@color/grey_600" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/frame_layout_function_content"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:visibility="gone" />
+
+</LinearLayout>

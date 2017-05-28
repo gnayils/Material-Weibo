@@ -16,6 +16,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by iUser on 4/5/17.
@@ -33,7 +35,6 @@ public class EmotionDB extends SQLiteOpenHelper {
     private static LruCache<String, Bitmap> cache;
 
     private Context context;
-    private float emotionSize;
 
     public EmotionDB(Context context) {
         this(context, DATABASE_NAME, null, VERSION, null);
@@ -46,7 +47,6 @@ public class EmotionDB extends SQLiteOpenHelper {
         if(!destDatabaseFile.exists()) {
             copyDataBase(destDatabaseFile);
         }
-        emotionSize = context.getResources().getDimension(R.dimen.emotion_size);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class EmotionDB extends SQLiteOpenHelper {
         }
     }
 
-    public static Bitmap get(String phrase) {
+    public static Bitmap get(String phrase, float emotionSize) {
         Bitmap bitmap = null;
         if(instance != null) {
             String key = phrase;
@@ -113,13 +113,28 @@ public class EmotionDB extends SQLiteOpenHelper {
                 if(cursor.moveToNext()) {
                     byte[] bytes = cursor.getBlob(cursor.getColumnIndex("image"));
                     bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
-                    bitmap = Bitmap.createScaledBitmap(bitmap, (int)instance.emotionSize + 1, (int) instance.emotionSize + 1, false);
                     putToCache(key, bitmap);
                 }
                 cursor.close();
             }
+            if(bitmap != null) {
+                bitmap = Bitmap.createScaledBitmap(bitmap, (int) emotionSize + 1, (int) emotionSize + 1, false);
+            }
         }
         return bitmap;
+    }
+
+    public static List<String> getAllPhrase() {
+        if(instance != null) {
+            List<String> phraseList = new ArrayList<>();
+            Cursor cursor = instance.getReadableDatabase().query("emotion", new String[]{"phrase"}, null, null, null, null, null);
+            while(cursor.moveToNext()) {
+                phraseList.add(cursor.getString(cursor.getColumnIndex("phrase")));
+            }
+            cursor.close();
+            return phraseList;
+        }
+        return null;
     }
 
     private static Bitmap getFromCache(String key) {

@@ -32,7 +32,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MainActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.MainActivity" android:windowSoftInputMode="adjustResize" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.PublishActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.PicturePagerActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.StatusDetailActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.UserProfileActivity" android:screenOrientation="portrait"/>

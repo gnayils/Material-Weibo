@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -30,6 +31,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.HttpException;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Header;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -117,11 +119,16 @@ public class WeiboAPI {
         public Response intercept(Chain chain) throws IOException {
             Request request = chain.request();
             if(Account.accessToken != null) {
+
                 HttpUrl httpUrl = request.url();
                 HttpUrl url = httpUrl.newBuilder()
                         .addQueryParameter("access_token", Account.accessToken.access_token)
+                        .addQueryParameter("source", App.context().getString(R.string.app_key))
                         .build();
-                Request.Builder requestBuilder = request.newBuilder().url(url);
+                Headers headers = request.headers();
+                headers.newBuilder().add("Authorization", "OAuth2 " + Account.accessToken.access_token);
+
+                Request.Builder requestBuilder = request.newBuilder().headers(headers).url(url);
                 request = requestBuilder.build();
             }
             return chain.proceed(request);

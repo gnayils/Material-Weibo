@@ -9,6 +9,7 @@ import android.text.style.URLSpan;
 import android.text.util.Linkify;
 
 import com.gnayils.obiew.App;
+import com.gnayils.obiew.R;
 import com.gnayils.obiew.view.CenteredImageSpan;
 import com.gnayils.obiew.weibo.bean.Comment;
 import com.gnayils.obiew.weibo.bean.CommentTimeline;
@@ -101,7 +102,7 @@ public class TextDecorator {
         Matcher emotionKeyMatcher = Pattern.compile("\\[\\S+?\\]").matcher(string);
         while(emotionKeyMatcher.find()) {
             String emotionKey = emotionKeyMatcher.group();
-            Bitmap bitmap = EmotionDB.get(emotionKey);
+            Bitmap bitmap = EmotionDB.get(emotionKey, App.resources().getDimension(R.dimen.emotion_size_in_text));
             if(bitmap == null) {
                 continue;
             } else {

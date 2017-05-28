@@ -189,40 +189,6 @@ public class PictureFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//
-//
-//        if (picUrls.isGif()) {
-//
-//        } else {
-//
-//        }
-//
-//
-//        synchronized (imageSize) {
-//            try {
-//                System.out.println("wait imageSize");
-//                imageSize.wait();
-//                System.out.println("got notified...");
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//
-//
-//
-//        Glide.with(this).load(picUrls.middle()).listener(new RequestListener<String, GlideDrawable>() {
-//            @Override
-//            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-//                progressBar.setVisibility(View.INVISIBLE);
-//                return false;
-//            }
-//        }).into(imageView);
     }
 
     public static Fragment newInstance(PicUrls picUrls) {

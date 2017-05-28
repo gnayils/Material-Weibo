@@ -2,6 +2,7 @@ package com.gnayils.obiew.weibo;
 
 import android.util.Log;
 
+import com.gnayils.obiew.util.Sync;
 import com.gnayils.obiew.util.URLParser;
 import com.gnayils.obiew.weibo.api.URLsAPI;
 import com.gnayils.obiew.weibo.api.WeiboAPI;
@@ -56,20 +57,20 @@ public class VideoURLFinder {
     }
 
     public static void find(StatusTimeline statusTimeline) throws Throwable {
-        if (statusTimeline != null && statusTimeline.statuses != null) {
-            Map<String, Status> shortUrlMap = new HashMap<>();
-            for (Status status : statusTimeline.statuses) {
-                findShortUrl(status, shortUrlMap);
-                findShortUrl(status.retweeted_status, shortUrlMap);
-            }
-            List<String> shortUrlList = new ArrayList<>(shortUrlMap.keySet());
-            List<URL> urlList = expandShortUrl(shortUrlList);
-            List<URL> videoUrlList = filterVideoUrl(urlList);
-            for(URL url : videoUrlList) {
-                Status status = shortUrlMap.get(url.url_short);
-                status.videoUrls = url;
-            }
-        }
+//        if (statusTimeline != null && statusTimeline.statuses != null) {
+//            Map<String, Status> shortUrlMap = new HashMap<>();
+//            for (Status status : statusTimeline.statuses) {
+//                findShortUrl(status, shortUrlMap);
+//                findShortUrl(status.retweeted_status, shortUrlMap);
+//            }
+//            List<String> shortUrlList = new ArrayList<>(shortUrlMap.keySet());
+//            List<URL> urlList = expandShortUrl(shortUrlList);
+//            List<URL> videoUrlList = filterVideoUrl(urlList);
+//            for(URL url : videoUrlList) {
+//                Status status = shortUrlMap.get(url.url_short);
+//                status.videoUrls = url;
+//            }
+//        }
     }
 
     private static void findShortUrl(Status status, Map<String, Status> urlMap) {
@@ -104,23 +105,19 @@ public class VideoURLFinder {
                         public void onError(Throwable e) {
                             Log.e(TAG, "expand short url failed", e);
                             throwable.initCause(e);
+                            Sync.notifyAll(urlList);
                         }
 
                         @Override
                         public void onNext(URLs urls) {
-                            synchronized (urlList) {
-                                Log.d(TAG, "expand url request get the response, perform request thread start to notify: " + Thread.currentThread().getName());
-                                urlList.addAll(urls.urls);
-                                urlList.notifyAll();
-                            }
+                            urlList.addAll(urls.urls);
+                            Log.d(TAG, "expand url request get the response, perform request thread start to notify: " + Thread.currentThread().getName());
+                            Sync.notifyAll(urlList);
                         }
                     });
-
-            synchronized (urlList) {
-                Log.d(TAG, "expand url request has been sent, send request thread begin to wait: " + Thread.currentThread().getName());
-                urlList.wait();
-                Log.d(TAG, "expand url request has been sent, send request thread being notified: " + Thread.currentThread().getName());
-            }
+            Log.d(TAG, "expand url request has been sent, send request thread begin to wait: " + Thread.currentThread().getName());
+            Sync.wait(urlList);
+            Log.d(TAG, "expand url request has been sent, send request thread being notified: " + Thread.currentThread().getName());
             if (throwable.getCause() != null) {
                 throw throwable.getCause();
             }

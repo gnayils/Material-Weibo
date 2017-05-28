@@ -8,8 +8,8 @@
     <color name="colorPrimaryDark">#3646A8</color>
     <color name="colorAccent">#FE3E80</color>
 
+
     <color name="colorWhite">#ffffff</color>
-    <color name="colorWindowBackground">#eeeeee</color>
     <color name="colorGreenDark">#4daf51</color>
     <color name="colorWhiteTranslucent">#75ffffff</color>
     <color name="colorBlackTranslucent">#75000000</color>
@@ -25,9 +25,16 @@
     <color name="colorLinkBackground">#6c507daf</color>
 
 
-    <color name="colorRetweetStatusViewBg">@color/colorWindowBackground</color>
-    <color name="colorStatusPictureThumbnailBg">@color/colorWindowBackground</color>
+    <color name="colorRetweetStatusViewBg">@color/grey_200</color>
+    <color name="colorStatusPictureThumbnailBg">@color/grey_200</color>
 
     <color name="colorStatusPictureThumbnailMask">#25000000</color>
     <color name="colorAvatarMask">#25000000</color>
+
+
+    <color name="grey_200">#EEEEEE</color>
+    <color name="grey_300">#E0E0E0</color>
+    <color name="grey_600">#757575</color>
+
+
 </resources>
