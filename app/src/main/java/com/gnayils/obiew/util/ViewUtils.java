@@ -59,12 +59,18 @@ public class ViewUtils {
         return new Size(context.getResources().getDisplayMetrics().widthPixels, context.getResources().getDisplayMetrics().heightPixels);
     }
 
-    public static Drawable getDrawableByAttribute(Context context, int attrId) {
-        int[] attributes = new int[] { attrId };
-        TypedArray typedArray = context.obtainStyledAttributes(attributes);
+    public static Drawable getDrawableByAttrId(Context context, int attrId) {
+        TypedArray typedArray = context.obtainStyledAttributes(R.style.AppTheme, new int[] { attrId });
         Drawable drawable = typedArray.getDrawable(0);
         typedArray.recycle();
         return drawable;
+    }
+
+    public static int getResourceIdByAttrId(Context context, int attrId) {
+        TypedArray typedArray = context.obtainStyledAttributes(R.style.AppTheme, new int[] { attrId });
+        int resourceId = typedArray.getResourceId(0, 0);
+        typedArray.recycle();
+        return resourceId;
     }
 
     public static RippleDrawable createRippleDrawable(int normalColor, float cornerRadius) {

@@ -5,6 +5,8 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
+import com.gnayils.obiew.App;
+import com.gnayils.obiew.R;
 import com.gnayils.obiew.interfaces.StatusInterface;
 import com.gnayils.obiew.util.Popup;
 import com.gnayils.obiew.util.Sync;
@@ -180,7 +182,7 @@ public class StatusPresenter implements StatusInterface.Presenter {
     public void upload(String statusText, List<String> selectedPicturePath) {
         if(statusText != null && !statusText.trim().isEmpty()) {
             if(selectedPicturePath == null || selectedPicturePath.isEmpty()) {
-                WeiboAPI.get(StatusAPI.class).update(statusText)
+                WeiboAPI.get(StatusAPI.class).update(App.context().getString(R.string.app_key), statusText)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber<Status>() {
                             @Override
@@ -285,7 +287,7 @@ public class StatusPresenter implements StatusInterface.Presenter {
                     return null;
                 }
             }
-            Subscription subscription = statusAPI.uploadUrlText(statusText, picIds.substring(0, picIds.length() - 1))
+            Subscription subscription = statusAPI.uploadUrlText(App.context().getString(R.string.app_key), statusText, picIds.substring(0, picIds.length() - 1))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Subscriber<com.gnayils.obiew.weibo.bean.Status>() {
 

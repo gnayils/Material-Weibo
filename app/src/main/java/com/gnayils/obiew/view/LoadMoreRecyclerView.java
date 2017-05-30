@@ -1,13 +1,17 @@
 package com.gnayils.obiew.view;
 
 import android.content.Context;
+import android.support.annotation.AttrRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StyleRes;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
@@ -53,6 +57,8 @@ public class LoadMoreRecyclerView extends RecyclerView {
                     if(positions != null) {
                         lastVisibleItemPosition = positions[positions.length - 1];
                     }
+                } else {
+                    throw new UnsupportedOperationException("only support two layout manager: [LinearLayoutManager, StaggeredGridLayoutManager]");
                 }
             }
         });
@@ -92,27 +98,8 @@ public class LoadMoreRecyclerView extends RecyclerView {
             if(viewType == TYPE_ITEM) {
                 viewHolder = onCreateActualViewHolder(parent, viewType);
             } else if (viewType == TYPE_FOOTER) {
-                FrameLayout frameLayout = new FrameLayout(parent.getContext());
-                LayoutParams frameLayoutLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                frameLayout.setLayoutParams(frameLayoutLayoutParams);
-
-                MaterialCircleImageView loadingIndicatorView = new MaterialCircleImageView(parent.getContext(), 0xFFFAFAFA);
-                FrameLayout.LayoutParams loadingIndicatorViewLayoutParams =new FrameLayout.LayoutParams(dp2px(parent.getContext(), 40), dp2px(parent.getContext(), 40));
-                int loadingIndicatorViewMargin = dp2px(parent.getContext(), 8);
-                loadingIndicatorViewLayoutParams.setMargins(loadingIndicatorViewMargin, loadingIndicatorViewMargin, loadingIndicatorViewMargin, loadingIndicatorViewMargin);
-                loadingIndicatorViewLayoutParams.gravity = Gravity.CENTER;
-                loadingIndicatorView.setLayoutParams(loadingIndicatorViewLayoutParams);
-
-                MaterialProgressDrawable progressDrawable = new MaterialProgressDrawable(parent.getContext(), parent);
-                progressDrawable.setBackgroundColor(0xFFFAFAFA);
-                progressDrawable.setAlpha(255);
-                progressDrawable.showArrow(true);
-
-                loadingIndicatorView.setImageDrawable(progressDrawable);
-
-                frameLayout.addView(loadingIndicatorView);
-
-                viewHolder = new LoadingMoreIndicatorViewHolder(frameLayout, progressDrawable);
+                LoadMoreIndicatorView loadMoreIndicatorView = new LoadMoreIndicatorView(parent, parent.getContext());
+                viewHolder = new LoadingMoreIndicatorViewHolder(loadMoreIndicatorView);
             }
             return viewHolder;
         }
@@ -120,8 +107,8 @@ public class LoadMoreRecyclerView extends RecyclerView {
         @Override
         public final void onBindViewHolder(final ViewHolder holder, int position) {
             if(holder instanceof LoadingMoreIndicatorViewHolder) {
-                ((LoadingMoreIndicatorViewHolder)holder).progressDrawable.stop();
-                ((LoadingMoreIndicatorViewHolder)holder).progressDrawable.start();
+                ((LoadingMoreIndicatorViewHolder)holder).loadMoreIndicatorView.progressDrawable.stop();
+                ((LoadingMoreIndicatorViewHolder)holder).loadMoreIndicatorView.progressDrawable.start();
             } else {
                 onBindActualViewHolder(holder, position);
             }
@@ -137,11 +124,11 @@ public class LoadMoreRecyclerView extends RecyclerView {
 
     public static class LoadingMoreIndicatorViewHolder extends ViewHolder {
 
-        MaterialProgressDrawable progressDrawable;
+        LoadMoreIndicatorView loadMoreIndicatorView;
 
-        public LoadingMoreIndicatorViewHolder(FrameLayout loadingIndicatorView, MaterialProgressDrawable progressDrawable) {
-            super(loadingIndicatorView);
-            this.progressDrawable = progressDrawable;
+        public LoadingMoreIndicatorViewHolder(LoadMoreIndicatorView loadMoreIndicatorView) {
+            super(loadMoreIndicatorView);
+            this.loadMoreIndicatorView = loadMoreIndicatorView;
         }
     }
 
@@ -153,5 +140,45 @@ public class LoadMoreRecyclerView extends RecyclerView {
 
         void onLoadMore();
 
+    }
+
+    private static class LoadMoreIndicatorView extends FrameLayout {
+
+        private MaterialProgressDrawable progressDrawable;
+
+        public LoadMoreIndicatorView(View parent, @NonNull Context context) {
+            this(parent, context, null);
+        }
+
+        public LoadMoreIndicatorView(View parent, @NonNull Context context, @Nullable AttributeSet attrs) {
+            this(parent, context, attrs, 0);
+        }
+
+        public LoadMoreIndicatorView(View parent, @NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
+            this(parent, context, attrs, defStyleAttr, 0);
+        }
+
+        public LoadMoreIndicatorView(View parent, @NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr, @StyleRes int defStyleRes) {
+            super(context, attrs, defStyleAttr, defStyleRes);
+
+            RecyclerView.LayoutParams frameLayoutLayoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            setLayoutParams(frameLayoutLayoutParams);
+
+            MaterialCircleImageView loadingIndicatorView = new MaterialCircleImageView(context, 0xFFFAFAFA);
+            FrameLayout.LayoutParams loadingIndicatorViewLayoutParams =new FrameLayout.LayoutParams(dp2px(context, 40), dp2px(context, 40));
+            int loadingIndicatorViewMargin = dp2px(context, 8);
+            loadingIndicatorViewLayoutParams.setMargins(loadingIndicatorViewMargin, loadingIndicatorViewMargin, loadingIndicatorViewMargin, loadingIndicatorViewMargin);
+            loadingIndicatorViewLayoutParams.gravity = Gravity.CENTER;
+            loadingIndicatorView.setLayoutParams(loadingIndicatorViewLayoutParams);
+
+            progressDrawable = new MaterialProgressDrawable(context, parent);
+            progressDrawable.setBackgroundColor(0xFFFAFAFA);
+            progressDrawable.setAlpha(255);
+            progressDrawable.showArrow(true);
+
+            loadingIndicatorView.setImageDrawable(progressDrawable);
+
+            addView(loadingIndicatorView);
+        }
     }
 }

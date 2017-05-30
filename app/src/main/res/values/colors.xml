@@ -8,13 +8,14 @@
     <color name="colorPrimaryDark">#3646A8</color>
     <color name="colorAccent">#FE3E80</color>
 
+    <color name="grey_200">#EEEEEE</color>
+    <color name="grey_300">#E0E0E0</color>
+    <color name="grey_600">#757575</color>
 
-    <color name="colorWhite">#ffffff</color>
-    <color name="colorGreenDark">#4daf51</color>
-    <color name="colorWhiteTranslucent">#75ffffff</color>
-    <color name="colorBlackTranslucent">#75000000</color>
-    <color name="colorGrayTranslucent">#af6e6e6e</color>
-    <color name="colorThumbnailBackground">#e4e4e4</color>
+    <color name="white_a75">#75ffffff</color>
+    <color name="black_a25">#25000000</color>
+    <color name="black_a75">#75000000</color>
+    <color name="grey_a75">#75757575</color>
 
     <color name="colorSecondaryText">#89000000</color>
     <color name="colorPrimaryText">#dd000000</color>
@@ -23,18 +24,5 @@
 
     <color name="colorLink">#507daf</color>
     <color name="colorLinkBackground">#6c507daf</color>
-
-
-    <color name="colorRetweetStatusViewBg">@color/grey_200</color>
-    <color name="colorStatusPictureThumbnailBg">@color/grey_200</color>
-
-    <color name="colorStatusPictureThumbnailMask">#25000000</color>
-    <color name="colorAvatarMask">#25000000</color>
-
-
-    <color name="grey_200">#EEEEEE</color>
-    <color name="grey_300">#E0E0E0</color>
-    <color name="grey_600">#757575</color>
-
 
 </resources>

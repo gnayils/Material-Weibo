@@ -57,20 +57,20 @@ public class VideoURLFinder {
     }
 
     public static void find(StatusTimeline statusTimeline) throws Throwable {
-//        if (statusTimeline != null && statusTimeline.statuses != null) {
-//            Map<String, Status> shortUrlMap = new HashMap<>();
-//            for (Status status : statusTimeline.statuses) {
-//                findShortUrl(status, shortUrlMap);
-//                findShortUrl(status.retweeted_status, shortUrlMap);
-//            }
-//            List<String> shortUrlList = new ArrayList<>(shortUrlMap.keySet());
-//            List<URL> urlList = expandShortUrl(shortUrlList);
-//            List<URL> videoUrlList = filterVideoUrl(urlList);
-//            for(URL url : videoUrlList) {
-//                Status status = shortUrlMap.get(url.url_short);
-//                status.videoUrls = url;
-//            }
-//        }
+        if (statusTimeline != null && statusTimeline.statuses != null) {
+            Map<String, Status> shortUrlMap = new HashMap<>();
+            for (Status status : statusTimeline.statuses) {
+                findShortUrl(status, shortUrlMap);
+                findShortUrl(status.retweeted_status, shortUrlMap);
+            }
+            List<String> shortUrlList = new ArrayList<>(shortUrlMap.keySet());
+            List<URL> urlList = expandShortUrl(shortUrlList);
+            List<URL> videoUrlList = filterVideoUrl(urlList);
+            for(URL url : videoUrlList) {
+                Status status = shortUrlMap.get(url.url_short);
+                status.videoUrls = url;
+            }
+        }
     }
 
     private static void findShortUrl(Status status, Map<String, Status> urlMap) {
@@ -129,6 +129,7 @@ public class VideoURLFinder {
     private static List<URL> filterVideoUrl(List<URL> urlList) {
         for(int i = urlList.size() - 1; i > -1; i--) {
             if(urlList.get(i).url_long.startsWith(VIDEO_URL_PREFIX)) {
+                Log.d(TAG, ">>>>>>>>>>>short url: " + urlList.get(i).url_short + ", long url: " + urlList.get(i).url_long);
                 loadVideoInfo(urlList.get(i));
             } else {
                 urlList.remove(i);

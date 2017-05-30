@@ -267,7 +267,7 @@ public class PublishActivity extends AppCompatActivity implements StatusInterfac
 
     @Override
         public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_publish, menu);
+        getMenuInflater().inflate(R.menu.activity_publish_option, menu);
         Drawable drawable = menu.findItem(R.id.action_publish).getIcon();
         if (drawable != null) {
             drawable.mutate();

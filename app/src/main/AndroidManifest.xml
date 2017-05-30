@@ -16,16 +16,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <meta-data
-            android:name="com.gnayils.obiew.glide.MyGlideModule"
-            android:value="GlideModule" />
+        <meta-data android:name="com.gnayils.obiew.glide.MyGlideModule" android:value="GlideModule" />
 
         <activity android:name=".activity.TestActivity" >
         </activity>
         <activity android:name=".activity.SplashActivity"/>
         <activity
             android:name=".activity.LoginActivity"
-            android:label="@string/title_activity_login">
+            android:label="@string/title_activity_login"
+            android:theme="@style/AppTheme.NoTitle">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,10 +33,10 @@
         </activity>
         <activity android:name=".activity.MainActivity" android:windowSoftInputMode="adjustResize" android:screenOrientation="portrait"/>
         <activity android:name=".activity.PublishActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.PicturePagerActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.PicturePagerActivity" android:theme="@style/AppTheme.BlackBackground" android:launchMode="singleTop" android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"/>
         <activity android:name=".activity.StatusDetailActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.UserProfileActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.VideoActivity"/>
+        <activity android:name=".activity.PlayerActivity"  android:theme="@style/AppTheme.BlackBackground" android:launchMode="singleTop" android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"/>
     </application>
 
 </manifest>

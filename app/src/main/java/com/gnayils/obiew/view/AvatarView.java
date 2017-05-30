@@ -2,10 +2,7 @@ package com.gnayils.obiew.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.FrameLayout;
@@ -41,7 +38,7 @@ public class AvatarView extends FrameLayout {
         super(context, attrs, defStyleAttr, defStyleRes);
 
         avatarCircleImageView = new CircleImageView(context);
-        avatarCircleImageView.setForegroundResource(R.drawable.fg_avatar_mask);
+        avatarCircleImageView.setForegroundResource(ViewUtils.getResourceIdByAttrId(context, R.attr.selectableItemBackground));
         avatarCircleImageView.setImageResource(R.drawable.ic_avatar_default);
         LayoutParams avatarCircleImageViewLayoutParam = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         avatarCircleImageViewLayoutParam.gravity = Gravity.CENTER;

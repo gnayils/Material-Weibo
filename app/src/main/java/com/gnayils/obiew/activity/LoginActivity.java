@@ -7,20 +7,25 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Size;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
 
 import com.bumptech.glide.Glide;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.util.URLParser;
+import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.view.AvatarView;
 import com.gnayils.obiew.weibo.Account;
 import com.gnayils.obiew.weibo.api.AuthorizeAPI;
@@ -50,6 +55,11 @@ public class LoginActivity extends AppCompatActivity {
     @Bind(R.id.avatar_view)
     protected AvatarView avatarView;
 
+    @Bind(R.id.frame_layout_bottom_part)
+    protected FrameLayout bottomPartFrameLayout;
+    @Bind(R.id.frame_layout_top_part)
+    protected FrameLayout topPartFrameLayout;
+
     private String appKey;
     private String appSecret;
     private String callbackUrl;
@@ -61,8 +71,10 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        setupBackground();
 
         if (Account.loadCache(this)) {
             webView.setVisibility(View.INVISIBLE);
@@ -185,6 +197,34 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
     };
+
+    private void setupBackground() {
+        Size size = ViewUtils.getScreenSize(this);
+
+        GradientDrawable gradientDrawable = new GradientDrawable();
+        gradientDrawable.setColors(new int[]{
+                getResources().getColor(R.color.colorPrimaryDark),
+                getResources().getColor(R.color.colorPrimary)
+        });
+        gradientDrawable.setOrientation(GradientDrawable.Orientation.TOP_BOTTOM);
+        gradientDrawable.setCornerRadii(new float[]{
+                0, 0, 0, 0, size.getWidth() / 2, size.getWidth() / 3, size.getWidth() / 2, size.getWidth() / 3
+        });
+        gradientDrawable.setShape(GradientDrawable.RECTANGLE);
+        topPartFrameLayout.setBackground(gradientDrawable);
+
+        gradientDrawable = new GradientDrawable();
+        gradientDrawable.setOrientation(GradientDrawable.Orientation.TOP_BOTTOM);
+        gradientDrawable.setColors(new int[]{
+                getResources().getColor(R.color.colorPrimary),
+                getResources().getColor(R.color.colorPrimaryDark)
+        });
+        gradientDrawable.setCornerRadii(new float[]{
+                size.getWidth() / 2, size.getWidth() / 4, size.getWidth() / 2, size.getWidth() / 4, 0, 0, 0, 0
+        });
+        gradientDrawable.setShape(GradientDrawable.RECTANGLE);
+        bottomPartFrameLayout.setBackground(gradientDrawable);
+    }
 
     public static void start(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);

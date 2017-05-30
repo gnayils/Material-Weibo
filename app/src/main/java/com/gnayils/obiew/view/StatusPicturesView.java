@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.activity.PicturePagerActivity;
+import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.weibo.bean.PicUrls;
 
 import static com.gnayils.obiew.util.ViewUtils.*;
@@ -44,8 +45,8 @@ public class StatusPicturesView extends ViewGroup implements View.OnClickListene
             GiFHintImageView imageView = new GiFHintImageView(getContext());
             imageView.setLayoutParams(new MarginLayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setForegroundResource(R.drawable.fg_status_picture_thumbnail_mask);
-            imageView.setBackgroundResource(R.drawable.bg_status_picture_thumbnail);
+            imageView.setForegroundResource(ViewUtils.getResourceIdByAttrId(context, R.attr.selectableItemBackground));
+            imageView.setBackgroundResource(R.drawable.bg_rect_shape_round_corner);
             imageView.setClipToOutline(true);
             imageView.setOnClickListener(this);
             addView(imageView);

@@ -5,7 +5,6 @@ import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -15,11 +14,9 @@ import com.gnayils.obiew.App;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.activity.StatusDetailActivity;
 import com.gnayils.obiew.activity.UserProfileActivity;
-import com.gnayils.obiew.weibo.TextDecorator;
 import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.weibo.WebURLMovementMethod;
-import com.gnayils.obiew.weibo.bean.Video;
 
 import static com.gnayils.obiew.util.ViewUtils.*;
 /**
@@ -34,6 +31,7 @@ public class StatusCardView extends CardView {
     public Status status;
 
     public LinearLayout rootView;
+    public RelativeLayout userInfoLayout;
     public AvatarView userAvatarView;
     public TextView screenNameTextView;
     public TextView statusTimeTextView;
@@ -55,13 +53,11 @@ public class StatusCardView extends CardView {
     public OnClickListener statusViewOnClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            Status whichStatus = null;
-            if(v.getId() == rootView.getId()) {
-                whichStatus = status;
-            } else if(v.getId() == retweetedStatusView.getId()) {
-                whichStatus = status.retweeted_status;
+            if(v.getId() == rootView.getId() && status.user != null) {
+                StatusDetailActivity.start(getContext(), status);
+            } else if(v.getId() == retweetedStatusView.getId() && status.retweeted_status.user != null) {
+                StatusDetailActivity.start(getContext(),  status.retweeted_status);
             }
-            StatusDetailActivity.start(getContext(), whichStatus);
         }
     };
 
@@ -89,9 +85,9 @@ public class StatusCardView extends CardView {
         rootView.setOrientation(LinearLayout.VERTICAL);
         rootView.setLayoutParams(new CardView.LayoutParams(CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.WRAP_CONTENT));
         rootView.setOnClickListener(statusViewOnClickListener);
-        rootView.setBackground(getDrawableByAttribute(context, R.attr.selectableItemBackground));
+        rootView.setBackground(getDrawableByAttrId(context, R.attr.selectableItemBackground));
 
-            RelativeLayout userInfoLayout = new RelativeLayout(context);
+            userInfoLayout = new RelativeLayout(context);
             userInfoLayout.setPadding(dp2px(context, 8), dp2px(context, 8), dp2px(context, 8), dp2px(context, 4));
             LinearLayout.LayoutParams userInfoLayoutLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             userInfoLayout.setLayoutParams(userInfoLayoutLayoutParams);
@@ -154,14 +150,14 @@ public class StatusCardView extends CardView {
 
             videoPreviewView = new VideoPreviewView(context);
             videoPreviewView.setPadding(dp2px(context, 8), dp2px(context, 4), dp2px(context, 8), dp2px(context, 4));
-            LinearLayout.LayoutParams videoPreviewViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp2px(context, 200));
+            LinearLayout.LayoutParams videoPreviewViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
             videoPreviewView.setLayoutParams(videoPreviewViewLayoutParams);
 
             retweetedStatusView = new LinearLayout(context);
             retweetedStatusView.setId(View.generateViewId());
             retweetedStatusView.setOnClickListener(statusViewOnClickListener);
             retweetedStatusView.setOrientation(LinearLayout.VERTICAL);
-            retweetedStatusView.setBackground(createRippleDrawable(getResources().getColor(R.color.colorRetweetStatusViewBg), 0));
+            retweetedStatusView.setBackground(createRippleDrawable(getResources().getColor(R.color.grey_200), 0));
 
             LinearLayout.LayoutParams retweetedStatusViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             retweetedStatusView.setLayoutParams(retweetedStatusViewLayoutParams);
@@ -193,7 +189,7 @@ public class StatusCardView extends CardView {
 
                 repostButton = new CenteredDrawableButton(context);
                 repostButton.setTextColor(getResources().getColor(R.color.colorSecondaryText));
-                repostButton.setBackground(getDrawableByAttribute(context, R.attr.selectableItemBackground));
+                repostButton.setBackground(getDrawableByAttrId(context, R.attr.selectableItemBackground));
                 repostButton.setCompoundDrawablePadding(dp2px(context, 2));
                 repostButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
                 repostButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_hotrank_repost, 0, 0, 0);
@@ -202,7 +198,7 @@ public class StatusCardView extends CardView {
                 commentButton = new CenteredDrawableButton(context);
                 commentButton.setTextColor(getResources().getColor(R.color.colorSecondaryText));
                 commentButton.setCompoundDrawablePadding(dp2px(context, 2));
-                commentButton.setBackground(getDrawableByAttribute(context, R.attr.selectableItemBackground));
+                commentButton.setBackground(getDrawableByAttrId(context, R.attr.selectableItemBackground));
                 commentButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
                 commentButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_hotrank_comment, 0, 0, 0);
                 commentButton.setLayoutParams(hotrankButtonsLayoutParams);
@@ -210,7 +206,7 @@ public class StatusCardView extends CardView {
                 likeButton = new CenteredDrawableButton(context);
                 likeButton.setTextColor(getResources().getColor(R.color.colorSecondaryText));
                 likeButton.setCompoundDrawablePadding(dp2px(context, 2));
-                likeButton.setBackground(getDrawableByAttribute(context, R.attr.selectableItemBackground));
+                likeButton.setBackground(getDrawableByAttrId(context, R.attr.selectableItemBackground));
                 likeButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
                 likeButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_hotrank_like, 0, 0, 0);
                 likeButton.setLayoutParams(hotrankButtonsLayoutParams);
@@ -231,27 +227,32 @@ public class StatusCardView extends CardView {
 
     public void show(Status status) {
         this.status = status;
-        Glide.with(getContext()).load(status.user.avatar_large).into(userAvatarView.avatarCircleImageView);
-        userAvatarView.verifiedIconImageView.setVisibility(status.user.verified ? View.VISIBLE : View.INVISIBLE);
-        if(status.user.verified) {
-            screenNameTextView.setTextColor(App.resources().getColor(R.color.colorVerifiedScreenName));
-            switch(status.user.verified_type) {
-                case 0:
-                    userAvatarView.verifiedIconImageView.setImageResource(R.drawable.avatar_vip_golden);
-                    break;
-                case 1:
-                    userAvatarView.verifiedIconImageView.setImageResource(R.drawable.avatar_vip);
-                    break;
-                case 2:
-                    userAvatarView.verifiedIconImageView.setImageResource(R.drawable.avatar_enterprise_vip);
-                    break;
-            }
+        if(status.user == null) {
+            userInfoLayout.setVisibility(View.GONE);
         } else {
-            screenNameTextView.setTextColor(App.resources().getColor(R.color.colorPrimaryText));
+            userInfoLayout.setVisibility(View.VISIBLE);
+            Glide.with(getContext()).load(status.user.avatar_large).into(userAvatarView.avatarCircleImageView);
+            userAvatarView.verifiedIconImageView.setVisibility(status.user.verified ? View.VISIBLE : View.INVISIBLE);
+            if(status.user.verified) {
+                screenNameTextView.setTextColor(App.resources().getColor(R.color.colorVerifiedScreenName));
+                switch(status.user.verified_type) {
+                    case 0:
+                        userAvatarView.verifiedIconImageView.setImageResource(R.drawable.avatar_vip_golden);
+                        break;
+                    case 1:
+                        userAvatarView.verifiedIconImageView.setImageResource(R.drawable.avatar_vip);
+                        break;
+                    case 2:
+                        userAvatarView.verifiedIconImageView.setImageResource(R.drawable.avatar_enterprise_vip);
+                        break;
+                }
+            } else {
+                screenNameTextView.setTextColor(App.resources().getColor(R.color.colorPrimaryText));
+            }
+            screenNameTextView.setText(status.user.screen_name);
+            statusSourceTextView.setText(status.getSpannableSource());
         }
-        screenNameTextView.setText(status.user.screen_name);
         statusTimeTextView.setText(Weibo.Date.format(status.created_at));
-        statusSourceTextView.setText(status.getSpannableSource());
         statusTextTextView.setText(status.getSpannableText(false), TextView.BufferType.SPANNABLE);
         statusPicturesView.setPictureUrls(status.pic_urls);
         videoPreviewView.show(status.videoUrls);

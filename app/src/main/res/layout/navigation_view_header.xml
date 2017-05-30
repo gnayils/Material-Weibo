@@ -30,7 +30,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginLeft="16dp"
-                android:background="@drawable/bg_avatar_border">
+                android:background="@drawable/bg_oval_white_a75">
 
                 <com.gnayils.obiew.view.AvatarView
                     android:id="@+id/avatar_view"

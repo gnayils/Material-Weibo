@@ -6,12 +6,20 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <item name="android:textColor">@color/colorPrimaryText</item>
+    </style>
 
-        <!--<item name="android:windowTranslucentStatus">true</item>-->
-
+    <style name="AppTheme.NoTitle" parent="AppTheme">
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowTranslucentStatus">true</item>
         <!--<item name="android:statusBarColor">@android:color/transparent</item>-->
         <!--<item name="android:windowDrawsSystemBarBackgrounds">true</item>-->
+    </style>
 
+    <style name="AppTheme.BlackBackground">
+        <item name="android:windowBackground">@android:color/black</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

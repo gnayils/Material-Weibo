@@ -3,6 +3,7 @@ package com.gnayils.obiew.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -25,6 +26,7 @@ import com.gnayils.obiew.interfaces.BasePresenter;
 import com.gnayils.obiew.interfaces.StatusInterface;
 import com.gnayils.obiew.interfaces.UserInterface;
 import com.gnayils.obiew.presenter.StatusPresenter;
+import com.gnayils.obiew.util.BottomNavigationViewHelper;
 import com.gnayils.obiew.view.AvatarView;
 import com.gnayils.obiew.view.StatusTimelineView;
 import com.gnayils.obiew.weibo.Account;
@@ -57,6 +59,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected SwipeRefreshLayout swipeRefreshLayout;
     @Bind(R.id.status_timeline_view)
     protected StatusTimelineView statusTimelineView;
+    @Bind(R.id.bottom_navigation_view)
+    protected BottomNavigationView bottomNavigationView;
+
 
     private UserInterface.Presenter userPresenter;
     private StatusInterface.Presenter statusPresenter;

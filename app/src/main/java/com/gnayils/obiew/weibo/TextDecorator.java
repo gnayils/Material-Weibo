@@ -37,7 +37,11 @@ public class TextDecorator {
                 status.setSpannableText(decorate(status.text));
                 status.setSpannableSource(replaceUrlSpan((Spannable) Html.fromHtml(status.source)));
                 if(status.retweeted_status != null && status.retweeted_status.text != null && !status.retweeted_status.text.isEmpty()) {
-                    status.retweeted_status.setSpannableText(decorate("@" + status.retweeted_status.user.screen_name +  ": " + status.retweeted_status.text));
+                    String username = "";
+                    if(status.retweeted_status.user != null) {
+                        username = "@" + status.retweeted_status.user.screen_name + ": ";
+                    }
+                    status.retweeted_status.setSpannableText(decorate(username + status.retweeted_status.text));
                 }
             }
         }

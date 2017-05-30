@@ -61,13 +61,6 @@ public class PicturePagerActivity extends AppCompatActivity {
         }
     }
 
-    public static void start(Context context, int currentPicturePosition, List<PicUrls> picUrlsList) {
-        Intent intent = new Intent(context, PicturePagerActivity.class);
-        intent.putExtra(ARGS_KEY_CURRENT_PICTURE_POSITION, currentPicturePosition);
-        intent.putExtra(ARGS_KEY_PICTURE_URLS, (Serializable) picUrlsList);
-        context.startActivity(intent);
-    }
-
     class PagerAdapter extends FragmentStatePagerAdapter {
 
         public PagerAdapter(FragmentManager fm) {
@@ -83,5 +76,13 @@ public class PicturePagerActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             return PictureFragment.newInstance(pictureUrls.get(position));
         }
+    }
+
+
+    public static void start(Context context, int currentPicturePosition, List<PicUrls> picUrlsList) {
+        Intent intent = new Intent(context, PicturePagerActivity.class);
+        intent.putExtra(ARGS_KEY_CURRENT_PICTURE_POSITION, currentPicturePosition);
+        intent.putExtra(ARGS_KEY_PICTURE_URLS, (Serializable) picUrlsList);
+        context.startActivity(intent);
     }
 }

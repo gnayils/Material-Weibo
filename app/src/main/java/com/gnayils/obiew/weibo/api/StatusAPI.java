@@ -38,7 +38,7 @@ public interface StatusAPI {
 
     @FormUrlEncoded
     @POST("2/statuses/update.json")
-    Observable<Status> update(@Field("status") String status);
+    Observable<Status> update(@Field("source") String source, @Field("status") String status);
 
     @Multipart
     @POST("2/statuses/upload_pic.json")
@@ -46,7 +46,7 @@ public interface StatusAPI {
 
     @FormUrlEncoded
     @POST("2/statuses/upload_url_text.json")
-    Observable<Status> uploadUrlText(@Field("status") String status, @Field("pic_id") String picId);
+    Observable<Status> uploadUrlText(@Field("source") String source, @Field("status") String status, @Field("pic_id") String picId);
 
     @Multipart
     @POST("2/statuses/upload.json")

@@ -34,7 +34,7 @@ public class ItemView extends RelativeLayout {
     public ItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
-        setBackground(getResources().getDrawable(R.drawable.bg_ripple, context.getTheme()));
+        setBackground(getResources().getDrawable(R.drawable.bg_rect_ripple_round_corner, context.getTheme()));
         setClickable(true);
 
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ItemView, defStyleAttr, defStyleRes);

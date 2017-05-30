@@ -65,8 +65,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackground"
-            android:src="@drawable/ic_menu_emotion"
-            android:tint="?attr/colorPrimary" />
+            android:src="@drawable/ic_emotion"
+            android:tint="@color/colorPrimary" />
 
         <ImageButton
             android:id="@+id/image_button_gallery"
@@ -74,8 +74,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackground"
-            android:src="@drawable/ic_menu_gallery"
-            android:tint="?attr/colorPrimary" />
+            android:src="@drawable/ic_gallery"
+            android:tint="@color/colorPrimary" />
 
         <ImageButton
             android:id="@+id/image_button_mention"
@@ -83,8 +83,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackground"
-            android:src="@drawable/ic_menu_mention"
-            android:tint="?attr/colorPrimary" />
+            android:src="@drawable/ic_mention"
+            android:tint="@color/colorPrimary" />
 
         <ImageButton
             android:id="@+id/image_button_topic"
@@ -92,8 +92,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackground"
-            android:src="@drawable/ic_menu_topic"
-            android:tint="?attr/colorPrimary" />
+            android:src="@drawable/ic_topic"
+            android:tint="@color/colorPrimary" />
 
         <ImageButton
             android:id="@+id/image_button_backspace"
@@ -101,7 +101,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_menu_backspace"
+            android:src="@drawable/ic_backspace"
             android:tint="@color/grey_600" />
 
     </LinearLayout>
