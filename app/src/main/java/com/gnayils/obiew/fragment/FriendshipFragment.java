@@ -14,15 +14,18 @@ import com.gnayils.obiew.R;
 import com.gnayils.obiew.interfaces.BasePresenter;
 import com.gnayils.obiew.interfaces.FriendshipInterface;
 import com.gnayils.obiew.presenter.FriendshipPresenter;
+import com.gnayils.obiew.util.Popup;
 import com.gnayils.obiew.view.UserRecyclerView;
 import com.gnayils.obiew.weibo.Account;
 import com.gnayils.obiew.weibo.bean.User;
 import com.gnayils.obiew.weibo.bean.Users;
+import com.gnayils.obiew.weibo.service.FriendshipService;
+import com.gnayils.obiew.weibo.service.SubscriberAdapter;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class FriendshipFragment extends Fragment implements FriendshipInterface.View {
+public class FriendshipFragment extends Fragment {
 
     @Bind(R.id.user_recycler_view)
     protected UserRecyclerView userRecyclerView;
@@ -31,7 +34,7 @@ public class FriendshipFragment extends Fragment implements FriendshipInterface.
 
     private OnFriendClickListener listener;
 
-    private FriendshipInterface.Presenter friendshipPresenter;
+    private FriendshipService friendshipService = new FriendshipService();
 
     public FriendshipFragment() {
     }
@@ -49,7 +52,6 @@ public class FriendshipFragment extends Fragment implements FriendshipInterface.
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        friendshipPresenter = new FriendshipPresenter(this);
     }
 
     @Override
@@ -64,7 +66,27 @@ public class FriendshipFragment extends Fragment implements FriendshipInterface.
                 }
             }
         });
-        friendshipPresenter.friends(Account.accessToken.uid);
+        friendshipService.friends(Account.accessToken.uid, new SubscriberAdapter<Users>(){
+            @Override
+            public void onSubscribe() {
+                progressBar.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Popup.toast("获取用户关注失败: " + e.getMessage());
+            }
+
+            @Override
+            public void onNext(Users users) {
+                userRecyclerView.show(users.users);
+            }
+
+            @Override
+            public void onUnsubscribe() {
+                progressBar.setVisibility(View.INVISIBLE);
+            }
+        });
         return rootView;
     }
 
@@ -82,26 +104,7 @@ public class FriendshipFragment extends Fragment implements FriendshipInterface.
     public void onDetach() {
         super.onDetach();
         listener = null;
-        friendshipPresenter.unsubscribe();
-    }
-
-    @Override
-    public void setPresenter(BasePresenter presenter) {
-        friendshipPresenter = (FriendshipInterface.Presenter) presenter;
-    }
-
-    @Override
-    public void setLoadingIndicatorVisible(boolean visible) {
-        if(visible) {
-            progressBar.setVisibility(View.VISIBLE);
-        } else {
-            progressBar.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    @Override
-    public void show(Users users) {
-        userRecyclerView.show(users.users);
+        friendshipService.unsubscribe();
     }
 
     public interface OnFriendClickListener {

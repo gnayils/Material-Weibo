@@ -26,6 +26,9 @@
     <string name="app_secret">@string/smooth_app_secret</string>
     <string name="callback_url">@string/smooth_callback_url</string>
 
+    <string name="mention_scheme">com.gnayils.obiew.scheme.mention</string>
+    <string name="topic_scheme">com.gnayils.obiew.scheme.topic</string>
+
     <string name="lorem">
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 		In mollis est vitae erat laoreet consectetur. Mauris dui mauris,
@@ -62,5 +65,11 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_signin">Sign in</string>
+    <string name="title_activity_drawer">DrawerActivity</string>
 
 </resources>

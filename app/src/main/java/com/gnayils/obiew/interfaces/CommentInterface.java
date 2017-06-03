@@ -5,7 +5,7 @@ import com.gnayils.obiew.weibo.bean.CommentTimeline;
 /**
  * Created by Gnayils on 12/03/2017.
  */
-
+@Deprecated
 public interface CommentInterface {
 
     interface View extends BaseView {

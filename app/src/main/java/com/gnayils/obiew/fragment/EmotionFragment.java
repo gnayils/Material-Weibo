@@ -107,7 +107,7 @@ public class EmotionFragment extends Fragment {
         public EmotionAdapter() {
             super();
             phraseList = EmotionDB.getAllPhrase();
-            emotionOriginalSize = getContext().getResources().getDimension(R.dimen.emotion_original_size);
+            emotionOriginalSize = getContext().getResources().getDimension(R.dimen.emotion_size_in_drawer);
         }
 
         @Override

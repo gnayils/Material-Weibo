@@ -18,14 +18,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.bmpldr.BitmapLoader;
-import com.gnayils.obiew.interfaces.BasePresenter;
-import com.gnayils.obiew.interfaces.StatusInterface;
-import com.gnayils.obiew.presenter.StatusPresenter;
+import com.gnayils.obiew.util.Popup;
 import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.view.ImageTimelineView;
 import com.gnayils.obiew.view.AvatarView;
@@ -34,6 +28,9 @@ import com.gnayils.obiew.view.StatusTimelineView;
 import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.weibo.bean.StatusTimeline;
 import com.gnayils.obiew.weibo.bean.User;
+import com.gnayils.obiew.weibo.service.StatusService;
+import com.gnayils.obiew.weibo.service.SubscriberAdapter;
+import com.gnayils.obiew.weibo.service.UserService;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -42,36 +39,26 @@ import butterknife.ButterKnife;
  * Created by Gnayils on 26/03/2017.
  */
 
-public class UserProfileActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener, SwipeRefreshLayout.OnRefreshListener, StatusInterface.View {
+public class UserProfileActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener, SwipeRefreshLayout.OnRefreshListener {
 
     public static final String ARGS_KEY_USER = "ARGS_KEY_USER";
 
-    @Bind(R.id.toolbar)
-    protected Toolbar toolbar;
-    @Bind(R.id.image_view_cover)
-    protected ImageView coverImageView;
-    @Bind(R.id.avatar_view)
-    protected AvatarView avatarView;
-    @Bind(R.id.text_view_screen_name)
-    protected TextView screenNameTextView;
-    @Bind(R.id.text_view_description)
-    protected TextView descriptionTextView;
-    @Bind(R.id.swipe_refresh_layout)
-    protected SwipeRefreshLayout swipeRefreshLayout;
-    @Bind(R.id.app_bar_layout)
-    protected AppBarLayout appBarLayout;
-    @Bind(R.id.collapsing_toolbar_layout)
-    protected CollapsingToolbarLayout collapsingToolbarLayout;
-    @Bind(R.id.tab_layout)
-    protected TabLayout tabLayout;
-    @Bind(R.id.view_pager)
-    protected ViewPager viewPager;
+    @Bind(R.id.toolbar) Toolbar toolbar;
+    @Bind(R.id.image_view_cover) ImageView coverImageView;
+    @Bind(R.id.avatar_view) AvatarView avatarView;
+    @Bind(R.id.text_view_screen_name) TextView screenNameTextView;
+    @Bind(R.id.text_view_description) TextView descriptionTextView;
+    @Bind(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.app_bar_layout) AppBarLayout appBarLayout;
+    @Bind(R.id.collapsing_toolbar_layout) CollapsingToolbarLayout collapsingToolbarLayout;
+    @Bind(R.id.tab_layout) TabLayout tabLayout;
+    @Bind(R.id.view_pager) ViewPager viewPager;
 
+    private StatusTimelineView statusTimelineView;
+    private ImageTimelineView imageTimelineView;
 
-    protected StatusTimelineView statusTimelineView;
-    protected ImageTimelineView imageTimelineView;
-
-    private StatusInterface.Presenter statusPresenter;
+    private UserService userService = new UserService();
+    private StatusService statusService = new StatusService();
 
     private int appBarCurrentVerticalOffset;
 
@@ -83,7 +70,8 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
         getWindow().setStatusBarColor(getResources().getColor(android.R.color.transparent));
         setContentView(R.layout.activity_user_profile);
         ButterKnife.bind(this);
-        user = (User) getIntent().getSerializableExtra(ARGS_KEY_USER);
+        setSupportActionBar(toolbar);
+
         swipeRefreshLayout.setProgressViewOffset(false, -swipeRefreshLayout.getProgressCircleDiameter(), ViewUtils.getStatusBarHeight(this) * 2);
         swipeRefreshLayout.setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
             @Override
@@ -92,6 +80,75 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
             }
         });
         appBarLayout.addOnOffsetChangedListener(this);
+        statusTimelineView = new StatusTimelineView(this);
+        imageTimelineView = new ImageTimelineView(this);
+        viewPager.setAdapter(new ViewPagerAdapter());
+        tabLayout.setupWithViewPager(viewPager);
+        swipeRefreshLayout.setOnRefreshListener(this);
+        statusTimelineView.setOnLoadMoreListener(new LoadMoreRecyclerView.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                loadUserTimeline(false, Status.FEATURE_ALL);
+            }
+        });
+        imageTimelineView.setOnLoadMoreListener(new LoadMoreRecyclerView.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                loadUserTimeline(false, Status.FEATURE_IMAGE);
+            }
+        });
+
+        if(getIntent().hasExtra(ARGS_KEY_USER)) {
+            fillViews((User) getIntent().getSerializableExtra(ARGS_KEY_USER));
+        } else if(getIntent().getData() != null){
+            final String screenName = getIntent().getData().getHost();
+            if(screenName != null && !screenName.isEmpty()) {
+                userService.showUserByName(screenName, new SubscriberAdapter<User>(){
+
+                    @Override
+                    public void onSubscribe() {
+                        swipeRefreshLayout.setRefreshing(true);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Popup.toast(String.format("获取用户[%s]信息失败: %s",screenName, e.getMessage()));
+                    }
+
+                    @Override
+                    public void onNext(User user) {
+                        fillViews(user);
+                    }
+
+                    @Override
+                    public void onUnsubscribe() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+            }
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        statusService.unsubscribe();
+        userService.unsubscribe();
+    }
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        appBarCurrentVerticalOffset = verticalOffset;
+        tabLayout.getBackground().setAlpha((int) (Math.abs(verticalOffset) / (appBarLayout.getTotalScrollRange() / 255d)));
+        if(Math.abs(verticalOffset) == appBarLayout.getTotalScrollRange()) {
+            tabLayout.setElevation(ViewUtils.dp2px(this, 6));
+        } else if(verticalOffset == 0) {
+            tabLayout.setElevation(0);
+        }
+    }
+
+    private void fillViews(User user) {
+        this.user = user;
         collapsingToolbarLayout.setTitle(user.screen_name);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,75 +167,51 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
         Glide.with(this).load(user.avatar_large).into(avatarView.avatarCircleImageView);
         screenNameTextView.setText(user.screen_name);
         descriptionTextView.setText(user.description);
-
-        statusTimelineView = new StatusTimelineView(this);
-        imageTimelineView = new ImageTimelineView(this);
-        statusPresenter = new StatusPresenter(this);
-        viewPager.setAdapter(new ViewPagerAdapter());
-        tabLayout.setupWithViewPager(viewPager);
-        swipeRefreshLayout.setOnRefreshListener(this);
-        statusTimelineView.setOnLoadMoreListener(new LoadMoreRecyclerView.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                statusPresenter.loadStatusTimeline(false, user, Status.FEATURE_ALL);
-            }
-        });
-        imageTimelineView.setOnLoadMoreListener(new LoadMoreRecyclerView.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                statusPresenter.loadStatusTimeline(false, user, Status.FEATURE_IMAGE);
-            }
-        });
         onRefresh();
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        statusPresenter.unsubscribe();
-    }
-
-    @Override
-    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-        appBarCurrentVerticalOffset = verticalOffset;
-        tabLayout.getBackground().setAlpha((int) (Math.abs(verticalOffset) / (appBarLayout.getTotalScrollRange() / 255d)));
-        if(Math.abs(verticalOffset) == appBarLayout.getTotalScrollRange()) {
-            tabLayout.setElevation(ViewUtils.dp2px(this, 6));
-        } else if(verticalOffset == 0) {
-            tabLayout.setElevation(0);
-        }
-    }
-
-    @Override
     public void onRefresh() {
-        statusPresenter.loadStatusTimeline(true, user, Status.FEATURE_ALL);
-        statusPresenter.loadStatusTimeline(true, user, Status.FEATURE_IMAGE);
+        loadUserTimeline(true, Status.FEATURE_ALL);
+        loadUserTimeline(true, Status.FEATURE_IMAGE);
     }
 
-    @Override
-    public void setPresenter(BasePresenter presenter) {
-        this.statusPresenter = (StatusInterface.Presenter) presenter;
-    }
-
-    @Override
-    public void show(StatusTimeline statusTimeline, int feature) {
-        if(feature == Status.FEATURE_ALL) {
-            statusTimelineView.show(statusTimeline);
-        } else if(feature == Status.FEATURE_IMAGE) {
-            imageTimelineView.show(statusTimeline);
-        }
-    }
-
-    @Override
-    public void showStatusLoadingIndicator(boolean isLoadingLatest, final boolean refreshing) {
-        if(isLoadingLatest) {
-            swipeRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    swipeRefreshLayout.setRefreshing(refreshing);
+    private void loadUserTimeline(final boolean loadLatest, final int feature) {
+        statusService.showUserTimeline(loadLatest, user, feature, new SubscriberAdapter<StatusTimeline>(){
+            @Override
+            public void onSubscribe() {
+                if(loadLatest) {
+                    swipeRefreshLayout.setRefreshing(true);
                 }
-            });
-        }
+            }
+
+            @Override
+            public void onUnsubscribe() {
+                if(loadLatest) {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if(feature == Status.FEATURE_ALL) {
+                    Popup.toast("获取用户微博失败: " + e.getMessage());
+                } else if(feature == Status.FEATURE_IMAGE) {
+                    Popup.toast("获取用户相册失败: " + e.getMessage());
+                } else {
+                    Popup.toast("Unknown Feature: " + feature);
+                }
+            }
+
+            @Override
+            public void onNext(StatusTimeline statusTimeline) {
+                if(feature == Status.FEATURE_ALL) {
+                    statusTimelineView.show(statusTimeline);
+                } else if(feature == Status.FEATURE_IMAGE) {
+                    imageTimelineView.show(statusTimeline);
+                }
+            }
+        });
     }
 
     public static void start(Context context, User user) {

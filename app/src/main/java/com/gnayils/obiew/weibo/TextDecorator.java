@@ -29,7 +29,9 @@ import java.util.regex.Pattern;
 
 public class TextDecorator {
 
-    public static final Pattern WEB_URL = Pattern.compile("(http|ftp|https):\\/\\/[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,@?^=%&amp;:/~\\+#]*[\\w\\-\\@?^=%&amp;/~\\+#])?");
+    public static final Pattern URL_PATTERN = Pattern.compile(WeiboSpan.HTTP_MATCHER);
+
+    public static final Pattern EMOTION_PATTERN = Pattern.compile("\\[\\S+?\\]");
 
     public static void decorate(StatusTimeline statusTimeline) {
         if(statusTimeline != null && statusTimeline.statuses != null) {
@@ -75,35 +77,35 @@ public class TextDecorator {
     }
 
     private static SpannableString decorateURLs(String text) {
-        List<WebURLSpan> webUrlSpans = new ArrayList<>();
+        List<WeiboSpan> weiboSpen = new ArrayList<>();
         Matcher httpMatcher;
         String replacement = "网页链接";
-        while((httpMatcher = WEB_URL.matcher(text)).find()) {
+        while((httpMatcher = URL_PATTERN.matcher(text)).find()) {
             String webURL = httpMatcher.group();
             text = text.replace(webURL, replacement);
-            WebURLSpan webURLSpan = new WebURLSpan(webURL, httpMatcher.start(), httpMatcher.end() - (webURL.length() - replacement.length()));
-            webUrlSpans.add(webURLSpan);
+            WeiboSpan weiboSpan = new WeiboSpan(webURL, httpMatcher.start(), httpMatcher.end() - (webURL.length() - replacement.length()));
+            weiboSpen.add(weiboSpan);
         }
         SpannableString spannableString = new SpannableString(text);
-        for(WebURLSpan webURLSpan : webUrlSpans) {
-            spannableString.setSpan(webURLSpan, webURLSpan.start, webURLSpan.end, webURLSpan.flag);
+        for(WeiboSpan weiboSpan : weiboSpen) {
+            spannableString.setSpan(weiboSpan, weiboSpan.start, weiboSpan.end, weiboSpan.flag);
         }
         return spannableString;
     }
 
     private static void decorateTopics(SpannableString spannableString) {
-        Linkify.addLinks(spannableString, Pattern.compile("#[^#]+#"), "com.gnayils.obiew.scheme.topic://");
+        Linkify.addLinks(spannableString, Pattern.compile(WeiboSpan.TOPIC_MATCHER), WeiboSpan.TOPIC_SCHEME + WeiboSpan.SCHEME_SEPARATOR);
         replaceUrlSpan(spannableString);
     }
 
     private static void decorateMentions(SpannableString spannableString) {
-        Linkify.addLinks(spannableString, Pattern.compile("@[\\w\\u4e00-\\u9fa5]+"), "com.gnayils.obiew.scheme.mention://");
+        Linkify.addLinks(spannableString, Pattern.compile(WeiboSpan.MENTION_MATCHER), WeiboSpan.MENTION_SCHEME + WeiboSpan.SCHEME_SEPARATOR);
         replaceUrlSpan(spannableString);
     }
 
     private static void decorateEmotions(SpannableString spannableString) {
         String string =spannableString.toString();
-        Matcher emotionKeyMatcher = Pattern.compile("\\[\\S+?\\]").matcher(string);
+        Matcher emotionKeyMatcher = EMOTION_PATTERN.matcher(string);
         while(emotionKeyMatcher.find()) {
             String emotionKey = emotionKeyMatcher.group();
             Bitmap bitmap = EmotionDB.get(emotionKey, App.resources().getDimension(R.dimen.emotion_size_in_text));
@@ -120,7 +122,7 @@ public class TextDecorator {
         for (URLSpan urlSpan : urlSpans) {
             int start = spannable.getSpanStart(urlSpan);
             int end = spannable.getSpanEnd(urlSpan);
-            WebURLSpan linkSpan = new WebURLSpan(urlSpan.getURL(), start, end);
+            WeiboSpan linkSpan = new WeiboSpan(urlSpan.getURL(), start, end);
             spannable.removeSpan(urlSpan);
             spannable.setSpan(linkSpan, start, end, linkSpan.flag);
         }

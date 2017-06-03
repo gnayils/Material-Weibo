@@ -25,4 +25,6 @@
     <color name="colorLink">#507daf</color>
     <color name="colorLinkBackground">#6c507daf</color>
 
+    <color name="black_overlay">#66000000</color>
+
 </resources>

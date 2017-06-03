@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Handler;
 import android.os.Message;
@@ -50,15 +49,11 @@ public class LoginActivity extends AppCompatActivity {
 
     public static final String TAG = LoginActivity.class.getSimpleName();
 
-    @Bind(R.id.web_view)
-    protected WebView webView;
-    @Bind(R.id.avatar_view)
-    protected AvatarView avatarView;
+    @Bind(R.id.web_view) WebView webView;
+    @Bind(R.id.avatar_view) AvatarView avatarView;
 
-    @Bind(R.id.frame_layout_bottom_part)
-    protected FrameLayout bottomPartFrameLayout;
-    @Bind(R.id.frame_layout_top_part)
-    protected FrameLayout topPartFrameLayout;
+    @Bind(R.id.frame_layout_bottom_part) FrameLayout bottomPartFrameLayout;
+    @Bind(R.id.frame_layout_top_part) FrameLayout topPartFrameLayout;
 
     private String appKey;
     private String appSecret;
@@ -154,7 +149,7 @@ public class LoginActivity extends AppCompatActivity {
                         });
             } else if (msg.what == MESSAGE_ACCESS_TOKEN_OBTAINED) {
                 WeiboAPI.get(UserAPI.class)
-                        .show(Account.accessToken.uid)
+                        .showById(Account.accessToken.uid)
                         .doOnNext(new Action1<User>() {
                             @Override
                             public void call(User user) {

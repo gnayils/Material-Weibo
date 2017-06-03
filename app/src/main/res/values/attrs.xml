@@ -2,28 +2,37 @@
 <resources>
 
     <declare-styleable name="OverScrollView">
-        <attr name="header" format="reference"/>
-        <attr name="content" format="reference"/>
+        <attr name="header" format="reference" />
+        <attr name="content" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="ItemView">
-        <attr name="icon" format="reference"/>
-        <attr name="title" format="string"/>
-        <attr name="description" format="string"/>
-        <attr name="moreIcon" format="reference"/>
+        <attr name="icon" format="reference" />
+        <attr name="title" format="string" />
+        <attr name="description" format="string" />
+        <attr name="moreIcon" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="DividingLine">
         <attr name="lineColor" format="color" />
-        <attr name="paddingColor" format="color"/>
+        <attr name="paddingColor" format="color" />
     </declare-styleable>
 
     <declare-styleable name="AvatarView">
         <attr name="avatarImage" format="reference" />
-        <attr name="verifiedIcon" format="reference"/>
+        <attr name="verifiedIcon" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="ForegroundImageView">
-        <attr name="android:foreground"/>
+        <attr name="android:foreground" />
+    </declare-styleable>
+
+    <!-- Declare custom theme attributes that allow changing which styles are
+         used for button bars depending on the API level.
+         ?android:attr/buttonBarStyle is new as of API 11 so this is
+         necessary to support previous API levels. -->
+    <declare-styleable name="ButtonBarContainerTheme">
+        <attr name="metaButtonBarStyle" format="reference" />
+        <attr name="metaButtonBarButtonStyle" format="reference" />
     </declare-styleable>
 </resources>

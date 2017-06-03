@@ -5,7 +5,7 @@ import com.gnayils.obiew.weibo.bean.RepostTimeline;
 /**
  * Created by Gnayils on 18/03/2017.
  */
-
+@Deprecated
 public interface RepostInterface {
 
 

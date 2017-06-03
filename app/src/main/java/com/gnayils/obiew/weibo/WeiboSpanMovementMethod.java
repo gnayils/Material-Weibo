@@ -13,14 +13,14 @@ import android.widget.TextView;
  * Created by Gnayils on 18/02/2017.
  */
 
-public class WebURLMovementMethod extends LinkMovementMethod {
+public class WeiboSpanMovementMethod extends LinkMovementMethod {
 
-    private static LinkMovementMethod instance = new WebURLMovementMethod();
+    private static LinkMovementMethod instance = new WeiboSpanMovementMethod();
     private static TouchListener listener = new TouchListener();
 
     private TouchableSpan pressedSpan;
 
-    private WebURLMovementMethod() {
+    private WeiboSpanMovementMethod() {
 
     }
 

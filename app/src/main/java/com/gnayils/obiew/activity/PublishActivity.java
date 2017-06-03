@@ -28,13 +28,14 @@ import com.gnayils.obiew.R;
 import com.gnayils.obiew.fragment.EmotionFragment;
 import com.gnayils.obiew.fragment.FriendshipFragment;
 import com.gnayils.obiew.fragment.GalleryFragment;
-import com.gnayils.obiew.interfaces.BasePresenter;
-import com.gnayils.obiew.interfaces.StatusInterface;
-import com.gnayils.obiew.presenter.StatusPresenter;
+import com.gnayils.obiew.util.Popup;
 import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.weibo.TextDecorator;
-import com.gnayils.obiew.weibo.bean.StatusTimeline;
+import com.gnayils.obiew.weibo.Weibo;
+import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.weibo.bean.User;
+import com.gnayils.obiew.weibo.service.StatusService;
+import com.gnayils.obiew.weibo.service.SubscriberAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,30 +44,20 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 
-public class PublishActivity extends AppCompatActivity implements StatusInterface.View, EmotionFragment.OnEmotionClickListener, GalleryFragment.OnPhotoClickListener, FriendshipFragment.OnFriendClickListener {
+public class PublishActivity extends AppCompatActivity implements EmotionFragment.OnEmotionClickListener, GalleryFragment.OnPhotoClickListener, FriendshipFragment.OnFriendClickListener {
 
     private InputMethodManager inputMethodManager;
 
-    @Bind(R.id.toolbar)
-    protected Toolbar toolbar;
-    @Bind(R.id.edit_text_content)
-    protected EditText contentEditText;
-    @Bind(R.id.layout_selected_image)
-    protected LinearLayout selectedImageLayout;
-    @Bind(R.id.image_button_emotion)
-    protected ImageButton emotionImageButton;
-    @Bind(R.id.image_button_gallery)
-    protected ImageButton galleryImageButton;
-    @Bind(R.id.image_button_mention)
-    protected ImageButton mentionImageButton;
-    @Bind(R.id.image_button_topic)
-    protected ImageButton topicImageButton;
-    @Bind(R.id.image_button_backspace)
-    protected ImageButton backspaceImageButton;
-    @Bind(R.id.linear_layout_function_bar)
-    protected LinearLayout functionBarLayout;
-    @Bind(R.id.frame_layout_function_content)
-    protected FrameLayout functionContentLayout;
+    @Bind(R.id.toolbar) Toolbar toolbar;
+    @Bind(R.id.edit_text_content) EditText contentEditText;
+    @Bind(R.id.layout_selected_image) LinearLayout selectedImageLayout;
+    @Bind(R.id.image_button_emotion) ImageButton emotionImageButton;
+    @Bind(R.id.image_button_gallery) ImageButton galleryImageButton;
+    @Bind(R.id.image_button_mention) ImageButton mentionImageButton;
+    @Bind(R.id.image_button_topic) ImageButton topicImageButton;
+    @Bind(R.id.image_button_backspace) ImageButton backspaceImageButton;
+    @Bind(R.id.linear_layout_function_bar) LinearLayout functionBarLayout;
+    @Bind(R.id.frame_layout_function_content) FrameLayout functionContentLayout;
 
     private EmotionFragment emotionFragment = EmotionFragment.newInstance();
     private GalleryFragment galleryFragment = GalleryFragment.newInstance();
@@ -74,7 +65,7 @@ public class PublishActivity extends AppCompatActivity implements StatusInterfac
 
     private List<String> selectedPhotoList = new ArrayList<>();
 
-    private StatusPresenter statusPresenter = new StatusPresenter(this);
+    private StatusService statusService = new StatusService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +73,13 @@ public class PublishActivity extends AppCompatActivity implements StatusInterfac
         setContentView(R.layout.activity_publish);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-
+        getSupportActionBar().setTitle("发微博");
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         final View contentView = getWindow().getDecorView().findViewById(android.R.id.content);
         contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -266,7 +263,7 @@ public class PublishActivity extends AppCompatActivity implements StatusInterfac
     }
 
     @Override
-        public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_publish_option, menu);
         Drawable drawable = menu.findItem(R.id.action_publish).getIcon();
         if (drawable != null) {
@@ -278,30 +275,49 @@ public class PublishActivity extends AppCompatActivity implements StatusInterfac
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_publish) {
-            statusPresenter.upload(contentEditText.getText().toString(), selectedPhotoList);
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_publish:
+                publishStatus();
+                break;
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void publishStatus() {
+        if(contentEditText.getText().toString().isEmpty()) {
+            return;
+        }
+        if(contentEditText.getText().toString().length() > Weibo.Const.STATUS_TEXT_MAX_LENGTH) {
+            return;
+        }
+        if(selectedPhotoList != null && selectedPhotoList.size() > 9) {
+            return;
+        }
+        statusService.publishStatus(contentEditText.getText().toString(), selectedPhotoList, new SubscriberAdapter<Status>(){
+
+            @Override
+            public void onSubscribe() {
+                System.out.println("publishStatus onSubscribe");
+                PublishActivity.this.finish();
+                Popup.toast("正在发布微博...");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Popup.toast("发布微博失败: " + e.getMessage());
+            }
+
+            @Override
+            public void onCompleted() {
+                Popup.toast("发布微博成功");
+            }
+        });
     }
 
     public static void start(Context context) {
         Intent intent = new Intent(context, PublishActivity.class);
         context.startActivity(intent);
-    }
-
-    @Override
-    public void setPresenter(BasePresenter presenter) {
-        statusPresenter = (StatusPresenter) presenter;
-    }
-
-    @Override
-    public void show(StatusTimeline statusTimeline, int feature) {
-
-    }
-
-    @Override
-    public void showStatusLoadingIndicator(boolean isLoadingLatest, boolean refreshing) {
-
     }
 }

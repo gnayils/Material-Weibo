@@ -5,7 +5,7 @@ import com.gnayils.obiew.weibo.bean.User;
 /**
  * Created by Gnayils on 12/11/2016.
  */
-
+@Deprecated
 public interface UserInterface {
 
     interface View extends BaseView {

@@ -31,7 +31,6 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.HttpException;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Header;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -79,8 +78,7 @@ public class WeiboAPI {
                     if(result instanceof Observable) {
                         return ((Observable) result)
                                 .subscribeOn(Schedulers.io())
-                                .unsubscribeOn(Schedulers.io())
-                                .doOnError(new RetrofitErrorHandler());
+                                .doOnError(new WeiboErrorHandler());
                     } else {
                         Log.e(TAG, "all method in the retrofit instance must be return a Observable instance");
                         return null;
@@ -92,7 +90,7 @@ public class WeiboAPI {
         return interfaceInstance;
     }
 
-    private class RetrofitErrorHandler implements Action1<Throwable> {
+    private class WeiboErrorHandler implements Action1<Throwable> {
 
         @Override
         public void call(Throwable throwable) {

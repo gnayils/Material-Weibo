@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -22,49 +21,39 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.interfaces.BasePresenter;
-import com.gnayils.obiew.interfaces.StatusInterface;
-import com.gnayils.obiew.interfaces.UserInterface;
-import com.gnayils.obiew.presenter.StatusPresenter;
-import com.gnayils.obiew.util.BottomNavigationViewHelper;
+import com.gnayils.obiew.util.Popup;
 import com.gnayils.obiew.view.AvatarView;
 import com.gnayils.obiew.view.StatusTimelineView;
 import com.gnayils.obiew.weibo.Account;
 import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.weibo.bean.StatusTimeline;
+import com.gnayils.obiew.weibo.service.StatusService;
+import com.gnayils.obiew.weibo.service.SubscriberAdapter;
+
+import junit.framework.Test;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener, StatusInterface.View {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    @Bind(R.id.toolbar)
-    protected Toolbar toolbar;
-    @Bind(R.id.drawer_layout)
-    protected DrawerLayout drawerLayout;
-    @Bind(R.id.floating_action_button)
-    protected FloatingActionButton floatingActionButton;
-    @Bind(R.id.navigation_view)
-    protected NavigationView navigationView;
+    @Bind(R.id.toolbar) Toolbar toolbar;
+    @Bind(R.id.drawer_layout) DrawerLayout drawerLayout;
+    @Bind(R.id.floating_action_button) FloatingActionButton floatingActionButton;
+    @Bind(R.id.navigation_view) NavigationView navigationView;
+    @Bind(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.status_timeline_view) StatusTimelineView statusTimelineView;
+    @Bind(R.id.bottom_navigation_view) BottomNavigationView bottomNavigationView;
 
-    protected ImageView coverImageView;
-    protected AvatarView avatarView;
-    protected TextView screenNameTextView;
-    protected TextView descriptionTextView;
-    protected Button statusCountButton;
-    protected Button followCountButton;
-    protected Button followerCountButton;
+    private ImageView coverImageView;
+    private AvatarView avatarView;
+    private TextView screenNameTextView;
+    private TextView descriptionTextView;
+    private Button statusCountButton;
+    private Button followCountButton;
+    private Button followerCountButton;
 
-    @Bind(R.id.swipe_refresh_layout)
-    protected SwipeRefreshLayout swipeRefreshLayout;
-    @Bind(R.id.status_timeline_view)
-    protected StatusTimelineView statusTimelineView;
-    @Bind(R.id.bottom_navigation_view)
-    protected BottomNavigationView bottomNavigationView;
-
-
-    private UserInterface.Presenter userPresenter;
-    private StatusInterface.Presenter statusPresenter;
+    private StatusService statusService = new StatusService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +61,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.setDrawerListener(toggle);
         toggle.syncState();
-
         navigationView.setNavigationItemSelectedListener(this);
         View headerView = navigationView.getHeaderView(0);
         coverImageView = (ImageView) headerView.findViewById(R.id.image_view_cover);
@@ -93,9 +80,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 UserProfileActivity.start(MainActivity.this, Account.user);
             }
         });
-        if(Account.user.cover_image_phone != null && !Account.user.cover_image_phone.isEmpty()) {
+        if (Account.user.cover_image_phone != null && !Account.user.cover_image_phone.isEmpty()) {
             String coverImageUrl = Account.user.cover_image_phone;
-            if(coverImageUrl.indexOf(";") != 0) {
+            if (coverImageUrl.indexOf(";") != 0) {
                 String[] coverImageUrls = coverImageUrl.split(";");
                 coverImageUrl = coverImageUrls[(int) (Math.random() * coverImageUrls.length)];
             }
@@ -107,28 +94,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         statusCountButton.setText(Account.user.statuses_count + "\n微博");
         followCountButton.setText(Account.user.friends_count + "\n关注");
         followerCountButton.setText(Account.user.followers_count + "\n粉丝");
-        statusPresenter = new StatusPresenter(this);
-        swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                showHomeTimeline(true);
+            }
+        });
         statusTimelineView.setOnLoadMoreListener(new StatusTimelineView.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                statusPresenter.loadStatusTimeline(false);
+               showHomeTimeline(false);
             }
         });
-
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 PublishActivity.start(MainActivity.this);
             }
         });
-        onRefresh();
+        showHomeTimeline(true);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        statusPresenter.unsubscribe();
+        statusService.unsubscribe();
     }
 
     @Override
@@ -179,40 +169,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    @Override
-    public void onRefresh() {
-        statusPresenter.loadStatusTimeline(true);
-    }
+    private void showHomeTimeline(final boolean loadLatest) {
+        statusService.showHomeTimeline(loadLatest, Status.FEATURE_ALL,
+                new SubscriberAdapter<StatusTimeline>() {
 
-    @Override
-    public void setPresenter(BasePresenter presenter) {
-        this.statusPresenter = (StatusInterface.Presenter) presenter;
-    }
+                    @Override
+                    public void onSubscribe() {
+                        if(loadLatest) {
+                            swipeRefreshLayout.setRefreshing(true);
+                        }
+                    }
 
-    @Override
-    public void show(StatusTimeline statusTimeline, int feature) {
-        if(feature == Status.FEATURE_ALL) {
-            statusTimelineView.show(statusTimeline);
-        }
-    }
+                    @Override
+                    public void onUnsubscribe() {
+                        if(loadLatest) {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    }
 
-    @Override
-    public void showStatusLoadingIndicator(boolean isLoadingLatest, final boolean refreshing) {
-        if(isLoadingLatest) {
-            swipeRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    swipeRefreshLayout.setRefreshing(refreshing);
-                }
-            });
-        } else {
+                    @Override
+                    public void onError(Throwable e) {
+                        Popup.toast("获取微博失败: " + e.getMessage());
+                    }
 
-        }
+                    @Override
+                    public void onNext(StatusTimeline statusTimeline) {
+                        statusTimelineView.show(statusTimeline);
+                    }
+                });
     }
 
     public static void start(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
         context.startActivity(intent);
     }
-
 }

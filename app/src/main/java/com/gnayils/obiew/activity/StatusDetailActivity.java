@@ -22,6 +22,7 @@ import com.gnayils.obiew.interfaces.CommentInterface;
 import com.gnayils.obiew.interfaces.RepostInterface;
 import com.gnayils.obiew.presenter.CommentPresenter;
 import com.gnayils.obiew.presenter.RepostPresenter;
+import com.gnayils.obiew.util.Popup;
 import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.view.CommentTimelineView;
 import com.gnayils.obiew.view.LoadMoreRecyclerView;
@@ -30,34 +31,30 @@ import com.gnayils.obiew.view.StatusCardView;
 import com.gnayils.obiew.weibo.bean.CommentTimeline;
 import com.gnayils.obiew.weibo.bean.RepostTimeline;
 import com.gnayils.obiew.weibo.bean.Status;
+import com.gnayils.obiew.weibo.service.CommentService;
+import com.gnayils.obiew.weibo.service.StatusService;
+import com.gnayils.obiew.weibo.service.SubscriberAdapter;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class StatusDetailActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener, SwipeRefreshLayout.OnRefreshListener, CommentInterface.View, RepostInterface.View {
+public class StatusDetailActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener, SwipeRefreshLayout.OnRefreshListener {
 
     public static final String ARGS_KEY_STATUS = "ARGS_KEY_STATUS";
 
     private Status status;
 
-    @Bind(R.id.swipe_refresh_layout)
-    protected SwipeRefreshLayout swipeRefreshLayout;
-    @Bind(R.id.app_bar_layout)
-    protected AppBarLayout appBarLayout;
-    @Bind(R.id.toolbar)
-    protected Toolbar toolbar;
-    @Bind(R.id.status_card_view)
-    protected StatusCardView statusCardView;
-    @Bind(R.id.tab_layout)
-    protected TabLayout tabLayout;
-    @Bind(R.id.text_view_like_count)
-    protected TextView likeCountTextView;
-    @Bind(R.id.view_pager)
-    protected ViewPager viewPager;
+    @Bind(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.app_bar_layout) AppBarLayout appBarLayout;
+    @Bind(R.id.toolbar) Toolbar toolbar;
+    @Bind(R.id.status_card_view) StatusCardView statusCardView;
+    @Bind(R.id.tab_layout) TabLayout tabLayout;
+    @Bind(R.id.text_view_like_count) TextView likeCountTextView;
+    @Bind(R.id.view_pager) ViewPager viewPager;
 
-    private CommentInterface.Presenter commentPresenter;
+    private CommentService commentService = new CommentService();
+    private StatusService statusService = new StatusService();
     private CommentTimelineView commentTimelineView;
-    private RepostInterface.Presenter repostPresenter;
     private RepostTimelineView repostTimelineView;
 
     private int appBarCurrentVerticalOffset;
@@ -67,6 +64,8 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_status_detail);
         ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("微博正文");
         status = (Status) getIntent().getSerializableExtra(ARGS_KEY_STATUS);
         swipeRefreshLayout.setProgressViewOffset(false, ViewUtils.getStatusBarHeight(this) + ViewUtils.getActionBarHeight(this), ViewUtils.getStatusBarHeight(this) + ViewUtils.getActionBarHeight(this) * 2);
         swipeRefreshLayout.setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
@@ -86,92 +85,101 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
         statusCardView.commentLayout.setVisibility(View.GONE);
         statusCardView.show(status);
         viewPager.setAdapter(new ViewPagerAdapter());
+        viewPager.setCurrentItem(1);
         tabLayout.setupWithViewPager(viewPager);
         likeCountTextView.setText(status.attitudes_count + " 赞");
         commentTimelineView = new CommentTimelineView(this);
         repostTimelineView = new RepostTimelineView(this);
-        commentPresenter = new CommentPresenter(this);
-        repostPresenter = new RepostPresenter(this);
 
         commentTimelineView.setOnLoadMoreListener(new LoadMoreRecyclerView.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                commentPresenter.loadCommentTimeline(status.id, false);
+                showCommentTimeline(false);
             }
         });
         repostTimelineView.setOnLoadMoreListener(new LoadMoreRecyclerView.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                repostPresenter.loadRepostTimeline(status.id, false);
+                showRepostTimeline(false);
             }
         });
         onRefresh();
     }
 
-
     @Override
     protected void onStop() {
         super.onStop();
-        this.commentPresenter.unsubscribe();
-        this.repostPresenter.unsubscribe();
+        statusService.unsubscribe();
+        commentService.unsubscribe();
     }
 
     @Override
     public void onRefresh() {
-        commentPresenter.loadCommentTimeline(status.id, true);
-        repostPresenter.loadRepostTimeline(status.id, true);
-    }
-
-    @Override
-    public void setPresenter(BasePresenter presenter) {
-        if(presenter instanceof CommentPresenter) {
-            this.commentPresenter = (CommentInterface.Presenter) presenter;
-        } else if(presenter instanceof RepostPresenter) {
-            this.repostPresenter = (RepostInterface.Presenter) presenter;
-        }
-    }
-
-    @Override
-    public void show(RepostTimeline repostTimeline) {
-        repostTimelineView.show(repostTimeline);
-    }
-
-    @Override
-    public void showRepostLoadingIndicator(boolean isLoadingLastest, final boolean refreshing) {
-        if(isLoadingLastest) {
-            swipeRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    swipeRefreshLayout.setRefreshing(refreshing);
-                }
-            });
-        } else {
-
-        }
-    }
-
-    @Override
-    public void show(CommentTimeline commentTimeline) {
-        commentTimelineView.show(commentTimeline);
-    }
-
-    @Override
-    public void showCommentLoadingIndicator(boolean isLoadingLatest, final boolean refreshing) {
-        if(isLoadingLatest) {
-            swipeRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    swipeRefreshLayout.setRefreshing(refreshing);
-                }
-            });
-        } else {
-
-        }
+        showCommentTimeline(true);
+        showRepostTimeline(true);
     }
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         appBarCurrentVerticalOffset = verticalOffset;
+    }
+
+    private void showCommentTimeline(final boolean loadLatest) {
+        commentService.showCommentTimeline(status, loadLatest, new SubscriberAdapter<CommentTimeline>(){
+
+            @Override
+            public void onSubscribe() {
+                if(loadLatest) {
+                    swipeRefreshLayout.setRefreshing(true);
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Popup.toast("获取微博评论失败: " + e.getMessage());
+            }
+
+            @Override
+            public void onNext(CommentTimeline commentTimeline) {
+                commentTimelineView.show(commentTimeline);
+            }
+
+            @Override
+            public void onUnsubscribe() {
+                if(loadLatest) {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
+    }
+
+    private void showRepostTimeline(final boolean loadLatest) {
+        statusService.showRepostTimeline(status, loadLatest, new SubscriberAdapter<RepostTimeline>(){
+
+            @Override
+            public void onSubscribe() {
+                if(loadLatest) {
+                    swipeRefreshLayout.setRefreshing(true);
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Popup.toast("获取微博转发失败: " + e.getMessage());
+            }
+
+            @Override
+            public void onNext(RepostTimeline repostTimeline) {
+                repostTimelineView.show(repostTimeline);
+            }
+
+            @Override
+            public void onUnsubscribe() {
+                if(loadLatest) {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
     }
 
     class ViewPagerAdapter extends PagerAdapter {

@@ -20,6 +20,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by Gnayils on 18/03/2017.
  */
 
+@Deprecated
 public class RepostPresenter implements RepostInterface.Presenter {
 
     public static final String TAG = RepostPresenter.class.getSimpleName();

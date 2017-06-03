@@ -13,6 +13,9 @@ import rx.Observable;
 public interface UserAPI {
 
     @GET("2/users/show.json")
-    Observable<User> show(@Query("uid") String uid);
+    Observable<User> showById(@Query("uid") String uid);
 
+
+    @GET("2/users/show.json")
+    Observable<User> showByName(@Query("screen_name") String screen_name);
 }

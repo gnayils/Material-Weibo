@@ -20,7 +20,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Gnayils on 12/03/2017.
  */
-
+@Deprecated
 public class CommentPresenter implements CommentInterface.Presenter {
 
     public static final String TAG = CommentPresenter.class.getSimpleName();

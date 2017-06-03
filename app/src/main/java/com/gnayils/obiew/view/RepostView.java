@@ -12,11 +12,14 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.gnayils.obiew.App;
 import com.gnayils.obiew.R;
+import com.gnayils.obiew.activity.UserProfileActivity;
 import com.gnayils.obiew.weibo.TextDecorator;
 import com.gnayils.obiew.weibo.Weibo;
+import com.gnayils.obiew.weibo.WeiboSpanMovementMethod;
 import com.gnayils.obiew.weibo.bean.Repost;
 
 import static com.gnayils.obiew.util.ViewUtils.dp2px;
+import static com.gnayils.obiew.util.ViewUtils.getDrawableByAttrId;
 
 /**
  * Created by Gnayils on 12/03/2017.
@@ -31,6 +34,13 @@ public class RepostView extends CardView {
     private TextView screenNameTextView;
     private TextView repostTimeTextView;
     private TextView repostTextTextView;
+
+    public OnClickListener avatarCircleImageViewOnClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            UserProfileActivity.start(getContext(), repost.user);
+        }
+    };
 
     public RepostView(Context context) {
         this(context, null);
@@ -47,12 +57,15 @@ public class RepostView extends CardView {
         rootView.setPadding(dp2px(context, 8), dp2px(context, 8), dp2px(context, 8), dp2px(context, 8));
         LinearLayout.LayoutParams userInfoLayoutLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         rootView.setLayoutParams(userInfoLayoutLayoutParams);
+        rootView.setClickable(true);
+        rootView.setBackground(getDrawableByAttrId(context, R.attr.selectableItemBackground));
 
         userAvatarView = new AvatarView(context);
         userAvatarView.setId(View.generateViewId());
         RelativeLayout.LayoutParams avatarViewLayoutParams = new RelativeLayout.LayoutParams(dp2px(context, 48), dp2px(context, 48));
         avatarViewLayoutParams.addRule(RelativeLayout.ALIGN_LEFT | RelativeLayout.ALIGN_TOP);
         userAvatarView.setLayoutParams(avatarViewLayoutParams);
+        userAvatarView.avatarCircleImageView.setOnClickListener(avatarCircleImageViewOnClickListener);
 
         screenNameTextView = new TextView(context);
         screenNameTextView.setText("用户名");
@@ -77,6 +90,7 @@ public class RepostView extends CardView {
         repostTextTextView = new TextView(context);
         repostTextTextView.setText("微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发微博转发");
         repostTextTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.repost_text_size));
+        repostTextTextView.setOnTouchListener(WeiboSpanMovementMethod.getTouchListener());
         RelativeLayout.LayoutParams commentTextTextViewLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         commentTextTextViewLayoutParams.addRule(RelativeLayout.BELOW, userAvatarView.getId());
         commentTextTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, userAvatarView.getId());

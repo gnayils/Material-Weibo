@@ -1,31 +1,22 @@
 package com.gnayils.obiew.presenter;
 
-import android.os.SystemClock;
 import android.util.Log;
 
 import com.gnayils.obiew.interfaces.FriendshipInterface;
-import com.gnayils.obiew.interfaces.UserInterface;
-import com.gnayils.obiew.weibo.TextDecorator;
-import com.gnayils.obiew.weibo.VideoURLFinder;
 import com.gnayils.obiew.weibo.api.FriendShipsAPI;
-import com.gnayils.obiew.weibo.api.StatusAPI;
 import com.gnayils.obiew.weibo.api.WeiboAPI;
-import com.gnayils.obiew.weibo.bean.Status;
-import com.gnayils.obiew.weibo.bean.StatusTimeline;
 import com.gnayils.obiew.weibo.bean.Users;
 
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.exceptions.Exceptions;
 import rx.functions.Action0;
-import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Gnayils on 12/11/2016.
  */
-
+@Deprecated
 public class FriendshipPresenter implements FriendshipInterface.Presenter {
 
     public static final String TAG = FriendshipPresenter.class.getSimpleName();

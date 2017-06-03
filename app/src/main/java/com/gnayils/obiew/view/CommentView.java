@@ -12,11 +12,13 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.gnayils.obiew.App;
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.weibo.TextDecorator;
+import com.gnayils.obiew.activity.UserProfileActivity;
 import com.gnayils.obiew.weibo.Weibo;
+import com.gnayils.obiew.weibo.WeiboSpanMovementMethod;
 import com.gnayils.obiew.weibo.bean.Comment;
 
 import static com.gnayils.obiew.util.ViewUtils.dp2px;
+import static com.gnayils.obiew.util.ViewUtils.getDrawableByAttrId;
 
 /**
  * Created by Gnayils on 12/03/2017.
@@ -29,8 +31,14 @@ public class CommentView extends CardView {
     private RelativeLayout rootView;
     private AvatarView userAvatarView;
     private TextView screenNameTextView;
-    private TextView statusTimeTextView;
+    private TextView commentTimeTextView;
     private TextView commentTextTextView;
+    public OnClickListener avatarCircleImageViewOnClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            UserProfileActivity.start(getContext(), comment.user);
+        }
+    };
 
     public CommentView(Context context) {
         this(context, null);
@@ -47,12 +55,15 @@ public class CommentView extends CardView {
         rootView.setPadding(dp2px(context, 8), dp2px(context, 8), dp2px(context, 8), dp2px(context, 8));
         LinearLayout.LayoutParams userInfoLayoutLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         rootView.setLayoutParams(userInfoLayoutLayoutParams);
+        rootView.setClickable(true);
+        rootView.setBackground(getDrawableByAttrId(context, R.attr.selectableItemBackground));
 
         userAvatarView = new AvatarView(context);
         userAvatarView.setId(View.generateViewId());
         RelativeLayout.LayoutParams avatarViewLayoutParams = new RelativeLayout.LayoutParams(dp2px(context, 48), dp2px(context, 48));
         avatarViewLayoutParams.addRule(RelativeLayout.ALIGN_LEFT | RelativeLayout.ALIGN_TOP);
         userAvatarView.setLayoutParams(avatarViewLayoutParams);
+        userAvatarView.avatarCircleImageView.setOnClickListener(avatarCircleImageViewOnClickListener);
 
         screenNameTextView = new TextView(context);
         screenNameTextView.setText("用户名");
@@ -63,20 +74,21 @@ public class CommentView extends CardView {
         userNameTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, userAvatarView.getId());
         screenNameTextView.setLayoutParams(userNameTextViewLayoutParams);
 
-        statusTimeTextView = new TextView(context);
-        statusTimeTextView.setText("15分钟前");
-        statusTimeTextView.setId(View.generateViewId());
-        statusTimeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        statusTimeTextView.setTextColor(getResources().getColor(R.color.colorSecondaryText));
+        commentTimeTextView = new TextView(context);
+        commentTimeTextView.setText("15分钟前");
+        commentTimeTextView.setId(View.generateViewId());
+        commentTimeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+        commentTimeTextView.setTextColor(getResources().getColor(R.color.colorSecondaryText));
         RelativeLayout.LayoutParams statusTimeTextViewLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         statusTimeTextViewLayoutParams.setMargins(dp2px(context, 8), 0, 0, dp2px(context, 4));
         statusTimeTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, userAvatarView.getId());
         statusTimeTextViewLayoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, userAvatarView.getId());
-        statusTimeTextView.setLayoutParams(statusTimeTextViewLayoutParams);
+        commentTimeTextView.setLayoutParams(statusTimeTextViewLayoutParams);
 
         commentTextTextView = new TextView(context);
         commentTextTextView.setText("微博评论微博评论微博评论微博评论微博评论微博评论微博评论微博评论微博评论微博评论微博评论微博评论微博评论微博评论");
         commentTextTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.comment_text_size));
+        commentTextTextView.setOnTouchListener(WeiboSpanMovementMethod.getTouchListener());
         RelativeLayout.LayoutParams commentTextTextViewLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         commentTextTextViewLayoutParams.addRule(RelativeLayout.BELOW, userAvatarView.getId());
         commentTextTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, userAvatarView.getId());
@@ -85,7 +97,7 @@ public class CommentView extends CardView {
 
         rootView.addView(userAvatarView);
         rootView.addView(screenNameTextView);
-        rootView.addView(statusTimeTextView);
+        rootView.addView(commentTimeTextView);
         rootView.addView(commentTextTextView);
 
         addView(rootView);
@@ -112,7 +124,7 @@ public class CommentView extends CardView {
             screenNameTextView.setTextColor(App.resources().getColor(R.color.colorPrimaryText));
         }
         screenNameTextView.setText(comment.user.screen_name);
-        statusTimeTextView.setText(Weibo.Date.format(comment.created_at));
+        commentTimeTextView.setText(Weibo.Date.format(comment.created_at));
         commentTextTextView.setText(comment.getSpannableText(), TextView.BufferType.SPANNABLE);
     }
 }

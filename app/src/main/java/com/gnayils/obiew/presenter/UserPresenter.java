@@ -8,6 +8,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by Gnayils on 12/11/2016.
  */
 
+@Deprecated
 public class UserPresenter implements UserInterface.Presenter {
 
     public static final String TAG = UserPresenter.class.getSimpleName();

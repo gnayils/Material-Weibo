@@ -14,7 +14,6 @@ import com.gnayils.obiew.weibo.bean.Video;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -32,14 +31,13 @@ import rx.Subscriber;
  * Created by Gnayils on 07/05/2017.
  */
 
-public class VideoURLFinder {
+public class VideoInfoParser {
 
-    public static final String TAG = VideoURLFinder.class.getName();
+    public static final String TAG = VideoInfoParser.class.getName();
 
     public static final Pattern SHORT_URL = Pattern.compile("http:\\/\\/t\\.cn\\/\\w{7}");
     public static final String VIDEO_URL_PREFIX = "http://video.weibo.com/show";
 
-    //public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.120 Safari/535.2";
     public static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36";
     public static final Map<String, String> COOKIES = new HashMap<>();
 
@@ -56,7 +54,7 @@ public class VideoURLFinder {
         COOKIES.put("login_sid_t", "80f0ed304030758d2bab97121e49d50f");
     }
 
-    public static void find(StatusTimeline statusTimeline) throws Throwable {
+    public static void parse(StatusTimeline statusTimeline) throws Throwable {
         if (statusTimeline != null && statusTimeline.statuses != null) {
             Map<String, Status> shortUrlMap = new HashMap<>();
             for (Status status : statusTimeline.statuses) {
@@ -98,7 +96,7 @@ public class VideoURLFinder {
                     .subscribe(new Subscriber<URLs>() {
                         @Override
                         public void onCompleted() {
-
+                            Sync.notifyAll(urlList);
                         }
 
                         @Override
@@ -112,7 +110,6 @@ public class VideoURLFinder {
                         public void onNext(URLs urls) {
                             urlList.addAll(urls.urls);
                             Log.d(TAG, "expand url request get the response, perform request thread start to notify: " + Thread.currentThread().getName());
-                            Sync.notifyAll(urlList);
                         }
                     });
             Log.d(TAG, "expand url request has been sent, send request thread begin to wait: " + Thread.currentThread().getName());
@@ -129,7 +126,6 @@ public class VideoURLFinder {
     private static List<URL> filterVideoUrl(List<URL> urlList) {
         for(int i = urlList.size() - 1; i > -1; i--) {
             if(urlList.get(i).url_long.startsWith(VIDEO_URL_PREFIX)) {
-                Log.d(TAG, ">>>>>>>>>>>short url: " + urlList.get(i).url_short + ", long url: " + urlList.get(i).url_long);
                 loadVideoInfo(urlList.get(i));
             } else {
                 urlList.remove(i);
@@ -146,9 +142,6 @@ public class VideoURLFinder {
             String action_data = common_video_player.attr("action-data");
             Log.d(TAG, "action_data: " + action_data);
             Map<String, String> map = URLParser.parse(new java.net.URL(VIDEO_URL_PREFIX + "?" + action_data));
-            for(Map.Entry<String, String> entry : map.entrySet()) {
-                Log.d(TAG, entry.getKey() + "=" + entry.getValue());
-            }
             Gson gson = new Gson();
             JsonElement jsonElement = gson.toJsonTree(map);
             Log.d(TAG, "jsonElement: \n" + jsonElement.toString());

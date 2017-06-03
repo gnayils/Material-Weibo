@@ -11,7 +11,7 @@ import com.gnayils.obiew.interfaces.StatusInterface;
 import com.gnayils.obiew.util.Popup;
 import com.gnayils.obiew.util.Sync;
 import com.gnayils.obiew.weibo.TextDecorator;
-import com.gnayils.obiew.weibo.VideoURLFinder;
+import com.gnayils.obiew.weibo.VideoInfoParser;
 import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.api.StatusAPI;
 import com.gnayils.obiew.weibo.api.WeiboAPI;
@@ -19,6 +19,7 @@ import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.weibo.bean.StatusTimeline;
 import com.gnayils.obiew.weibo.bean.UploadedPic;
 import com.gnayils.obiew.weibo.bean.User;
+import com.gnayils.obiew.weibo.bean.Video;
 
 import java.io.File;
 import java.util.Arrays;
@@ -38,7 +39,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Gnayils on 18/03/2017.
  */
-
+@Deprecated
 public class StatusPresenter implements StatusInterface.Presenter {
 
     public static final String TAG = StatusPresenter.class.getSimpleName();
@@ -78,7 +79,7 @@ public class StatusPresenter implements StatusInterface.Presenter {
                         Log.d(TAG, "VideoURLFinder find start");
                         long startTime = SystemClock.uptimeMillis();
                         try {
-                            VideoURLFinder.find(statusTimeline);
+                            VideoInfoParser.parse(statusTimeline);
                         } catch (Throwable throwable) {
                             throw Exceptions.propagate(throwable);
                         }
@@ -140,7 +141,7 @@ public class StatusPresenter implements StatusInterface.Presenter {
                         Log.d(TAG, "VideoURLFinder find start");
                         long startTime = SystemClock.uptimeMillis();
                         try {
-                            VideoURLFinder.find(statusTimeline);
+                            VideoInfoParser.parse(statusTimeline);
                         } catch (Throwable throwable) {
                             throw Exceptions.propagate(throwable);
                         }

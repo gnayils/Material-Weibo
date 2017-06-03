@@ -7,8 +7,10 @@ import com.gnayils.obiew.weibo.bean.User;
  * Created by Gnayils on 18/03/2017.
  */
 
+@Deprecated
 public interface StatusInterface  {
 
+    @Deprecated
     interface View extends BaseView {
 
         void show(StatusTimeline statusTimeline, int feature);
@@ -17,6 +19,7 @@ public interface StatusInterface  {
 
     }
 
+    @Deprecated
     interface Presenter extends BasePresenter {
 
         void loadStatusTimeline(boolean isLoadingLatest);
