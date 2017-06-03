@@ -17,6 +17,7 @@ import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.bean.User;
 
 import static com.gnayils.obiew.util.ViewUtils.dp2px;
+import static com.gnayils.obiew.util.ViewUtils.getDrawableByAttrId;
 
 /**
  * Created by Gnayils on 12/03/2017.
@@ -46,11 +47,13 @@ public class UserItemView extends CardView {
         rootView.setPadding(dp2px(context, 8), dp2px(context, 8), dp2px(context, 8), dp2px(context, 8));
         LinearLayout.LayoutParams userInfoLayoutLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         rootView.setLayoutParams(userInfoLayoutLayoutParams);
+        rootView.setBackground(getDrawableByAttrId(context, R.attr.selectableItemBackground));
 
         userAvatarView = new AvatarView(context);
         userAvatarView.setId(View.generateViewId());
         RelativeLayout.LayoutParams avatarViewLayoutParams = new RelativeLayout.LayoutParams(dp2px(context, 48), dp2px(context, 48));
         avatarViewLayoutParams.addRule(RelativeLayout.ALIGN_LEFT | RelativeLayout.ALIGN_TOP);
+        userAvatarView.avatarCircleImageView.setImageResource(R.drawable.ic_avatar);
         userAvatarView.setLayoutParams(avatarViewLayoutParams);
 
         screenNameTextView = new TextView(context);

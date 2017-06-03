@@ -57,7 +57,7 @@
                             android:layout_width="84dp"
                             android:layout_height="84dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/ic_avatar_default"/>
+                            app:avatarImage="@drawable/ic_avatar"/>
 
                     </FrameLayout>
 

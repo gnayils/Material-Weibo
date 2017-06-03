@@ -67,7 +67,6 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("微博正文");
         status = (Status) getIntent().getSerializableExtra(ARGS_KEY_STATUS);
-        swipeRefreshLayout.setProgressViewOffset(false, ViewUtils.getStatusBarHeight(this) + ViewUtils.getActionBarHeight(this), ViewUtils.getStatusBarHeight(this) + ViewUtils.getActionBarHeight(this) * 2);
         swipeRefreshLayout.setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
             @Override
             public boolean canChildScrollUp(SwipeRefreshLayout parent, @Nullable View child) {
