@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="消息">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/action_mention_me"
+                    android:icon="@drawable/ic_mention"
+                    android:title="\@我的" />
+                <item
+                    android:id="@+id/action_comment_me"
+                    android:icon="@drawable/ic_comment"
+                    android:title="评论" />
+                <item
+                    android:id="@+id/action_like_me"
+                    android:icon="@drawable/ic_like"
+                    android:title="赞" />
+                <item
+                    android:id="@+id/action_subscription_message"
+                    android:icon="@drawable/ic_rss_feed"
+                    android:title="订阅消息" />
+            </group>
+        </menu>
+    </item>
+    <item android:title="设置">
+        <menu>
+            <item
+                android:id="@+id/action_app_setting"
+                android:icon="@drawable/ic_setting"
+                android:title="应用设置" />
+            <item
+                android:id="@+id/action_logout_account"
+                android:icon="@drawable/ic_back"
+                android:title="退出当前账号" />
+        </menu>
+    </item>
+
+</menu>

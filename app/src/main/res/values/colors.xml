@@ -7,6 +7,7 @@
     <color name="colorPrimary">#3E50B4</color>
     <color name="colorPrimaryDark">#3646A8</color>
     <color name="colorAccent">#FE3E80</color>
+    <color name="colorAccentDark">#da366f</color>
 
     <color name="grey_200">#EEEEEE</color>
     <color name="grey_300">#E0E0E0</color>
@@ -24,7 +25,5 @@
 
     <color name="colorLink">#507daf</color>
     <color name="colorLinkBackground">#6c507daf</color>
-
-    <color name="black_overlay">#66000000</color>
 
 </resources>

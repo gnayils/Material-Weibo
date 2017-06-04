@@ -43,20 +43,10 @@
                     <com.gnayils.obiew.view.StatusTimelineView
                         android:id="@+id/status_timeline_view"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:scrollbars="vertical" />
 
                 </android.support.v4.widget.SwipeRefreshLayout>
-
-
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/floating_action_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right|bottom"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginRight="16dp"
-                    android:src="@android:drawable/ic_input_add"
-                    android:tint="#ffffff" />
 
             </FrameLayout>
 
@@ -64,10 +54,10 @@
                 android:id="@+id/bottom_navigation_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:elevation="6dp"
                 android:layout_gravity="bottom"
                 android:background="?android:attr/windowBackground"
-                app:menu="@menu/activity_main_navigation" />
+                android:elevation="6dp"
+                app:menu="@menu/activity_main_bottom_navigation_menu" />
 
         </LinearLayout>
 
@@ -76,8 +66,159 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            app:headerLayout="@layout/navigation_view_header"
-            app:menu="@menu/activity_main_drawer" />
+            app:headerLayout="@layout/navigation_header_place_holder"
+            app:menu="@menu/activity_main_navigation_menu">
+
+            <android.support.design.widget.CoordinatorLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <android.support.design.widget.AppBarLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <android.support.design.widget.CollapsingToolbarLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="160dp">
+
+                            <ImageView
+                                android:id="@+id/image_view_cover"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/bg_cover_default" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="bottom"
+                                android:orientation="vertical"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp">
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="72dp">
+
+                                    <FrameLayout
+                                        android:id="@+id/frame_layout"
+                                        android:layout_width="62dp"
+                                        android:layout_height="62dp"
+                                        android:layout_alignParentLeft="true"
+                                        android:layout_alignParentTop="true"
+                                        android:layout_marginLeft="16dp"
+                                        android:background="@drawable/bg_oval_white_a75">
+
+                                        <com.gnayils.obiew.view.AvatarView
+                                            android:id="@+id/avatar_view"
+                                            android:layout_width="58dp"
+                                            android:layout_height="58dp"
+                                            android:layout_gravity="center"
+                                            app:avatarImage="@drawable/ic_avatar" />
+
+                                    </FrameLayout>
+
+                                    <TextView
+                                        android:id="@+id/text_view_screen_name"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignTop="@id/frame_layout"
+                                        android:layout_marginLeft="8dp"
+                                        android:layout_marginTop="8dp"
+                                        android:layout_toRightOf="@id/frame_layout"
+                                        android:shadowColor="#75000000"
+                                        android:shadowDy="1"
+                                        android:shadowRadius="1"
+                                        android:text="未登录"
+                                        android:textColor="@android:color/white"
+                                        android:textSize="18sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/text_view_description"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignBottom="@id/frame_layout"
+                                        android:layout_marginBottom="8dp"
+                                        android:layout_marginLeft="8dp"
+                                        android:layout_toRightOf="@id/frame_layout"
+                                        android:ellipsize="end"
+                                        android:maxLines="1"
+                                        android:shadowColor="#75000000"
+                                        android:shadowDy="1"
+                                        android:shadowRadius="1"
+                                        android:text="暂无介绍"
+                                        android:textColor="@android:color/white"
+                                        android:textSize="12sp" />
+
+                                </RelativeLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="48dp"
+                                    android:gravity="center"
+                                    android:padding="4dp">
+
+                                    <Button
+                                        android:id="@+id/button_status_count"
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1"
+                                        android:background="?attr/selectableItemBackground"
+                                        android:clickable="true"
+                                        android:gravity="center"
+                                        android:shadowColor="#75000000"
+                                        android:shadowDy="1"
+                                        android:shadowRadius="1"
+                                        android:text="0\n微博"
+                                        android:textColor="@android:color/white" />
+
+                                    <Button
+                                        android:id="@+id/button_following_count"
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1"
+                                        android:background="?attr/selectableItemBackground"
+                                        android:clickable="true"
+                                        android:gravity="center"
+                                        android:shadowColor="#75000000"
+                                        android:shadowDy="1"
+                                        android:shadowRadius="1"
+                                        android:text="0\n关注"
+                                        android:textColor="@android:color/white" />
+
+                                    <Button
+                                        android:id="@+id/button_follower_count"
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1"
+                                        android:background="?attr/selectableItemBackground"
+                                        android:clickable="true"
+                                        android:gravity="center"
+                                        android:shadowColor="#75000000"
+                                        android:shadowDy="1"
+                                        android:shadowRadius="1"
+                                        android:text="0\n粉丝"
+                                        android:textColor="@android:color/white" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                        </FrameLayout>
+
+                    </android.support.design.widget.CollapsingToolbarLayout>
+
+                </android.support.design.widget.AppBarLayout>
+
+            </android.support.design.widget.CoordinatorLayout>
+
+        </android.support.design.widget.NavigationView>
 
 
     </android.support.v4.widget.DrawerLayout>

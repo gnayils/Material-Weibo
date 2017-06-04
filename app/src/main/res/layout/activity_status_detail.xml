@@ -78,7 +78,6 @@
                         android:textColor="?android:attr/colorAccent"
                         android:textSize="16sp" />
 
-
                 </RelativeLayout>
 
             </android.support.design.widget.AppBarLayout>
@@ -88,6 +87,40 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
+            <com.getbase.floatingactionbutton.FloatingActionsMenu
+                android:id="@+id/fam_actions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|bottom"
+                android:layout_marginBottom="16dp"
+                android:layout_marginRight="16dp"
+                app:fab_addButtonColorNormal="@color/colorAccent"
+                app:fab_addButtonColorPressed="@color/colorAccentDark">
+
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab_repost"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fab_colorNormal="@color/colorAccent"
+                    app:fab_colorPressed="@color/colorAccentDark"/>
+
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab_comment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fab_colorNormal="@color/colorAccent"
+                    app:fab_colorPressed="@color/colorAccentDark"/>
+
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab_like"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fab_colorNormal="@color/colorAccent"
+                    app:fab_colorPressed="@color/colorAccentDark"/>
+
+            </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
         </android.support.design.widget.CoordinatorLayout>
 

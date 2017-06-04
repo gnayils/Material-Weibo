@@ -2,6 +2,7 @@ package com.gnayils.obiew.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -12,6 +13,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -25,12 +28,16 @@ import com.gnayils.obiew.view.ImageTimelineView;
 import com.gnayils.obiew.view.AvatarView;
 import com.gnayils.obiew.view.LoadMoreRecyclerView;
 import com.gnayils.obiew.view.StatusTimelineView;
+import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.weibo.bean.StatusTimeline;
 import com.gnayils.obiew.weibo.bean.User;
 import com.gnayils.obiew.weibo.service.StatusService;
 import com.gnayils.obiew.weibo.service.SubscriberAdapter;
 import com.gnayils.obiew.weibo.service.UserService;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -43,16 +50,30 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
 
     public static final String ARGS_KEY_USER = "ARGS_KEY_USER";
 
-    @Bind(R.id.toolbar) Toolbar toolbar;
-    @Bind(R.id.image_view_cover) ImageView coverImageView;
-    @Bind(R.id.avatar_view) AvatarView avatarView;
-    @Bind(R.id.text_view_screen_name) TextView screenNameTextView;
-    @Bind(R.id.text_view_description) TextView descriptionTextView;
-    @Bind(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
-    @Bind(R.id.app_bar_layout) AppBarLayout appBarLayout;
-    @Bind(R.id.collapsing_toolbar_layout) CollapsingToolbarLayout collapsingToolbarLayout;
-    @Bind(R.id.tab_layout) TabLayout tabLayout;
-    @Bind(R.id.view_pager) ViewPager viewPager;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.image_view_cover)
+    ImageView coverImageView;
+    @Bind(R.id.avatar_view)
+    AvatarView avatarView;
+    @Bind(R.id.text_view_screen_name)
+    TextView screenNameTextView;
+    @Bind(R.id.text_view_following_count)
+    TextView followingCountTextView;
+    @Bind(R.id.text_view_follower_count)
+    TextView followerCountTextView;
+    @Bind(R.id.text_view_description)
+    TextView descriptionTextView;
+    @Bind(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.app_bar_layout)
+    AppBarLayout appBarLayout;
+    @Bind(R.id.collapsing_toolbar_layout)
+    CollapsingToolbarLayout collapsingToolbarLayout;
+    @Bind(R.id.tab_layout)
+    TabLayout tabLayout;
+    @Bind(R.id.view_pager)
+    ViewPager viewPager;
 
     private StatusTimelineView statusTimelineView;
     private ImageTimelineView imageTimelineView;
@@ -88,43 +109,47 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
         statusTimelineView.setOnLoadMoreListener(new LoadMoreRecyclerView.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                loadUserTimeline(false, Status.FEATURE_ALL);
+                showUserTimeline(false, Status.FEATURE_ALL);
             }
         });
         imageTimelineView.setOnLoadMoreListener(new LoadMoreRecyclerView.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                loadUserTimeline(false, Status.FEATURE_IMAGE);
+                showUserTimeline(false, Status.FEATURE_IMAGE);
             }
         });
 
-        if(getIntent().hasExtra(ARGS_KEY_USER)) {
+        if (getIntent().hasExtra(ARGS_KEY_USER)) {
             fillViews((User) getIntent().getSerializableExtra(ARGS_KEY_USER));
-        } else if(getIntent().getData() != null){
-            final String screenName = getIntent().getData().getHost();
-            if(screenName != null && !screenName.isEmpty()) {
-                userService.showUserByName(screenName, new SubscriberAdapter<User>(){
+        } else if (getIntent().getData() != null) {
+            Matcher matcher = Pattern.compile(getString(R.string.mention_regex)).matcher(getIntent().getDataString());
+            if (matcher.find()) {
+                String group = matcher.group();
+                final String screenName = group.substring(1);
+                if (screenName != null && !screenName.trim().isEmpty()) {
+                    userService.showUserByName(screenName, new SubscriberAdapter<User>() {
 
-                    @Override
-                    public void onSubscribe() {
-                        swipeRefreshLayout.setRefreshing(true);
-                    }
+                        @Override
+                        public void onSubscribe() {
+                            swipeRefreshLayout.setRefreshing(true);
+                        }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        Popup.toast(String.format("获取用户[%s]信息失败: %s",screenName, e.getMessage()));
-                    }
+                        @Override
+                        public void onError(Throwable e) {
+                            Popup.toast(String.format("获取用户[%s]信息失败: %s", screenName, e.getMessage()));
+                        }
 
-                    @Override
-                    public void onNext(User user) {
-                        fillViews(user);
-                    }
+                        @Override
+                        public void onNext(User user) {
+                            fillViews(user);
+                        }
 
-                    @Override
-                    public void onUnsubscribe() {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                });
+                        @Override
+                        public void onUnsubscribe() {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    });
+                }
             }
         }
     }
@@ -137,12 +162,25 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_user_profile_option_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.action_search);
+        menuItem.setIcon(ViewUtils.tintDrawable(menuItem.getIcon(), Color.WHITE));
+        menuItem = menu.findItem(R.id.action_copy_link);
+        menuItem.setIcon(ViewUtils.tintDrawable(menuItem.getIcon(), Color.WHITE));
+        menuItem = menu.findItem(R.id.action_share);
+        menuItem.setIcon(ViewUtils.tintDrawable(menuItem.getIcon(), Color.WHITE));
+        return super.onCreateOptionsMenu(menu);
+
+    }
+
+    @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         appBarCurrentVerticalOffset = verticalOffset;
         tabLayout.getBackground().setAlpha((int) (Math.abs(verticalOffset) / (appBarLayout.getTotalScrollRange() / 255d)));
-        if(Math.abs(verticalOffset) == appBarLayout.getTotalScrollRange()) {
+        if (Math.abs(verticalOffset) == appBarLayout.getTotalScrollRange()) {
             tabLayout.setElevation(ViewUtils.dp2px(this, 6));
-        } else if(verticalOffset == 0) {
+        } else if (verticalOffset == 0) {
             tabLayout.setElevation(0);
         }
     }
@@ -156,9 +194,9 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
                 onBackPressed();
             }
         });
-        if(user.cover_image_phone != null && !user.cover_image_phone.isEmpty()) {
+        if (user.cover_image_phone != null && !user.cover_image_phone.isEmpty()) {
             String coverImageUrl = user.cover_image_phone;
-            if(coverImageUrl.indexOf(";") != 0) {
+            if (coverImageUrl.indexOf(";") != 0) {
                 String[] coverImageUrls = coverImageUrl.split(";");
                 coverImageUrl = coverImageUrls[(int) (Math.random() * coverImageUrls.length)];
             }
@@ -166,37 +204,39 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
         }
         Glide.with(this).load(user.avatar_large).into(avatarView.avatarCircleImageView);
         screenNameTextView.setText(user.screen_name);
+        followingCountTextView.setText(String.format("关注 %s", Weibo.format.followerCount(user.friends_count)));
+        followerCountTextView.setText(String.format("粉丝 %s", Weibo.format.followerCount(user.followers_count)));
         descriptionTextView.setText(user.description);
         onRefresh();
     }
 
     @Override
     public void onRefresh() {
-        loadUserTimeline(true, Status.FEATURE_ALL);
-        loadUserTimeline(true, Status.FEATURE_IMAGE);
+        showUserTimeline(true, Status.FEATURE_ALL);
+        showUserTimeline(true, Status.FEATURE_IMAGE);
     }
 
-    private void loadUserTimeline(final boolean loadLatest, final int feature) {
-        statusService.showUserTimeline(loadLatest, user, feature, new SubscriberAdapter<StatusTimeline>(){
+    private void showUserTimeline(final boolean loadLatest, final int feature) {
+        statusService.showUserTimeline(loadLatest, user, feature, new SubscriberAdapter<StatusTimeline>() {
             @Override
             public void onSubscribe() {
-                if(loadLatest) {
+                if (loadLatest) {
                     swipeRefreshLayout.setRefreshing(true);
                 }
             }
 
             @Override
             public void onUnsubscribe() {
-                if(loadLatest) {
+                if (loadLatest) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
             }
 
             @Override
             public void onError(Throwable e) {
-                if(feature == Status.FEATURE_ALL) {
+                if (feature == Status.FEATURE_ALL) {
                     Popup.toast("获取用户微博失败: " + e.getMessage());
-                } else if(feature == Status.FEATURE_IMAGE) {
+                } else if (feature == Status.FEATURE_IMAGE) {
                     Popup.toast("获取用户相册失败: " + e.getMessage());
                 } else {
                     Popup.toast("Unknown Feature: " + feature);
@@ -205,9 +245,9 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
 
             @Override
             public void onNext(StatusTimeline statusTimeline) {
-                if(feature == Status.FEATURE_ALL) {
+                if (feature == Status.FEATURE_ALL) {
                     statusTimelineView.show(statusTimeline);
-                } else if(feature == Status.FEATURE_IMAGE) {
+                } else if (feature == Status.FEATURE_IMAGE) {
                     imageTimelineView.show(statusTimeline);
                 }
             }
@@ -239,11 +279,12 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
                     view = imageTimelineView;
                     break;
             }
-            if(view != null) {
+            if (view != null) {
                 collection.addView(view);
             }
             return view;
         }
+
         @Override
         public void destroyItem(ViewGroup collection, int position, Object view) {
             collection.removeView((View) view);
@@ -256,10 +297,13 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch(position) {
-                case 0: return "微博";
-                case 1: return "相册";
-                default: return null;
+            switch (position) {
+                case 0:
+                    return "微博";
+                case 1:
+                    return "相册";
+                default:
+                    return null;
             }
         }
     }

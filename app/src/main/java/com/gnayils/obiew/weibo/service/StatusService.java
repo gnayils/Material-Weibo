@@ -37,7 +37,7 @@ public class StatusService extends BaseService {
     public void showHomeTimeline(boolean loadLatest, int feature, SubscriberAdapter<StatusTimeline> subscriberAdapter) {
         homeTimelineCurrentPages[feature] = loadLatest ? 1 : ++homeTimelineCurrentPages[feature];
         Subscription subscription = WeiboAPI.get(StatusAPI.class)
-                .homeTimeline(feature, homeTimelineCurrentPages[feature], Weibo.Const.STATUE_TIMELINE_ITEM_COUNT_PER_PAGE)
+                .homeTimeline(feature, homeTimelineCurrentPages[feature], Weibo.consts.STATUE_TIMELINE_ITEM_COUNT_PER_PAGE)
                 .doOnSubscribe(subscriberAdapter.onSubscribeAction)
                 .doOnUnsubscribe(subscriberAdapter.onUnsubscribeAction)
                 .doOnNext(Actions.PARSE_STATUS_VIDEO_INFO)
@@ -50,7 +50,7 @@ public class StatusService extends BaseService {
     public void showUserTimeline(boolean loadLatest, User user, int feature, SubscriberAdapter<StatusTimeline> subscriberAdapter) {
         userTimelineCurrentPages[feature] = loadLatest ? 1 : ++userTimelineCurrentPages[feature];
         Subscription subscription = WeiboAPI.get(StatusAPI.class)
-                .userTimeline(user.id, feature, userTimelineCurrentPages[feature], Weibo.Const.STATUE_TIMELINE_ITEM_COUNT_PER_PAGE)
+                .userTimeline(user.id, feature, userTimelineCurrentPages[feature], Weibo.consts.STATUE_TIMELINE_ITEM_COUNT_PER_PAGE)
                 .doOnSubscribe(subscriberAdapter.onSubscribeAction)
                 .doOnUnsubscribe(subscriberAdapter.onUnsubscribeAction)
                 .doOnNext(Actions.PARSE_STATUS_VIDEO_INFO)
@@ -64,7 +64,7 @@ public class StatusService extends BaseService {
     public void showRepostTimeline(Status status, boolean loadLatest, SubscriberAdapter<RepostTimeline> subscriberAdapter) {
         repostTimelineCurrentPage = loadLatest ? 1 : ++repostTimelineCurrentPage;
         Subscription subscription = WeiboAPI.get(StatusAPI.class)
-                .repostTimeline(status.id, repostTimelineCurrentPage, Weibo.Const.REPOST_TIMELINE_ITEM_COUNT_PER_PAGE)
+                .repostTimeline(status.id, repostTimelineCurrentPage, Weibo.consts.REPOST_TIMELINE_ITEM_COUNT_PER_PAGE)
                 .doOnSubscribe(subscriberAdapter.onSubscribeAction)
                 .doOnUnsubscribe(subscriberAdapter.onUnsubscribeAction)
                 .doOnNext(Actions.DECORATE_REPOST_TEXT)
@@ -74,7 +74,7 @@ public class StatusService extends BaseService {
     }
 
     public void publishStatus(String statusText, List<String> selectedPhotoPaths, SubscriberAdapter<Status> subscriberAdapter) {
-        if (statusText == null || statusText.trim().isEmpty() || statusText.length() > Weibo.Const.STATUS_TEXT_MAX_LENGTH
+        if (statusText == null || statusText.trim().isEmpty() || statusText.length() > Weibo.consts.STATUS_TEXT_MAX_LENGTH
                 || (selectedPhotoPaths != null && selectedPhotoPaths.size() > 9)) {
             return;
         }

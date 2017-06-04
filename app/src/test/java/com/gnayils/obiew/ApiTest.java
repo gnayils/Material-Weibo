@@ -1,5 +1,7 @@
 package com.gnayils.obiew;
 
+import android.net.Uri;
+
 import com.gnayils.obiew.util.URLParser;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -66,6 +68,34 @@ public class ApiTest {
         Matcher matcher = pattern.matcher(text);
         while (matcher.find()) {
             System.out.println(matcher.group());
+        }
+    }
+
+    @Test
+    public void testGetTopicKeywordFromUri() {
+        String uriString = "com.gnayils.obiew.scheme.topic://#视野#";
+        int startIndex = uriString.indexOf("#");
+        int endIndex = uriString.lastIndexOf("#");
+        System.out.println(startIndex + " " + endIndex);
+        System.out.println(uriString.substring(startIndex + 1, endIndex));
+
+        Matcher matcher  = Pattern.compile("#[^#]+#").matcher(uriString);
+        if(matcher.find()) {
+            String matched = matcher.group();
+            System.out.println(matched.substring(1, matched.length() - 1));
+        }
+    }
+
+    @Test
+    public void testGetMentionNameFromUri() {
+        String uriString = "com.gnayils.obiew.scheme.topic://@微天下";
+        int startIndex = uriString.indexOf("@");
+        System.out.println(uriString.substring(startIndex + 1));
+
+        Matcher matcher  = Pattern.compile("@[\\w\\u4e00-\\u9fa5]+").matcher(uriString);
+        if(matcher.find()) {
+            String matched = matcher.group();
+            System.out.println(matched.substring(1));
         }
     }
 

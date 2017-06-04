@@ -13,7 +13,6 @@ import com.bumptech.glide.Glide;
 import com.gnayils.obiew.App;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.activity.UserProfileActivity;
-import com.gnayils.obiew.weibo.TextDecorator;
 import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.WeiboSpanMovementMethod;
 import com.gnayils.obiew.weibo.bean.Repost;
@@ -127,7 +126,7 @@ public class RepostView extends CardView {
             screenNameTextView.setTextColor(App.resources().getColor(R.color.colorPrimaryText));
         }
         screenNameTextView.setText(repost.user.screen_name);
-        repostTimeTextView.setText(Weibo.Date.format(repost.created_at));
+        repostTimeTextView.setText(Weibo.format.date(repost.created_at));
         repostTextTextView.setText(repost.getSpannableText(), TextView.BufferType.SPANNABLE);
     }
 }

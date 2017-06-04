@@ -20,10 +20,10 @@ public class WeiboSpan extends TouchableSpan {
     public static final String HTTP_MATCHER = "(http|https):\\/\\/[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,@?^=%&amp;:/~\\+#]*[\\w\\-\\@?^=%&amp;/~\\+#])?";
     public static final String HTTP_SCHEME = "http";
 
-    public static final String TOPIC_MATCHER = "#[^#]+#";
+    public static final String TOPIC_REGEX = App.resources().getString(R.string.topic_regex);
     public static final String TOPIC_SCHEME = App.resources().getString(R.string.topic_scheme);
 
-    public static final String MENTION_MATCHER = "@[\\w\\u4e00-\\u9fa5]+";
+    public static final String MENTION_REGEX = App.resources().getString(R.string.mention_regex);
     public static final String MENTION_SCHEME = App.resources().getString(R.string.mention_scheme);
 
     public String url;

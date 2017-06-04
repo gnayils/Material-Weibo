@@ -1,6 +1,7 @@
 package com.gnayils.obiew.view;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -14,6 +15,7 @@ import com.gnayils.obiew.App;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.activity.StatusDetailActivity;
 import com.gnayils.obiew.activity.UserProfileActivity;
+import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.weibo.WeiboSpanMovementMethod;
@@ -194,7 +196,7 @@ public class StatusCardView extends CardView {
         repostButton.setBackground(getDrawableByAttrId(context, R.attr.selectableItemBackground));
         repostButton.setCompoundDrawablePadding(dp2px(context, 2));
         repostButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        repostButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_repost, 0, 0, 0);
+        repostButton.setCompoundDrawablesWithIntrinsicBounds(ViewUtils.getTranslucentDrawable(context, R.drawable.ic_repost, 151), null, null, null);
         repostButton.setLayoutParams(hotrankButtonsLayoutParams);
 
         commentButton = new CenteredDrawableButton(context);
@@ -202,7 +204,7 @@ public class StatusCardView extends CardView {
         commentButton.setCompoundDrawablePadding(dp2px(context, 2));
         commentButton.setBackground(getDrawableByAttrId(context, R.attr.selectableItemBackground));
         commentButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        commentButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_comment, 0, 0, 0);
+        commentButton.setCompoundDrawablesWithIntrinsicBounds(ViewUtils.getTranslucentDrawable(context, R.drawable.ic_comment, 151), null, null, null);
         commentButton.setLayoutParams(hotrankButtonsLayoutParams);
 
         likeButton = new CenteredDrawableButton(context);
@@ -210,7 +212,7 @@ public class StatusCardView extends CardView {
         likeButton.setCompoundDrawablePadding(dp2px(context, 2));
         likeButton.setBackground(getDrawableByAttrId(context, R.attr.selectableItemBackground));
         likeButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        likeButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_like, 0, 0, 0);
+        likeButton.setCompoundDrawablesWithIntrinsicBounds(ViewUtils.getTranslucentDrawable(context, R.drawable.ic_like, 151), null, null, null);
         likeButton.setLayoutParams(hotrankButtonsLayoutParams);
 
         commentLayout.addView(repostButton);
@@ -254,7 +256,7 @@ public class StatusCardView extends CardView {
             screenNameTextView.setText(status.user.screen_name);
             statusSourceTextView.setText(status.getSpannableSource());
         }
-        statusTimeTextView.setText(Weibo.Date.format(status.created_at));
+        statusTimeTextView.setText(Weibo.format.date(status.created_at));
         statusTextTextView.setText(status.getSpannableText(false), TextView.BufferType.SPANNABLE);
         statusPicturesView.setPictureUrls(status.pic_urls);
         videoPreviewView.show(status.videoUrls);
@@ -266,8 +268,8 @@ public class StatusCardView extends CardView {
             retweetedStatusPicturesView.setPictureUrls(status.retweeted_status.pic_urls);
             retweetedVideoPreviewView.show(status.retweeted_status.videoUrls);
         }
-        repostButton.setText(String.valueOf(status.reposts_count));
-        commentButton.setText(String.valueOf(status.comments_count));
-        likeButton.setText(String.valueOf(status.attitudes_count));
+        repostButton.setText(Weibo.format.commentCount(status.reposts_count));
+        commentButton.setText(Weibo.format.commentCount(status.comments_count));
+        likeButton.setText(Weibo.format.commentCount(status.attitudes_count));
     }
 }

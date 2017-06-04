@@ -2,6 +2,7 @@ package com.gnayils.obiew.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
@@ -22,36 +23,48 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.util.Popup;
+import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.view.AvatarView;
 import com.gnayils.obiew.view.StatusTimelineView;
 import com.gnayils.obiew.weibo.Account;
+import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.weibo.bean.StatusTimeline;
 import com.gnayils.obiew.weibo.service.StatusService;
 import com.gnayils.obiew.weibo.service.SubscriberAdapter;
-
-import junit.framework.Test;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    @Bind(R.id.toolbar) Toolbar toolbar;
-    @Bind(R.id.drawer_layout) DrawerLayout drawerLayout;
-    @Bind(R.id.floating_action_button) FloatingActionButton floatingActionButton;
-    @Bind(R.id.navigation_view) NavigationView navigationView;
-    @Bind(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
-    @Bind(R.id.status_timeline_view) StatusTimelineView statusTimelineView;
-    @Bind(R.id.bottom_navigation_view) BottomNavigationView bottomNavigationView;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
+    @Bind(R.id.navigation_view)
+    NavigationView navigationView;
+    @Bind(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.status_timeline_view)
+    StatusTimelineView statusTimelineView;
+    @Bind(R.id.bottom_navigation_view)
+    BottomNavigationView bottomNavigationView;
 
-    private ImageView coverImageView;
-    private AvatarView avatarView;
-    private TextView screenNameTextView;
-    private TextView descriptionTextView;
-    private Button statusCountButton;
-    private Button followCountButton;
-    private Button followerCountButton;
+    @Bind(R.id.image_view_cover)
+    ImageView coverImageView;
+    @Bind(R.id.avatar_view)
+    AvatarView avatarView;
+    @Bind(R.id.text_view_screen_name)
+    TextView screenNameTextView;
+    @Bind(R.id.text_view_description)
+    TextView descriptionTextView;
+    @Bind(R.id.button_status_count)
+    Button statusCountButton;
+    @Bind(R.id.button_following_count)
+    Button followCountButton;
+    @Bind(R.id.button_follower_count)
+    Button followerCountButton;
 
     private StatusService statusService = new StatusService();
 
@@ -61,19 +74,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("主页");
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.setDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-        View headerView = navigationView.getHeaderView(0);
-        coverImageView = (ImageView) headerView.findViewById(R.id.image_view_cover);
-        avatarView = (AvatarView) headerView.findViewById(R.id.avatar_view);
-        screenNameTextView = (TextView) headerView.findViewById(R.id.text_view_screen_name);
-        descriptionTextView = (TextView) headerView.findViewById(R.id.text_view_description);
-        statusCountButton = (Button) headerView.findViewById(R.id.button_status_count);
-        followCountButton = (Button) headerView.findViewById(R.id.button_follow_count);
-        followerCountButton = (Button) headerView.findViewById(R.id.button_follower_count);
         avatarView.avatarCircleImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,8 +98,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         screenNameTextView.setText(Account.user.screen_name);
         descriptionTextView.setText(Account.user.description == null || Account.user.description.isEmpty() ? "暂无介绍" : Account.user.description);
         statusCountButton.setText(Account.user.statuses_count + "\n微博");
-        followCountButton.setText(Account.user.friends_count + "\n关注");
-        followerCountButton.setText(Account.user.followers_count + "\n粉丝");
+        followCountButton.setText(Weibo.format.followerCount(Account.user.friends_count) + "\n关注");
+        followerCountButton.setText(Weibo.format.followerCount(Account.user.followers_count) + "\n粉丝");
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -103,13 +109,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         statusTimelineView.setOnLoadMoreListener(new StatusTimelineView.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-               showHomeTimeline(false);
-            }
-        });
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PublishActivity.start(MainActivity.this);
+                showHomeTimeline(false);
             }
         });
         showHomeTimeline(true);
@@ -133,15 +133,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+        getMenuInflater().inflate(R.menu.activity_main_option_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.action_write_status);
+        menuItem.setIcon(ViewUtils.tintDrawable(menuItem.getIcon(), Color.WHITE));
+        menuItem = menu.findItem(R.id.action_change_group);
+        menuItem.setIcon(ViewUtils.tintDrawable(menuItem.getIcon(), Color.WHITE));
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_write_status:
+                PublishActivity.start(MainActivity.this);
+                break;
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -151,17 +159,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.action_mention_me) {
 
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.action_comment_me) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.action_like_me) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.action_subscription_message) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.action_app_setting) {
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.action_logout_account) {
 
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -175,14 +183,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     @Override
                     public void onSubscribe() {
-                        if(loadLatest) {
+                        if (loadLatest) {
                             swipeRefreshLayout.setRefreshing(true);
                         }
                     }
 
                     @Override
                     public void onUnsubscribe() {
-                        if(loadLatest) {
+                        if (loadLatest) {
                             swipeRefreshLayout.setRefreshing(false);
                         }
                     }

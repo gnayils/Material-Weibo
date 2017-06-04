@@ -3,9 +3,8 @@ package com.gnayils.obiew.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.PorterDuff;
+import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.widget.Toolbar;
@@ -264,12 +263,9 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_publish_option, menu);
-        Drawable drawable = menu.findItem(R.id.action_publish).getIcon();
-        if (drawable != null) {
-            drawable.mutate();
-            drawable.setColorFilter(getResources().getColor(android.R.color.white), PorterDuff.Mode.SRC_ATOP);
-        }
+        getMenuInflater().inflate(R.menu.activity_publish_option_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.action_publish);
+        menuItem.setIcon(ViewUtils.tintDrawable(menuItem.getIcon(), Color.WHITE));
         return true;
     }
 
@@ -289,7 +285,7 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
         if(contentEditText.getText().toString().isEmpty()) {
             return;
         }
-        if(contentEditText.getText().toString().length() > Weibo.Const.STATUS_TEXT_MAX_LENGTH) {
+        if(contentEditText.getText().toString().length() > Weibo.consts.STATUS_TEXT_MAX_LENGTH) {
             return;
         }
         if(selectedPhotoList != null && selectedPhotoList.size() > 9) {

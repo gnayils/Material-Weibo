@@ -3,6 +3,7 @@ package com.gnayils.obiew.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
@@ -12,22 +13,21 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.interfaces.BasePresenter;
-import com.gnayils.obiew.interfaces.CommentInterface;
-import com.gnayils.obiew.interfaces.RepostInterface;
-import com.gnayils.obiew.presenter.CommentPresenter;
-import com.gnayils.obiew.presenter.RepostPresenter;
 import com.gnayils.obiew.util.Popup;
 import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.view.CommentTimelineView;
 import com.gnayils.obiew.view.LoadMoreRecyclerView;
 import com.gnayils.obiew.view.RepostTimelineView;
 import com.gnayils.obiew.view.StatusCardView;
+import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.bean.CommentTimeline;
 import com.gnayils.obiew.weibo.bean.RepostTimeline;
 import com.gnayils.obiew.weibo.bean.Status;
@@ -51,6 +51,9 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
     @Bind(R.id.tab_layout) TabLayout tabLayout;
     @Bind(R.id.text_view_like_count) TextView likeCountTextView;
     @Bind(R.id.view_pager) ViewPager viewPager;
+    @Bind(R.id.fab_comment) FloatingActionButton commentFab;
+    @Bind(R.id.fab_repost) FloatingActionButton repostFab;
+    @Bind(R.id.fab_like) FloatingActionButton likeFab;
 
     private CommentService commentService = new CommentService();
     private StatusService statusService = new StatusService();
@@ -86,7 +89,7 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
         viewPager.setAdapter(new ViewPagerAdapter());
         viewPager.setCurrentItem(1);
         tabLayout.setupWithViewPager(viewPager);
-        likeCountTextView.setText(status.attitudes_count + " 赞");
+        likeCountTextView.setText(Weibo.format.commentCount(status.attitudes_count) + " 赞");
         commentTimelineView = new CommentTimelineView(this);
         repostTimelineView = new RepostTimelineView(this);
 
@@ -102,6 +105,9 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
                 showRepostTimeline(false);
             }
         });
+        repostFab.setIconDrawable(ViewUtils.getTintedDrawable(this, R.drawable.ic_repost, Color.WHITE));
+        commentFab.setIconDrawable(ViewUtils.getTintedDrawable(this, R.drawable.ic_comment, Color.WHITE));
+        likeFab.setIconDrawable(ViewUtils.getTintedDrawable(this, R.drawable.ic_like, Color.WHITE));
         onRefresh();
     }
 
@@ -110,6 +116,18 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
         super.onStop();
         statusService.unsubscribe();
         commentService.unsubscribe();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_status_detail_option_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.action_collect);
+        menuItem.setIcon(ViewUtils.tintDrawable(menuItem.getIcon(), Color.WHITE));
+        menuItem = menu.findItem(R.id.action_copy_link);
+        menuItem.setIcon(ViewUtils.tintDrawable(menuItem.getIcon(), Color.WHITE));
+        menuItem = menu.findItem(R.id.action_share);
+        menuItem.setIcon(ViewUtils.tintDrawable(menuItem.getIcon(), Color.WHITE));
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -218,8 +236,8 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
         @Override
         public CharSequence getPageTitle(int position) {
             switch(position) {
-                case 0: return status.reposts_count + " 转发";
-                case 1: return status.comments_count + " 评论";
+                case 0: return Weibo.format.commentCount(status.reposts_count) + " 转发";
+                case 1: return Weibo.format.commentCount(status.comments_count) + " 评论";
                 default: return null;
             }
         }

@@ -28,7 +28,7 @@
                 app:contentScrim="@color/colorPrimary"
                 app:layout_scrollFlags="scroll|snap|enterAlwaysCollapsed|enterAlways"
                 app:expandedTitleGravity="center"
-                app:expandedTitleMarginTop="76dp"
+                app:expandedTitleMarginTop="12dp"
                 app:expandedTitleTextAppearance="@style/AppTheme.ExpandedTitleTextAppearance">
 
                 <ImageView
@@ -42,10 +42,10 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_gravity="top"
+                    android:layout_marginTop="?attr/actionBarSize"
                     android:gravity="center"
                     android:orientation="vertical" >
-
 
                     <FrameLayout
                         android:layout_width="90dp"
@@ -75,14 +75,53 @@
                         android:text="screen name"
                         android:visibility="invisible"/>
 
+                    <LinearLayout
+                        android:id="@+id/linear_layout_following_follower_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:layout_below="@id/text_view_screen_name"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/text_view_following_count"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="4dp"
+                            android:gravity="right"
+                            android:shadowColor="#75000000"
+                            android:shadowDy="1"
+                            android:shadowRadius="1"
+                            android:textColor="@android:color/white"
+                            android:textSize="14sp"
+                            android:text="关注 0"/>
+
+                        <TextView
+                            android:id="@+id/text_view_follower_count"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="4dp"
+                            android:gravity="left"
+                            android:shadowColor="#75000000"
+                            android:shadowDy="1"
+                            android:shadowRadius="1"
+                            android:textColor="@android:color/white"
+                            android:textSize="14sp"
+                            android:text="粉丝 0"/>
+
+                    </LinearLayout>
+
+
                     <TextView
                         android:id="@+id/text_view_description"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
+                        android:layout_marginTop="2dp"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
-                        android:layout_below="@id/text_view_screen_name"
+                        android:layout_below="@id/linear_layout_following_follower_info"
                         android:gravity="center"
                         android:maxLines="2"
                         android:ellipsize="end"
@@ -99,6 +138,7 @@
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
+                    android:background="#00000000"
                     app:navigationIcon="@drawable/abc_ic_ab_back_material"
                     app:popupTheme="@style/AppTheme.PopupOverlay"
                     app:layout_collapseMode="pin"/>
@@ -112,7 +152,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            app:behavior_overlapTop="96dp"
+            app:behavior_overlapTop="108dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" >
 
             <android.support.design.widget.TabLayout
@@ -137,10 +177,11 @@
         <android.support.design.widget.FloatingActionButton
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:elevation="8dp"
-            android:layout_gravity="bottom|right|end"
-            android:src="@mipmap/ic_launcher"
-            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:layout_gravity="bottom|right"
+            android:tintMode="src_atop"
+            android:tint="@android:color/white"
+            android:src="@drawable/ic_add"
+            android:layout_margin="16dp"
             android:clickable="true"/>
         ​
     </android.support.design.widget.CoordinatorLayout>

@@ -117,7 +117,7 @@ public class Status implements Comparable<Status>, Serializable {
     @Override
     public int compareTo(Status another) {
         try {
-            return (int) (Weibo.Date.SOURCE_FORMAT.parse(another.created_at).getTime() - Weibo.Date.SOURCE_FORMAT.parse(created_at).getTime());
+            return (int) (Weibo.format.SOURCE_PATTERN.parse(another.created_at).getTime() - Weibo.format.SOURCE_PATTERN.parse(created_at).getTime());
         } catch (ParseException e) {
             e.printStackTrace();
             return 0;

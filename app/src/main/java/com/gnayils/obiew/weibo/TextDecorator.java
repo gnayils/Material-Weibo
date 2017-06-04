@@ -94,12 +94,12 @@ public class TextDecorator {
     }
 
     private static void decorateTopics(SpannableString spannableString) {
-        Linkify.addLinks(spannableString, Pattern.compile(WeiboSpan.TOPIC_MATCHER), WeiboSpan.TOPIC_SCHEME + WeiboSpan.SCHEME_SEPARATOR);
+        Linkify.addLinks(spannableString, Pattern.compile(WeiboSpan.TOPIC_REGEX), WeiboSpan.TOPIC_SCHEME + WeiboSpan.SCHEME_SEPARATOR);
         replaceUrlSpan(spannableString);
     }
 
     private static void decorateMentions(SpannableString spannableString) {
-        Linkify.addLinks(spannableString, Pattern.compile(WeiboSpan.MENTION_MATCHER), WeiboSpan.MENTION_SCHEME + WeiboSpan.SCHEME_SEPARATOR);
+        Linkify.addLinks(spannableString, Pattern.compile(WeiboSpan.MENTION_REGEX), WeiboSpan.MENTION_SCHEME + WeiboSpan.SCHEME_SEPARATOR);
         replaceUrlSpan(spannableString);
     }
 

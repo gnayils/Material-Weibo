@@ -26,7 +26,9 @@
     <string name="app_secret">@string/smooth_app_secret</string>
     <string name="callback_url">@string/smooth_callback_url</string>
 
+    <string name="mention_regex">\@[\w\u4e00-\u9fa5]+</string>
     <string name="mention_scheme">com.gnayils.obiew.scheme.mention</string>
+    <string name="topic_regex">#[^#]+#</string>
     <string name="topic_scheme">com.gnayils.obiew.scheme.topic</string>
 
     <string name="lorem">

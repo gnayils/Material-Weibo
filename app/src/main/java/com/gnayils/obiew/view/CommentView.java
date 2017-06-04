@@ -125,7 +125,7 @@ public class CommentView extends CardView {
             screenNameTextView.setTextColor(App.resources().getColor(R.color.colorPrimaryText));
         }
         screenNameTextView.setText(comment.user.screen_name);
-        commentTimeTextView.setText(Weibo.Date.format(comment.created_at));
+        commentTimeTextView.setText(Weibo.format.date(comment.created_at));
         commentTextTextView.setText(comment.getSpannableText(), TextView.BufferType.SPANNABLE);
     }
 }
