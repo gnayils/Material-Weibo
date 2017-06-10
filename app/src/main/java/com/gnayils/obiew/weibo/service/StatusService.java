@@ -1,6 +1,6 @@
 package com.gnayils.obiew.weibo.service;
 
-import com.gnayils.obiew.App;
+import com.gnayils.obiew.Obiew;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.api.StatusAPI;
@@ -79,7 +79,7 @@ public class StatusService extends BaseService {
             return;
         }
         if (selectedPhotoPaths == null || selectedPhotoPaths.isEmpty()) {
-            WeiboAPI.get(StatusAPI.class).update(App.context().getString(R.string.app_key), statusText)
+            WeiboAPI.get(StatusAPI.class).update(Obiew.getAppResources().getString(R.string.app_key), statusText)
                     .doOnSubscribe(subscriberAdapter.onSubscribeAction)
                     .doOnUnsubscribe(subscriberAdapter.onUnsubscribeAction)
                     .observeOn(AndroidSchedulers.mainThread())

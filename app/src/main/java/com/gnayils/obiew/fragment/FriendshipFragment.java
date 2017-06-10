@@ -73,11 +73,6 @@ public class FriendshipFragment extends Fragment {
             }
 
             @Override
-            public void onError(Throwable e) {
-                Popup.toast("获取用户关注失败: " + e.getMessage());
-            }
-
-            @Override
             public void onNext(Users users) {
                 userRecyclerView.show(users.users);
             }

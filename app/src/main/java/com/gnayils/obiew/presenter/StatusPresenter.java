@@ -3,23 +3,20 @@ package com.gnayils.obiew.presenter;
 import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.util.Log;
-import android.webkit.MimeTypeMap;
 
-import com.gnayils.obiew.App;
+import com.gnayils.obiew.Obiew;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.interfaces.StatusInterface;
 import com.gnayils.obiew.util.Popup;
 import com.gnayils.obiew.util.Sync;
 import com.gnayils.obiew.weibo.TextDecorator;
 import com.gnayils.obiew.weibo.VideoInfoParser;
-import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.api.StatusAPI;
 import com.gnayils.obiew.weibo.api.WeiboAPI;
 import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.weibo.bean.StatusTimeline;
 import com.gnayils.obiew.weibo.bean.UploadedPic;
 import com.gnayils.obiew.weibo.bean.User;
-import com.gnayils.obiew.weibo.bean.Video;
 
 import java.io.File;
 import java.util.Arrays;
@@ -183,7 +180,7 @@ public class StatusPresenter implements StatusInterface.Presenter {
     public void upload(String statusText, List<String> selectedPicturePath) {
         if(statusText != null && !statusText.trim().isEmpty()) {
             if(selectedPicturePath == null || selectedPicturePath.isEmpty()) {
-                WeiboAPI.get(StatusAPI.class).update(App.context().getString(R.string.app_key), statusText)
+                WeiboAPI.get(StatusAPI.class).update(Obiew.getAppResources().getString(R.string.app_key), statusText)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber<Status>() {
                             @Override
@@ -288,7 +285,7 @@ public class StatusPresenter implements StatusInterface.Presenter {
                     return null;
                 }
             }
-            Subscription subscription = statusAPI.uploadUrlText(App.context().getString(R.string.app_key), statusText, picIds.substring(0, picIds.length() - 1))
+            Subscription subscription = statusAPI.uploadUrlText(Obiew.getAppResources().getString(R.string.app_key), statusText, picIds.substring(0, picIds.length() - 1))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Subscriber<com.gnayils.obiew.weibo.bean.Status>() {
 

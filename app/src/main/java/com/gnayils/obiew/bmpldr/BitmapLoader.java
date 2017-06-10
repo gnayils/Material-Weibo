@@ -7,7 +7,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.gnayils.obiew.App;
+import com.gnayils.obiew.Obiew;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,10 +34,10 @@ public class BitmapLoader {
     private static BitmapLoader bitmapLoader;
 
     private BitmapLoader() throws IllegalAccessException {
-        memoryCache = LRUMemoryCache.create(App.context(), 0);
-        diskCache = LRUDiskCache.create(App.context(), 0);
+        memoryCache = LRUMemoryCache.create(Obiew.getAppContext(), 0);
+        diskCache = LRUDiskCache.create(Obiew.getAppContext(), 0);
         downloader = URLDownloader.create();
-        DisplayMetrics displayMetrics = App.context().getResources().getDisplayMetrics();
+        DisplayMetrics displayMetrics = Obiew.getAppResources().getDisplayMetrics();
         maxSize = Math.max(displayMetrics.widthPixels, displayMetrics.heightPixels) / 2;
     }
 

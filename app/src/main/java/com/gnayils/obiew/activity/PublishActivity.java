@@ -1,6 +1,7 @@
 package com.gnayils.obiew.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
@@ -23,6 +25,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.fragment.EmotionFragment;
 import com.gnayils.obiew.fragment.FriendshipFragment;
@@ -47,16 +50,26 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
 
     private InputMethodManager inputMethodManager;
 
-    @Bind(R.id.toolbar) Toolbar toolbar;
-    @Bind(R.id.edit_text_content) EditText contentEditText;
-    @Bind(R.id.layout_selected_image) LinearLayout selectedImageLayout;
-    @Bind(R.id.image_button_emotion) ImageButton emotionImageButton;
-    @Bind(R.id.image_button_gallery) ImageButton galleryImageButton;
-    @Bind(R.id.image_button_mention) ImageButton mentionImageButton;
-    @Bind(R.id.image_button_topic) ImageButton topicImageButton;
-    @Bind(R.id.image_button_backspace) ImageButton backspaceImageButton;
-    @Bind(R.id.linear_layout_function_bar) LinearLayout functionBarLayout;
-    @Bind(R.id.frame_layout_function_content) FrameLayout functionContentLayout;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.edit_text_content)
+    EditText contentEditText;
+    @Bind(R.id.layout_selected_image)
+    LinearLayout selectedImageLayout;
+    @Bind(R.id.image_button_emotion)
+    ImageButton emotionImageButton;
+    @Bind(R.id.image_button_gallery)
+    ImageButton galleryImageButton;
+    @Bind(R.id.image_button_mention)
+    ImageButton mentionImageButton;
+    @Bind(R.id.image_button_topic)
+    ImageButton topicImageButton;
+    @Bind(R.id.image_button_backspace)
+    ImageButton backspaceImageButton;
+    @Bind(R.id.linear_layout_function_bar)
+    LinearLayout functionBarLayout;
+    @Bind(R.id.frame_layout_function_content)
+    FrameLayout functionContentLayout;
 
     private EmotionFragment emotionFragment = EmotionFragment.newInstance();
     private GalleryFragment galleryFragment = GalleryFragment.newInstance();
@@ -114,9 +127,18 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(changedByUser) {
+                if (changedByUser) {
                     changedByUser = false;
-                    contentEditText.setText(TextDecorator.decorate(s.toString()));
+                    SpannableString spannableString = null;
+                    if (s instanceof SpannableString) {
+                        spannableString = (SpannableString) s;
+                    } else {
+                        spannableString = new SpannableString(s.toString());
+                    }
+                    TextDecorator.decorateTopics(spannableString);
+                    TextDecorator.decorateMentions(spannableString);
+                    TextDecorator.decorateEmotions(spannableString);
+                    contentEditText.setText(spannableString);
                     contentEditText.setSelection(start + count);
                 } else {
                     changedByUser = true;
@@ -181,10 +203,10 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
         backspaceImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(emotionImageButton.isSelected()) {
+                if (emotionImageButton.isSelected()) {
                     contentEditText.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
-                } else if(galleryImageButton.isSelected()) {
-                    if(selectedPhotoList.size() > 0) {
+                } else if (galleryImageButton.isSelected()) {
+                    if (selectedPhotoList.size() > 0) {
                         selectedPhotoList.remove(selectedPhotoList.size() - 1);
                         selectedImageLayout.removeViewAt(selectedImageLayout.getChildCount() - 1);
                     }
@@ -240,7 +262,7 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
 
     @Override
     public void onPhotoClick(int id, String data) {
-        if(selectedPhotoList.size() < 9) {
+        if (selectedPhotoList.size() < 9) {
             ImageView imageView = new ImageView(this);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(getApplicationContext().getContentResolver(),
@@ -282,32 +304,45 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
     }
 
     private void publishStatus() {
-        if(contentEditText.getText().toString().isEmpty()) {
+        if (contentEditText.getText().toString().isEmpty()) {
             return;
         }
-        if(contentEditText.getText().toString().length() > Weibo.consts.STATUS_TEXT_MAX_LENGTH) {
+        if (contentEditText.getText().toString().length() > Weibo.consts.STATUS_TEXT_MAX_LENGTH) {
             return;
         }
-        if(selectedPhotoList != null && selectedPhotoList.size() > 9) {
+        if (selectedPhotoList != null && selectedPhotoList.size() > 9) {
             return;
         }
-        statusService.publishStatus(contentEditText.getText().toString(), selectedPhotoList, new SubscriberAdapter<Status>(){
+        statusService.publishStatus(contentEditText.getText().toString(), selectedPhotoList, new SubscriberAdapter<Status>() {
+
+            MaterialDialog progressDialog = null;
 
             @Override
             public void onSubscribe() {
-                System.out.println("publishStatus onSubscribe");
-                PublishActivity.this.finish();
-                Popup.toast("正在发布微博...");
+                progressDialog = Popup.indeterminateProgressDialog("发布微博", "正在发布微博...");
             }
 
             @Override
             public void onError(Throwable e) {
-                Popup.toast("发布微博失败: " + e.getMessage());
+                if (progressDialog != null) {
+                    progressDialog.dismiss();
+                }
+                Popup.errorDialog("错误", "微博发布失败: " + e.getMessage());
             }
 
             @Override
             public void onCompleted() {
-                Popup.toast("发布微博成功");
+                if (progressDialog != null) {
+                    progressDialog.dismiss();
+                }
+                Popup.infoDialog("信息", "微博发布成功")
+                        .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                            @Override
+                            public void onDismiss(DialogInterface dialog) {
+                                PublishActivity.this.finish();
+                            }
+                        });
+
             }
         });
     }

@@ -79,8 +79,8 @@ public class ApiTest {
         System.out.println(startIndex + " " + endIndex);
         System.out.println(uriString.substring(startIndex + 1, endIndex));
 
-        Matcher matcher  = Pattern.compile("#[^#]+#").matcher(uriString);
-        if(matcher.find()) {
+        Matcher matcher = Pattern.compile("#[^#]+#").matcher(uriString);
+        if (matcher.find()) {
             String matched = matcher.group();
             System.out.println(matched.substring(1, matched.length() - 1));
         }
@@ -88,12 +88,12 @@ public class ApiTest {
 
     @Test
     public void testGetMentionNameFromUri() {
-        String uriString = "com.gnayils.obiew.scheme.topic://@微天下";
+        String uriString = "com.gnayils.obiew.scheme.topic://@Vista看天下";
         int startIndex = uriString.indexOf("@");
         System.out.println(uriString.substring(startIndex + 1));
 
-        Matcher matcher  = Pattern.compile("@[\\w\\u4e00-\\u9fa5]+").matcher(uriString);
-        if(matcher.find()) {
+        Matcher matcher = Pattern.compile("@[\\w\\u4e00-\\u9fa5]+").matcher(uriString);
+        if (matcher.find()) {
             String matched = matcher.group();
             System.out.println(matched.substring(1));
         }
@@ -101,6 +101,7 @@ public class ApiTest {
 
     @Test
     public void testSubList() {
+        System.out.println("(http|https):\\/\\/[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,@?^=%&amp;:/~\\+#]*[\\w\\-\\@?^=%&amp;/~\\+#])?");
         List<Integer> ints = new ArrayList<>();
         for (int i = 0; i < 78; i++) {
             ints.add(i);
@@ -123,6 +124,36 @@ public class ApiTest {
                 System.out.print(n + " ");
             }
             System.out.println();
+        }
+    }
+
+    @Test
+    public void testGenerateColor() {
+        float step = 255 / 10f;
+        for (int i = 1; i < 10; i++) {
+            float level = step * i;
+            int deep = Math.round(level);
+            String value = Integer.toHexString(deep).toUpperCase();
+            System.out.println(String.format("<color name=\"while_alpha_%s\">#%sFFFFFF</color>", value, value));
+        }
+        for (int i = 1; i < 10; i++) {
+            float level = step * i;
+            int deep = Math.round(level);
+            String value = Integer.toHexString(deep).toUpperCase();
+            System.out.println(String.format("<color name=\"black_alpha_%s\">#%s000000</color>", value, value));
+        }
+        for (int i = 1; i < 10; i++) {
+            float level = step * i;
+            int deep = Math.round(level);
+            String value = Integer.toHexString(deep).toUpperCase();
+            System.out.println(String.format("<color name=\"accent_alpha_%s\">#%sFE3E80</color>", value, value));
+        }
+
+        for (int i = 1; i < 10; i++) {
+            float level = step * i;
+            int deep = Math.round(level);
+            String value = Integer.toHexString(deep).toUpperCase();
+            System.out.println(String.format("<color name=\"primary_alpha_%s\">#%s3E50B4</color>", value, value));
         }
     }
 

@@ -7,7 +7,7 @@ import android.provider.Browser;
 import android.text.Spanned;
 import android.view.View;
 
-import com.gnayils.obiew.App;
+import com.gnayils.obiew.Obiew;
 import com.gnayils.obiew.R;
 
 /**
@@ -17,22 +17,17 @@ public class WeiboSpan extends TouchableSpan {
 
     public static final String SCHEME_SEPARATOR = "://";
 
-    public static final String HTTP_MATCHER = "(http|https):\\/\\/[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,@?^=%&amp;:/~\\+#]*[\\w\\-\\@?^=%&amp;/~\\+#])?";
     public static final String HTTP_SCHEME = "http";
-
-    public static final String TOPIC_REGEX = App.resources().getString(R.string.topic_regex);
-    public static final String TOPIC_SCHEME = App.resources().getString(R.string.topic_scheme);
-
-    public static final String MENTION_REGEX = App.resources().getString(R.string.mention_regex);
-    public static final String MENTION_SCHEME = App.resources().getString(R.string.mention_scheme);
+    public static final String TOPIC_SCHEME = Obiew.getAppResources().getString(R.string.topic_scheme);
+    public static final String MENTION_SCHEME = Obiew.getAppResources().getString(R.string.mention_scheme);
 
     public String url;
     public int start;
     public int end;
     public int flag = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 
-    public WeiboSpan(String url, int start, int end) {
-        super(App.resources().getColor(R.color.colorLink), App.resources().getColor(R.color.colorLink), App.resources().getColor(R.color.colorLinkBackground));
+    public WeiboSpan(String url, int start, int end, int normalTextColor, int pressedTextColor, int pressedBackgroundColor) {
+        super(normalTextColor, pressedTextColor, pressedBackgroundColor);
         this.url = url;
         this.start = start;
         this.end = end;

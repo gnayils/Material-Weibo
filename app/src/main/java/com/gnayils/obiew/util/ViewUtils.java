@@ -2,22 +2,16 @@ package com.gnayils.obiew.util;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.RippleDrawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.util.DisplayMetrics;
 import android.util.Size;
 import android.util.TypedValue;
 
-import com.afollestad.materialdialogs.Theme;
-import com.gnayils.obiew.App;
 import com.gnayils.obiew.R;
 
 /**
@@ -75,19 +69,19 @@ public class ViewUtils {
         return resourceId;
     }
 
-    public static Drawable getTranslucentDrawable(Context context, int resId, int alpha) {
-        Drawable drawable = context.getResources().getDrawable(resId, context.getTheme());
+    public static Drawable getTranslucentDrawable(Context context, int drawableResId, int alpha) {
+        Drawable drawable = context.getResources().getDrawable(drawableResId, context.getTheme());
         Drawable mutatedDrawable = drawable.mutate();
         mutatedDrawable.setAlpha(alpha);
         return mutatedDrawable;
     }
 
-    public static Drawable getTintedDrawable(Context context, int resId, int color) {
-        return getTintedDrawable(context, resId, color, PorterDuff.Mode.SRC_ATOP);
+    public static Drawable getTintedDrawable(Context context, int drawableResId, int color) {
+        return getTintedDrawable(context, drawableResId, color, PorterDuff.Mode.SRC_ATOP);
     }
 
-    public static Drawable getTintedDrawable(Context context, int resId, int color, PorterDuff.Mode mode) {
-        Drawable drawable = context.getResources().getDrawable(resId, context.getTheme());
+    public static Drawable getTintedDrawable(Context context, int drawableResId, int color, PorterDuff.Mode mode) {
+        Drawable drawable = context.getResources().getDrawable(drawableResId, context.getTheme());
         return tintDrawable(drawable, color, mode);
     }
 

@@ -40,8 +40,8 @@ public class DividingLine extends View {
         super(context, attrs, defStyleAttr, defStyleRes);
 
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.DividingLine, defStyleAttr, defStyleRes);
-        lineColor = typedArray.getColor(R.styleable.DividingLine_lineColor, 0x00000000);
-        paddingColor = typedArray.getColor(R.styleable.DividingLine_paddingColor, 0x00000000);
+        lineColor = typedArray.getColor(R.styleable.DividingLine_lineColor, Color.LTGRAY);
+        paddingColor = typedArray.getColor(R.styleable.DividingLine_paddingColor, Color.LTGRAY);
         typedArray.recycle();
 
         paint.setAntiAlias(true);

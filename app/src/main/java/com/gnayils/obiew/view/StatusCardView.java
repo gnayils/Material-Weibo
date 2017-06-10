@@ -1,7 +1,6 @@
 package com.gnayils.obiew.view;
 
 import android.content.Context;
-import android.graphics.PorterDuff;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -11,7 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.gnayils.obiew.App;
+import com.gnayils.obiew.Obiew;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.activity.StatusDetailActivity;
 import com.gnayils.obiew.activity.UserProfileActivity;
@@ -116,7 +115,7 @@ public class StatusCardView extends CardView {
         statusTimeTextView.setText("15分钟前");
         statusTimeTextView.setId(View.generateViewId());
         statusTimeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        statusTimeTextView.setTextColor(getResources().getColor(R.color.colorSecondaryText));
+        statusTimeTextView.setTextColor(getResources().getColor(R.color.black_alpha_80));
         RelativeLayout.LayoutParams statusTimeTextViewLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         statusTimeTextViewLayoutParams.setMargins(dp2px(context, 8), 0, 0, dp2px(context, 4));
         statusTimeTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, userAvatarView.getId());
@@ -126,7 +125,7 @@ public class StatusCardView extends CardView {
         statusSourceTextView = new TextView(context);
         statusSourceTextView.setText("微博 weibo.com");
         statusSourceTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        statusSourceTextView.setTextColor(getResources().getColor(R.color.colorSecondaryText));
+        statusSourceTextView.setTextColor(getResources().getColor(R.color.black_alpha_80));
         RelativeLayout.LayoutParams sourceTextViewLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         sourceTextViewLayoutParams.setMargins(dp2px(context, 8), 0, 0, 0);
         sourceTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, statusTimeTextView.getId());
@@ -192,27 +191,27 @@ public class StatusCardView extends CardView {
         hotrankButtonsLayoutParams.weight = 1;
 
         repostButton = new CenteredDrawableButton(context);
-        repostButton.setTextColor(getResources().getColor(R.color.colorSecondaryText));
+        repostButton.setTextColor(getResources().getColor(R.color.black_alpha_80));
         repostButton.setBackground(getDrawableByAttrId(context, R.attr.selectableItemBackground));
         repostButton.setCompoundDrawablePadding(dp2px(context, 2));
         repostButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        repostButton.setCompoundDrawablesWithIntrinsicBounds(ViewUtils.getTranslucentDrawable(context, R.drawable.ic_repost, 151), null, null, null);
+        repostButton.setCompoundDrawablesWithIntrinsicBounds(ViewUtils.getTintedDrawable(context, R.drawable.ic_repost, getResources().getColor(R.color.grey_600)), null, null, null);
         repostButton.setLayoutParams(hotrankButtonsLayoutParams);
 
         commentButton = new CenteredDrawableButton(context);
-        commentButton.setTextColor(getResources().getColor(R.color.colorSecondaryText));
+        commentButton.setTextColor(getResources().getColor(R.color.black_alpha_80));
         commentButton.setCompoundDrawablePadding(dp2px(context, 2));
         commentButton.setBackground(getDrawableByAttrId(context, R.attr.selectableItemBackground));
         commentButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        commentButton.setCompoundDrawablesWithIntrinsicBounds(ViewUtils.getTranslucentDrawable(context, R.drawable.ic_comment, 151), null, null, null);
+        commentButton.setCompoundDrawablesWithIntrinsicBounds(ViewUtils.getTranslucentDrawable(context, R.drawable.ic_comment, getResources().getColor(R.color.grey_600)), null, null, null);
         commentButton.setLayoutParams(hotrankButtonsLayoutParams);
 
         likeButton = new CenteredDrawableButton(context);
-        likeButton.setTextColor(getResources().getColor(R.color.colorSecondaryText));
+        likeButton.setTextColor(getResources().getColor(R.color.black_alpha_80));
         likeButton.setCompoundDrawablePadding(dp2px(context, 2));
         likeButton.setBackground(getDrawableByAttrId(context, R.attr.selectableItemBackground));
         likeButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        likeButton.setCompoundDrawablesWithIntrinsicBounds(ViewUtils.getTranslucentDrawable(context, R.drawable.ic_like, 151), null, null, null);
+        likeButton.setCompoundDrawablesWithIntrinsicBounds(ViewUtils.getTranslucentDrawable(context, R.drawable.ic_like, getResources().getColor(R.color.grey_600)), null, null, null);
         likeButton.setLayoutParams(hotrankButtonsLayoutParams);
 
         commentLayout.addView(repostButton);
@@ -238,7 +237,7 @@ public class StatusCardView extends CardView {
             Glide.with(getContext()).load(status.user.avatar_large).into(userAvatarView.avatarCircleImageView);
             userAvatarView.verifiedIconImageView.setVisibility(status.user.verified ? View.VISIBLE : View.INVISIBLE);
             if (status.user.verified) {
-                screenNameTextView.setTextColor(App.resources().getColor(R.color.colorVerifiedScreenName));
+                screenNameTextView.setTextColor(Obiew.getAppResources().getColor(R.color.colorPrimaryDark));
                 switch (status.user.verified_type) {
                     case 0:
                         userAvatarView.verifiedIconImageView.setImageResource(R.drawable.avatar_vip_golden);
@@ -251,7 +250,7 @@ public class StatusCardView extends CardView {
                         break;
                 }
             } else {
-                screenNameTextView.setTextColor(App.resources().getColor(R.color.colorPrimaryText));
+                screenNameTextView.setTextColor(Obiew.getAppResources().getColor(R.color.black_alpha_CC));
             }
             screenNameTextView.setText(status.user.screen_name);
             statusSourceTextView.setText(status.getSpannableSource());

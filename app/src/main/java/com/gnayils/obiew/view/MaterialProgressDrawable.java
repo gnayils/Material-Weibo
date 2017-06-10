@@ -226,7 +226,7 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
     }
 
     /**
-     * Set the colors used in the progress animation from color resources.
+     * Set the colors used in the progress animation from color getAppResources.
      * The first color will also be the color of the bar that grows in response
      * to a user swipe gesture.
      *

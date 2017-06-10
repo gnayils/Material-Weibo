@@ -8,7 +8,7 @@ import android.text.Spanned;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
 
-import com.gnayils.obiew.App;
+import com.gnayils.obiew.Obiew;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.view.CenteredImageSpan;
 import com.gnayils.obiew.weibo.bean.Comment;
@@ -29,15 +29,22 @@ import java.util.regex.Pattern;
 
 public class TextDecorator {
 
-    public static final Pattern URL_PATTERN = Pattern.compile(WeiboSpan.HTTP_MATCHER);
+    public static final Pattern URL_PATTERN = Pattern.compile(Obiew.getAppResources().getString(R.string.url_regex));
+    public static final Pattern EMOTION_PATTERN = Pattern.compile(Obiew.getAppResources().getString(R.string.emotion_regex));
 
-    public static final Pattern EMOTION_PATTERN = Pattern.compile("\\[\\S+?\\]");
+    public static final Pattern MENTION_PATTERN = Pattern.compile(Obiew.getAppResources().getString(R.string.mention_regex));
+    public static final Pattern TOPIC_PATTERN = Pattern.compile(Obiew.getAppResources().getString(R.string.topic_regex));
+
+    public static final int SPAN_NORMAL_COLOR = Obiew.getAppResources().getColor(R.color.colorAccent);
+    public static final int SPAN_PRESSED_COLOR = Obiew.getAppResources().getColor(R.color.colorAccent);
+    public static final int SPAN_BACKGROUND_COLOR = Obiew.getAppResources().getColor(R.color.accent_alpha_4D);
+    public static final int SOURCE_COLOR = Obiew.getAppResources().getColor(R.color.black_alpha_80);
 
     public static void decorate(StatusTimeline statusTimeline) {
         if(statusTimeline != null && statusTimeline.statuses != null) {
             for(Status status : statusTimeline.statuses) {
                 status.setSpannableText(decorate(status.text));
-                status.setSpannableSource(replaceUrlSpan((Spannable) Html.fromHtml(status.source)));
+                status.setSpannableSource(replaceUrlSpan((Spannable) Html.fromHtml(status.source), SOURCE_COLOR, SOURCE_COLOR, SOURCE_COLOR));
                 if(status.retweeted_status != null && status.retweeted_status.text != null && !status.retweeted_status.text.isEmpty()) {
                     String username = "";
                     if(status.retweeted_status.user != null) {
@@ -77,52 +84,52 @@ public class TextDecorator {
     }
 
     private static SpannableString decorateURLs(String text) {
-        List<WeiboSpan> weiboSpen = new ArrayList<>();
+        List<WeiboSpan> spanList = new ArrayList<>();
         Matcher httpMatcher;
-        String replacement = "网页链接";
+        String replacement = " 网页链接 ";
         while((httpMatcher = URL_PATTERN.matcher(text)).find()) {
             String webURL = httpMatcher.group();
             text = text.replace(webURL, replacement);
-            WeiboSpan weiboSpan = new WeiboSpan(webURL, httpMatcher.start(), httpMatcher.end() - (webURL.length() - replacement.length()));
-            weiboSpen.add(weiboSpan);
+            WeiboSpan weiboSpan = new WeiboSpan(webURL, httpMatcher.start(), httpMatcher.end() - (webURL.length() - replacement.length()), SPAN_NORMAL_COLOR, SPAN_PRESSED_COLOR, SPAN_BACKGROUND_COLOR);
+            spanList.add(weiboSpan);
         }
         SpannableString spannableString = new SpannableString(text);
-        for(WeiboSpan weiboSpan : weiboSpen) {
+        for(WeiboSpan weiboSpan : spanList) {
             spannableString.setSpan(weiboSpan, weiboSpan.start, weiboSpan.end, weiboSpan.flag);
         }
         return spannableString;
     }
 
-    private static void decorateTopics(SpannableString spannableString) {
-        Linkify.addLinks(spannableString, Pattern.compile(WeiboSpan.TOPIC_REGEX), WeiboSpan.TOPIC_SCHEME + WeiboSpan.SCHEME_SEPARATOR);
-        replaceUrlSpan(spannableString);
+    public static void decorateTopics(SpannableString spannableString) {
+        Linkify.addLinks(spannableString, TOPIC_PATTERN, WeiboSpan.TOPIC_SCHEME + WeiboSpan.SCHEME_SEPARATOR);
+        replaceUrlSpan(spannableString, SPAN_NORMAL_COLOR, SPAN_PRESSED_COLOR, SPAN_BACKGROUND_COLOR);
     }
 
-    private static void decorateMentions(SpannableString spannableString) {
-        Linkify.addLinks(spannableString, Pattern.compile(WeiboSpan.MENTION_REGEX), WeiboSpan.MENTION_SCHEME + WeiboSpan.SCHEME_SEPARATOR);
-        replaceUrlSpan(spannableString);
+    public static void decorateMentions(SpannableString spannableString) {
+        Linkify.addLinks(spannableString, MENTION_PATTERN, WeiboSpan.MENTION_SCHEME + WeiboSpan.SCHEME_SEPARATOR);
+        replaceUrlSpan(spannableString, SPAN_NORMAL_COLOR, SPAN_PRESSED_COLOR, SPAN_BACKGROUND_COLOR);
     }
 
-    private static void decorateEmotions(SpannableString spannableString) {
+    public static void decorateEmotions(SpannableString spannableString) {
         String string =spannableString.toString();
         Matcher emotionKeyMatcher = EMOTION_PATTERN.matcher(string);
         while(emotionKeyMatcher.find()) {
             String emotionKey = emotionKeyMatcher.group();
-            Bitmap bitmap = EmotionDB.get(emotionKey, App.resources().getDimension(R.dimen.emotion_size_in_text));
+            Bitmap bitmap = EmotionDB.get(emotionKey, Obiew.getAppResources().getDimension(R.dimen.emotion_size_in_text));
             if(bitmap == null) {
                 continue;
             } else {
-                spannableString.setSpan(new CenteredImageSpan(App.context(), bitmap), emotionKeyMatcher.start(), emotionKeyMatcher.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                spannableString.setSpan(new CenteredImageSpan(Obiew.getAppContext(), bitmap), emotionKeyMatcher.start(), emotionKeyMatcher.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
     }
 
-    public static Spannable replaceUrlSpan(Spannable spannable) {
+    public static Spannable replaceUrlSpan(Spannable spannable, int normalTextColor, int pressedTextColor, int pressedBackgroundColor) {
         URLSpan[] urlSpans = spannable.getSpans(0, spannable.length(), URLSpan.class);
         for (URLSpan urlSpan : urlSpans) {
             int start = spannable.getSpanStart(urlSpan);
             int end = spannable.getSpanEnd(urlSpan);
-            WeiboSpan linkSpan = new WeiboSpan(urlSpan.getURL(), start, end);
+            WeiboSpan linkSpan = new WeiboSpan(urlSpan.getURL(), start, end, normalTextColor, pressedTextColor, pressedBackgroundColor);
             spannable.removeSpan(urlSpan);
             spannable.setSpan(linkSpan, start, end, linkSpan.flag);
         }

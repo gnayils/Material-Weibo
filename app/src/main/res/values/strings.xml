@@ -26,7 +26,10 @@
     <string name="app_secret">@string/smooth_app_secret</string>
     <string name="callback_url">@string/smooth_callback_url</string>
 
-    <string name="mention_regex">\@[\w\u4e00-\u9fa5]+</string>
+    <string name="url_regex" formatted="false">(http|https):\\/\\/[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,\@\?^=%&amp;:/~\\+#]*[\\w\\-\@\?^=%&amp;/~\\+#])\?</string>
+    <string name="emotion_regex">\\[\\S+\?\\]</string>
+
+    <string name="mention_regex">\@[\u4e00-\u9fa5a-zA-Z0-9_-]{2,30}</string>
     <string name="mention_scheme">com.gnayils.obiew.scheme.mention</string>
     <string name="topic_regex">#[^#]+#</string>
     <string name="topic_scheme">com.gnayils.obiew.scheme.topic</string>

@@ -50,7 +50,7 @@
                     <FrameLayout
                         android:layout_width="90dp"
                         android:layout_height="90dp"
-                        android:background="@drawable/bg_oval_white_a75">
+                        android:background="@drawable/bg_oval_white_alpha_80">
 
                         <com.gnayils.obiew.view.AvatarView
                             android:id="@+id/avatar_view"

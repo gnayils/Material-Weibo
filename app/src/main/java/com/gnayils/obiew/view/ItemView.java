@@ -1,7 +1,9 @@
 package com.gnayils.obiew.view;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -34,11 +36,11 @@ public class ItemView extends RelativeLayout {
     public ItemView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
-        setBackground(getResources().getDrawable(R.drawable.bg_rect_ripple_round_corner, context.getTheme()));
         setClickable(true);
 
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ItemView, defStyleAttr, defStyleRes);
         Drawable icon = typedArray.getDrawable(R.styleable.ItemView_icon);
+        int iconTint = typedArray.getColor(R.styleable.ItemView_iconTint, Color.DKGRAY);
         String title = typedArray.getString(R.styleable.ItemView_title);
         String description = typedArray.getString(R.styleable.ItemView_description);
         Drawable moreIcon = typedArray.getDrawable(R.styleable.ItemView_moreIcon);
@@ -46,8 +48,9 @@ public class ItemView extends RelativeLayout {
         ImageView iconImageView = new ImageView(context);
         iconImageView.setId(View.generateViewId());
         iconImageView.setImageDrawable(icon);
+        iconImageView.setImageTintList(ColorStateList.valueOf(iconTint));
         LayoutParams layoutParams = new LayoutParams(dp2px(context, 24), dp2px(context, 24));
-        layoutParams.setMargins(dp2px(context, 8), 0, 0, 0);
+        layoutParams.setMargins(dp2px(context, 16), 0, 0, 0);
         layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         iconImageView.setLayoutParams(layoutParams);
@@ -57,7 +60,7 @@ public class ItemView extends RelativeLayout {
         titleTextView.setTextSize(16);
         titleTextView.setText(title);
         layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(dp2px(context, 8), 0, 0, 0);
+        layoutParams.setMargins(dp2px(context, 16), 0, 0, 0);
         layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
         layoutParams.addRule(RelativeLayout.RIGHT_OF, iconImageView.getId());
         titleTextView.setLayoutParams(layoutParams);
@@ -67,7 +70,7 @@ public class ItemView extends RelativeLayout {
         moreIconImageView.setId(View.generateViewId());
         moreIconImageView.setImageDrawable(moreIcon);
         layoutParams = new LayoutParams(dp2px(context, 12), dp2px(context, 12));
-        layoutParams.setMargins(0, 0, dp2px(context, 8), 0);
+        layoutParams.setMargins(0, 0, dp2px(context, 16), 0);
         layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         moreIconImageView.setLayoutParams(layoutParams);
@@ -75,10 +78,10 @@ public class ItemView extends RelativeLayout {
 
         TextView descriptionTextView = new TextView(context);
         descriptionTextView.setTextSize(12);
-        descriptionTextView.setTextColor(getResources().getColor(R.color.colorSecondaryText));
+        descriptionTextView.setTextColor(getResources().getColor(R.color.black_alpha_80));
         descriptionTextView.setText(description);
         layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(0, 0, dp2px(context, 8), 0);
+        layoutParams.setMargins(0, 0, dp2px(context, 16), 0);
         layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
         layoutParams.addRule(RelativeLayout.LEFT_OF, moreIconImageView.getId());
         descriptionTextView.setLayoutParams(layoutParams);

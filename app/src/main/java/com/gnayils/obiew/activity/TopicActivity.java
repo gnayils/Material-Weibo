@@ -72,7 +72,7 @@ public class TopicActivity extends AppCompatActivity {
     }
 
     private void showTopicTimeline(final boolean loadLatest) {
-        if (topic != null && !topic.trim().isEmpty()) {
+        if (topic == null && topic.trim().isEmpty()) {
             swipeRefreshLayout.setRefreshing(false);
             return;
         }
@@ -91,11 +91,6 @@ public class TopicActivity extends AppCompatActivity {
                         if (loadLatest) {
                             swipeRefreshLayout.setRefreshing(false);
                         }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Popup.toast("获取话题微博失败: " + e.getMessage());
                     }
 
                     @Override

@@ -36,6 +36,7 @@ import com.gnayils.obiew.weibo.service.StatusService;
 import com.gnayils.obiew.weibo.service.SubscriberAdapter;
 import com.gnayils.obiew.weibo.service.UserService;
 
+import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -126,6 +127,7 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
             if (matcher.find()) {
                 String group = matcher.group();
                 final String screenName = group.substring(1);
+                getSupportActionBar().setTitle(screenName);
                 if (screenName != null && !screenName.trim().isEmpty()) {
                     userService.showUserByName(screenName, new SubscriberAdapter<User>() {
 
@@ -136,7 +138,6 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
 
                         @Override
                         public void onError(Throwable e) {
-                            Popup.toast(String.format("获取用户[%s]信息失败: %s", screenName, e.getMessage()));
                         }
 
                         @Override
@@ -187,6 +188,7 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
 
     private void fillViews(User user) {
         this.user = user;
+        getSupportActionBar().setTitle(user.screen_name);
         collapsingToolbarLayout.setTitle(user.screen_name);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -229,17 +231,6 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
             public void onUnsubscribe() {
                 if (loadLatest) {
                     swipeRefreshLayout.setRefreshing(false);
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (feature == Status.FEATURE_ALL) {
-                    Popup.toast("获取用户微博失败: " + e.getMessage());
-                } else if (feature == Status.FEATURE_IMAGE) {
-                    Popup.toast("获取用户相册失败: " + e.getMessage());
-                } else {
-                    Popup.toast("Unknown Feature: " + feature);
                 }
             }
 

@@ -153,7 +153,6 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
 
             @Override
             public void onError(Throwable e) {
-                Popup.toast("获取微博评论失败: " + e.getMessage());
             }
 
             @Override
@@ -178,11 +177,6 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
                 if(loadLatest) {
                     swipeRefreshLayout.setRefreshing(true);
                 }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Popup.toast("获取微博转发失败: " + e.getMessage());
             }
 
             @Override

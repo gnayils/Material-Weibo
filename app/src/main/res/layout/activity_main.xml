@@ -55,7 +55,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:background="?android:attr/windowBackground"
+                android:background="?android:windowBackground"
                 android:elevation="6dp"
                 app:menu="@menu/activity_main_bottom_navigation_menu" />
 
@@ -65,9 +65,7 @@
             android:id="@+id/navigation_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="start"
-            app:headerLayout="@layout/navigation_header_place_holder"
-            app:menu="@menu/activity_main_navigation_menu">
+            android:layout_gravity="start">
 
             <android.support.design.widget.CoordinatorLayout
                 android:layout_width="match_parent"
@@ -112,7 +110,7 @@
                                         android:layout_alignParentLeft="true"
                                         android:layout_alignParentTop="true"
                                         android:layout_marginLeft="16dp"
-                                        android:background="@drawable/bg_oval_white_a75">
+                                        android:background="@drawable/bg_oval_white_alpha_80">
 
                                         <com.gnayils.obiew.view.AvatarView
                                             android:id="@+id/avatar_view"
@@ -216,13 +214,98 @@
 
                 </android.support.design.widget.AppBarLayout>
 
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginTop="8dp"
+                            android:text="消息"
+                            android:textColor="@color/black_alpha_80"
+                            android:textSize="16sp" />
+
+                        <com.gnayils.obiew.view.ItemView
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackground"
+                            app:icon="@drawable/ic_mention"
+                            app:iconTint="@color/grey_700"
+                            app:title="\@我的" />
+
+                        <com.gnayils.obiew.view.ItemView
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackground"
+                            app:icon="@drawable/ic_comment"
+                            app:iconTint="@color/grey_700"
+                            app:title="评论" />
+
+                        <com.gnayils.obiew.view.ItemView
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackground"
+                            app:icon="@drawable/ic_like"
+                            app:iconTint="@color/grey_700"
+                            app:title="赞" />
+
+                        <com.gnayils.obiew.view.ItemView
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackground"
+                            app:icon="@drawable/ic_rss_feed"
+                            app:iconTint="@color/grey_700"
+                            app:title="订阅消息" />
+
+                        <com.gnayils.obiew.view.DividingLine
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            app:lineColor="@color/grey_300" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginTop="8dp"
+                            android:text="其它"
+                            android:textColor="@color/black_alpha_80"
+                            android:textSize="16sp" />
+
+                        <com.gnayils.obiew.view.ItemView
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackground"
+                            app:icon="@drawable/ic_setting"
+                            app:iconTint="@color/grey_700"
+                            app:title="设置" />
+
+                        <com.gnayils.obiew.view.ItemView
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackground"
+                            app:icon="@drawable/ic_exit"
+                            app:iconTint="@color/grey_700"
+                            app:title="退出当前账号" />
+
+                    </LinearLayout>
+
+                </ScrollView>
+
             </android.support.design.widget.CoordinatorLayout>
 
         </android.support.design.widget.NavigationView>
 
-
     </android.support.v4.widget.DrawerLayout>
-
 
 </android.support.design.widget.CoordinatorLayout>
 

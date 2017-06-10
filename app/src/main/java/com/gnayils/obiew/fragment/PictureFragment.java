@@ -83,7 +83,7 @@ public class PictureFragment extends Fragment {
             ImageView imageView = new ImageView(getContext());
             imageView.setLayoutParams(childLayoutParams);
             frameLayout.addView(imageView);
-            Glide.with(this).load(picUrls.large()).asGif().listener(new RequestListener<String, GifDrawable>() {
+            Glide.with(this).load(picUrls.large()).asGif().diskCacheStrategy(DiskCacheStrategy.SOURCE).listener(new RequestListener<String, GifDrawable>() {
                 @Override
                 public boolean onException(Exception e, String model, Target<GifDrawable> target, boolean isFirstResource) {
                     return false;

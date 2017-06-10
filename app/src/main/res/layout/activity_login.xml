@@ -22,7 +22,7 @@
                 android:layout_width="128dp"
                 android:layout_height="128dp"
                 android:layout_gravity="center"
-                android:background="@drawable/bg_oval_white_a75">
+                android:background="@drawable/bg_oval_white_alpha_80">
 
                 <com.gnayils.obiew.view.AvatarView
                     android:id="@+id/avatar_view"
@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|center_horizontal"
                 android:layout_marginBottom="32dp"
-                android:textColor="@color/white_a75"
+                android:textColor="@color/while_alpha_80"
                 android:textSize="26dp"
                 android:text="OBIEW"/>
 

@@ -158,20 +158,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
-
-        if (id == R.id.action_mention_me) {
-
-        } else if (id == R.id.action_comment_me) {
-
-        } else if (id == R.id.action_like_me) {
-
-        } else if (id == R.id.action_subscription_message) {
-
-        } else if (id == R.id.action_app_setting) {
-
-        } else if (id == R.id.action_logout_account) {
-
-        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -193,11 +179,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if (loadLatest) {
                             swipeRefreshLayout.setRefreshing(false);
                         }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Popup.toast("获取微博失败: " + e.getMessage());
                     }
 
                     @Override

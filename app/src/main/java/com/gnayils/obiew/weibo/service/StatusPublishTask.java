@@ -1,14 +1,10 @@
 package com.gnayils.obiew.weibo.service;
 
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
-import com.gnayils.obiew.App;
+import com.gnayils.obiew.Obiew;
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.presenter.StatusPresenter;
-import com.gnayils.obiew.util.Popup;
 import com.gnayils.obiew.util.Sync;
 import com.gnayils.obiew.weibo.api.StatusAPI;
 import com.gnayils.obiew.weibo.api.WeiboAPI;
@@ -86,7 +82,7 @@ public class StatusPublishTask extends AsyncTask<Void, Void, Status> {
                 return null;
             }
         }
-        Subscription subscription = statusAPI.uploadUrlText(App.context().getString(R.string.app_key),
+        Subscription subscription = statusAPI.uploadUrlText(Obiew.getAppResources().getString(R.string.app_key),
                 statusText, picIds.substring(0, picIds.length() - 1))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<com.gnayils.obiew.weibo.bean.Status>() {

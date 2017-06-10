@@ -2,15 +2,12 @@ package com.gnayils.obiew.weibo.api;
 
 import android.util.Log;
 
-import com.gnayils.obiew.App;
+import com.gnayils.obiew.Obiew;
 import com.gnayils.obiew.R;
+import com.gnayils.obiew.weibo.APIErrorHandler;
 import com.gnayils.obiew.weibo.Account;
-import com.gnayils.obiew.weibo.bean.APIError;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -24,15 +21,11 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Converter;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.HttpException;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -43,7 +36,8 @@ public class WeiboAPI {
 
     private static final String TAG = WeiboAPI.class.getSimpleName();
 
-    public static final String BASE_URL = App.context().getString(R.string.api_base_url);
+    public static final String APP_KEY = Obiew.getAppResources().getString(R.string.app_key);
+    public static final String BASE_URL = Obiew.getAppResources().getString(R.string.api_base_url);
     public static final int DEFAULT_TIMEOUT = 10;
     private static WeiboAPI instance = new WeiboAPI();
 
@@ -78,7 +72,7 @@ public class WeiboAPI {
                     if(result instanceof Observable) {
                         return ((Observable) result)
                                 .subscribeOn(Schedulers.io())
-                                .doOnError(new WeiboErrorHandler());
+                                .doOnError(new APIErrorHandler(retrofit));
                     } else {
                         Log.e(TAG, "all method in the retrofit instance must be return a Observable instance");
                         return null;
@@ -88,27 +82,6 @@ public class WeiboAPI {
             interfaceMap.put(clazz.getName(), interfaceInstance);
         }
         return interfaceInstance;
-    }
-
-    private class WeiboErrorHandler implements Action1<Throwable> {
-
-        @Override
-        public void call(Throwable throwable) {
-            APIError apiError = null;
-            if (throwable instanceof HttpException) {
-                HttpException httpException = (HttpException) throwable;
-                Converter<ResponseBody, APIError> converter = retrofit.responseBodyConverter(APIError.class, new Annotation[0]);
-                try {
-                    apiError = converter.convert(httpException.response().errorBody());
-                } catch (IOException e) {
-                    Log.e(TAG, "convert http response error body to APIError failed", e);
-                }
-            } else if (throwable instanceof IOException) {
-            }
-            if(apiError != null) {
-                EventBus.getDefault().post(apiError);
-            }
-        }
     }
 
     public static class AttachTokenInterceptor implements Interceptor {
@@ -121,7 +94,7 @@ public class WeiboAPI {
                 HttpUrl httpUrl = request.url();
                 HttpUrl url = httpUrl.newBuilder()
                         .addQueryParameter("access_token", Account.accessToken.access_token)
-                        .addQueryParameter("source", App.context().getString(R.string.app_key))
+                        .addQueryParameter("source", APP_KEY)
                         .build();
                 Headers headers = request.headers();
                 headers.newBuilder().add("Authorization", "OAuth2 " + Account.accessToken.access_token);
