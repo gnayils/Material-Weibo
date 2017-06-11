@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 public class AccessToken implements Serializable{
 
-    public String uid;
+    public long uid;
     public String access_token;
     public long expires_in;
     public long remind_in;

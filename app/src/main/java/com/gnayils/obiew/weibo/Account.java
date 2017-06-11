@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.gnayils.obiew.weibo.bean.AccessToken;
+import com.gnayils.obiew.weibo.bean.Groups;
 import com.gnayils.obiew.weibo.bean.User;
 
 
@@ -21,6 +22,7 @@ import java.io.ObjectOutputStream;
 public class Account {
 
     public static User user;
+    public static Groups groups;
     public static AccessToken accessToken;
 
     public static final String CACHE_FILE_NAME = "Account";
@@ -37,6 +39,7 @@ public class Account {
             file.createNewFile();
             objectOutputStream = new ObjectOutputStream(new FileOutputStream(file));
             objectOutputStream.writeObject(Account.user);
+            objectOutputStream.writeObject(Account.groups);
             objectOutputStream.writeObject(Account.accessToken);
             objectOutputStream.flush();
         } catch (Exception e) {
@@ -59,6 +62,7 @@ public class Account {
             try {
                 objectInputStream = new ObjectInputStream(new FileInputStream(file));
                 Account.user = (User) objectInputStream.readObject();
+                Account.groups = (Groups) objectInputStream.readObject();
                 Account.accessToken = (AccessToken) objectInputStream.readObject();
                 return true;
             } catch (Exception e) {

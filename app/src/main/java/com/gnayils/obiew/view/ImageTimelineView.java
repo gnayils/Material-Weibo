@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 import com.gnayils.obiew.weibo.bean.PicUrls;
 import com.gnayils.obiew.weibo.bean.Status;
-import com.gnayils.obiew.weibo.bean.StatusTimeline;
+import com.gnayils.obiew.weibo.bean.Statuses;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +43,8 @@ public class ImageTimelineView extends LoadMoreRecyclerView {
         setPadding(dp2px(context, 6), 0, dp2px(context, 6), 0);
     }
 
-    public void show(StatusTimeline statusTimeline) {
-        imageTimelineAdapter.addTimeline(statusTimeline);
+    public void show(Statuses statuses) {
+        imageTimelineAdapter.addTimeline(statuses);
     }
 
     private class ImageTimelineAdapter extends LoadMoreRecyclerView.LoadMoreAdapter {
@@ -73,9 +73,9 @@ public class ImageTimelineView extends LoadMoreRecyclerView {
             Glide.with(getContext()).load(picUrlsList.get(position).middle()).asBitmap().into(imageView);
         }
 
-        public void addTimeline(StatusTimeline statusTimeline) {
+        public void addTimeline(Statuses statuses) {
             Set<Status> statusSet = new TreeSet<>(statusList);
-            statusSet.addAll(statusTimeline.statuses);
+            statusSet.addAll(statuses.statuses);
             statusList.clear();
             statusList.addAll(statusSet);
 

@@ -13,8 +13,8 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class UserService extends BaseService {
 
-    public void showUserById(String id, SubscriberAdapter<User> subscriberAdapter) {
-        Subscription subscription = WeiboAPI.get(UserAPI.class).showById(id)
+    public void showUserById(long uid, SubscriberAdapter<User> subscriberAdapter) {
+        Subscription subscription = WeiboAPI.get(UserAPI.class).showById(uid)
                 .doOnSubscribe(subscriberAdapter.onSubscribeAction)
                 .doOnUnsubscribe(subscriberAdapter.onUnsubscribeAction)
                 .observeOn(AndroidSchedulers.mainThread())

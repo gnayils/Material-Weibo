@@ -3,7 +3,6 @@ package com.gnayils.obiew.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
@@ -21,15 +20,14 @@ import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.util.Popup;
 import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.view.CommentTimelineView;
 import com.gnayils.obiew.view.LoadMoreRecyclerView;
 import com.gnayils.obiew.view.RepostTimelineView;
 import com.gnayils.obiew.view.StatusCardView;
 import com.gnayils.obiew.weibo.Weibo;
-import com.gnayils.obiew.weibo.bean.CommentTimeline;
-import com.gnayils.obiew.weibo.bean.RepostTimeline;
+import com.gnayils.obiew.weibo.bean.Comments;
+import com.gnayils.obiew.weibo.bean.Reposts;
 import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.weibo.service.CommentService;
 import com.gnayils.obiew.weibo.service.StatusService;
@@ -142,7 +140,7 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
     }
 
     private void showCommentTimeline(final boolean loadLatest) {
-        commentService.showCommentTimeline(status, loadLatest, new SubscriberAdapter<CommentTimeline>(){
+        commentService.showCommentTimeline(status, loadLatest, new SubscriberAdapter<Comments>(){
 
             @Override
             public void onSubscribe() {
@@ -156,8 +154,8 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
             }
 
             @Override
-            public void onNext(CommentTimeline commentTimeline) {
-                commentTimelineView.show(commentTimeline);
+            public void onNext(Comments comments) {
+                commentTimelineView.show(comments);
             }
 
             @Override
@@ -170,7 +168,7 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
     }
 
     private void showRepostTimeline(final boolean loadLatest) {
-        statusService.showRepostTimeline(status, loadLatest, new SubscriberAdapter<RepostTimeline>(){
+        statusService.showRepostTimeline(status, loadLatest, new SubscriberAdapter<Reposts>(){
 
             @Override
             public void onSubscribe() {
@@ -180,8 +178,8 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
             }
 
             @Override
-            public void onNext(RepostTimeline repostTimeline) {
-                repostTimelineView.show(repostTimeline);
+            public void onNext(Reposts reposts) {
+                repostTimelineView.show(reposts);
             }
 
             @Override

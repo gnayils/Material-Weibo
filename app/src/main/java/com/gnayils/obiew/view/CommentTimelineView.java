@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.weibo.bean.Comment;
-import com.gnayils.obiew.weibo.bean.CommentTimeline;
+import com.gnayils.obiew.weibo.bean.Comments;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,8 +46,8 @@ public class CommentTimelineView extends LoadMoreRecyclerView {
         setAdapter(recyclerViewAdapter);
     }
 
-    public void show(CommentTimeline commentTimeline) {
-        recyclerViewAdapter.add(commentTimeline);
+    public void show(Comments comments) {
+        recyclerViewAdapter.add(comments);
     }
 
 
@@ -75,9 +75,9 @@ public class CommentTimelineView extends LoadMoreRecyclerView {
             ((CommentViewHolder)holder).commentView.show(comment);
         }
 
-        public void add(CommentTimeline commentTimeline) {
+        public void add(Comments comments) {
             Set<Comment> commentSet = new TreeSet<>(commentList);
-            commentSet.addAll(commentTimeline.comments);
+            commentSet.addAll(comments.comments);
             commentList.clear();
             commentList.addAll(commentSet);
             notifyDataSetChanged();

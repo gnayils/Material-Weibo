@@ -28,13 +28,16 @@ import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.view.AvatarView;
 import com.gnayils.obiew.weibo.Account;
 import com.gnayils.obiew.weibo.api.AuthorizeAPI;
+import com.gnayils.obiew.weibo.api.FriendShipsAPI;
 import com.gnayils.obiew.weibo.api.UserAPI;
 import com.gnayils.obiew.weibo.api.WeiboAPI;
 import com.gnayils.obiew.weibo.bean.AccessToken;
+import com.gnayils.obiew.weibo.bean.Groups;
 import com.gnayils.obiew.weibo.bean.User;
 
 import java.io.ByteArrayOutputStream;
 import java.net.URL;
+import java.util.concurrent.Semaphore;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -49,11 +52,15 @@ public class LoginActivity extends AppCompatActivity {
 
     public static final String TAG = LoginActivity.class.getSimpleName();
 
-    @Bind(R.id.web_view) WebView webView;
-    @Bind(R.id.avatar_view) AvatarView avatarView;
+    @Bind(R.id.web_view)
+    WebView webView;
+    @Bind(R.id.avatar_view)
+    AvatarView avatarView;
 
-    @Bind(R.id.frame_layout_bottom_part) FrameLayout bottomPartFrameLayout;
-    @Bind(R.id.frame_layout_top_part) FrameLayout topPartFrameLayout;
+    @Bind(R.id.frame_layout_bottom_part)
+    FrameLayout bottomPartFrameLayout;
+    @Bind(R.id.frame_layout_top_part)
+    FrameLayout topPartFrameLayout;
 
     private String appKey;
     private String appSecret;
@@ -62,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
     public static final int MESSAGE_AUTHORIZATION_CODE_OBTAINED = 0;
     public static final int MESSAGE_ACCESS_TOKEN_OBTAINED = 1;
     public static final int MESSAGE_LOGIN_USER_OBTAINED = 2;
+    public static final int MESSAGE_FRIEND_GROUPS_OBTAINED = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,7 +168,6 @@ public class LoginActivity extends AppCompatActivity {
                                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                                     if (avatar.compress(Bitmap.CompressFormat.PNG, 100, baos)) {
                                         Account.user.avatarBytes = baos.toByteArray();
-                                        Account.cache(LoginActivity.this);
                                     }
                                 } catch (Exception e) {
                                     throw Exceptions.propagate(e);
@@ -183,10 +190,36 @@ public class LoginActivity extends AppCompatActivity {
                             public void onNext(User user) {
                                 Bitmap avatar = BitmapFactory.decodeByteArray(Account.user.avatarBytes, 0, Account.user.avatarBytes.length);
                                 avatarView.avatarCircleImageView.setImageBitmap(avatar);
-                                sendMessageDelayed(obtainMessage(MESSAGE_LOGIN_USER_OBTAINED), 1000);
+                                dispatchMessage(obtainMessage(MESSAGE_LOGIN_USER_OBTAINED));
                             }
                         });
-            } else if(msg.what == MESSAGE_LOGIN_USER_OBTAINED) {
+            } else if (msg.what == MESSAGE_LOGIN_USER_OBTAINED) {
+                WeiboAPI.get(FriendShipsAPI.class).groups()
+                        .doOnNext(new Action1<Groups>() {
+                            @Override
+                            public void call(Groups groups) {
+                                Account.groups = groups;
+                                Account.cache(LoginActivity.this);
+                            }
+                        })
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<Groups>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Log.e(TAG, "get friend groups failed", e);
+                            }
+
+                            @Override
+                            public void onNext(Groups groups) {
+                                sendMessageDelayed(obtainMessage(MESSAGE_FRIEND_GROUPS_OBTAINED), 1000);
+                            }
+                        });
+            } else if (msg.what == MESSAGE_FRIEND_GROUPS_OBTAINED) {
                 MainActivity.start(LoginActivity.this);
                 LoginActivity.this.finish();
             }

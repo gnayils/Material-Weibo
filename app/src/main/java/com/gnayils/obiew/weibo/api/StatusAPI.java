@@ -1,11 +1,10 @@
 package com.gnayils.obiew.weibo.api;
 
-import com.gnayils.obiew.weibo.bean.RepostTimeline;
+import com.gnayils.obiew.weibo.bean.Reposts;
 import com.gnayils.obiew.weibo.bean.Status;
-import com.gnayils.obiew.weibo.bean.StatusTimeline;
+import com.gnayils.obiew.weibo.bean.Statuses;
 import com.gnayils.obiew.weibo.bean.UploadedPic;
 
-import java.util.List;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
@@ -17,7 +16,6 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.PartMap;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
@@ -28,13 +26,22 @@ import rx.Observable;
 public interface StatusAPI {
 
     @GET("2/statuses/home_timeline.json")
-    Observable<StatusTimeline> homeTimeline(@Query("feature") int feature, @Query("page") int page, @Query("count") int count);
+    Observable<Statuses> homeTimeline(@Query("feature") int feature, @Query("page") int page, @Query("count") int count);
+
+    @GET("2/statuses/bilateral_timeline.json")
+    Observable<Statuses> bilateralTimeline(@Query("feature") int feature, @Query("page") int page, @Query("count") int count);
+
+    @GET("2/statuses/public_timeline.json")
+    Observable<Statuses> publicTimeline(@Query("feature") int feature, @Query("page") int page, @Query("count") int count);
+
+    @GET("2/statuses/mentions.json")
+    Observable<Statuses> mentions(@Query("page") int page, @Query("count") int count);
 
     @GET("2/statuses/repost_timeline.json")
-    Observable<RepostTimeline> repostTimeline(@Query("id") long statusId, @Query("page") int page, @Query("count") int count);
+    Observable<Reposts> repostTimeline(@Query("id") long statusId, @Query("page") int page, @Query("count") int count);
 
     @GET("2/statuses/user_timeline.json")
-    Observable<StatusTimeline> userTimeline(@Query("uid") long uid, @Query("feature")int feature, @Query("page") int page, @Query("count") int count);
+    Observable<Statuses> userTimeline(@Query("uid") long uid, @Query("feature")int feature, @Query("page") int page, @Query("count") int count);
 
     @FormUrlEncoded
     @POST("2/statuses/update.json")
@@ -66,10 +73,10 @@ public interface StatusAPI {
 
     @Deprecated
     @GET("2/statuses/home_timeline.json")
-    Observable<StatusTimeline> homeTimeline(@Query("max_id")long maxId, @Query("since_id")long sinceId);
+    Observable<Statuses> homeTimeline(@Query("max_id")long maxId, @Query("since_id")long sinceId);
 
     @Deprecated
     @GET("2/statuses/repost_timeline.json")
-    Observable<RepostTimeline> repostTimeline(@Query("id") long statusId, @Query("max_id") long maxId, @Query("since_id") long sinceId);
+    Observable<Reposts> repostTimeline(@Query("id") long statusId, @Query("max_id") long maxId, @Query("since_id") long sinceId);
 
 }

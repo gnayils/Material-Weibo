@@ -7,7 +7,7 @@ import com.gnayils.obiew.util.URLParser;
 import com.gnayils.obiew.weibo.api.URLsAPI;
 import com.gnayils.obiew.weibo.api.WeiboAPI;
 import com.gnayils.obiew.weibo.bean.Status;
-import com.gnayils.obiew.weibo.bean.StatusTimeline;
+import com.gnayils.obiew.weibo.bean.Statuses;
 import com.gnayils.obiew.weibo.bean.URL;
 import com.gnayils.obiew.weibo.bean.URLs;
 import com.gnayils.obiew.weibo.bean.Video;
@@ -54,10 +54,10 @@ public class VideoInfoParser {
         COOKIES.put("login_sid_t", "80f0ed304030758d2bab97121e49d50f");
     }
 
-    public static void parse(StatusTimeline statusTimeline) throws Throwable {
-        if (statusTimeline != null && statusTimeline.statuses != null) {
+    public static void parse(Statuses statuses) throws Throwable {
+        if (statuses != null && statuses.statuses != null) {
             Map<String, Status> shortUrlMap = new HashMap<>();
-            for (Status status : statusTimeline.statuses) {
+            for (Status status : statuses.statuses) {
                 findShortUrl(status, shortUrlMap);
                 findShortUrl(status.retweeted_status, shortUrlMap);
             }

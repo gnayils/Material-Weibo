@@ -6,7 +6,7 @@ import java.util.List;
  * Created by Gnayils on 12/03/2017.
  */
 
-public class CommentTimeline {
+public class Comments {
 
     public boolean hasvisible;
     public long previous_cursor;

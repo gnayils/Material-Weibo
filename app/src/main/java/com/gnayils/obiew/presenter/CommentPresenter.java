@@ -6,15 +6,13 @@ import com.gnayils.obiew.interfaces.CommentInterface;
 import com.gnayils.obiew.weibo.TextDecorator;
 import com.gnayils.obiew.weibo.api.CommentAPI;
 import com.gnayils.obiew.weibo.api.WeiboAPI;
-import com.gnayils.obiew.weibo.bean.CommentTimeline;
-import com.gnayils.obiew.weibo.bean.StatusTimeline;
+import com.gnayils.obiew.weibo.bean.Comments;
 
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -46,14 +44,14 @@ public class CommentPresenter implements CommentInterface.Presenter {
                         commentView.showCommentLoadingIndicator(isLoadingLatest,true);
                     }
                 })
-                .doOnNext(new Action1<CommentTimeline>() {
+                .doOnNext(new Action1<Comments>() {
                     @Override
-                    public void call(CommentTimeline commentTimeline) {
-                        TextDecorator.decorate(commentTimeline);
+                    public void call(Comments comments) {
+                        TextDecorator.decorate(comments);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<CommentTimeline>() {
+                .subscribe(new Subscriber<Comments>() {
                     @Override
                     public void onCompleted() {
                         commentView.showCommentLoadingIndicator(isLoadingLatest, false);
@@ -66,9 +64,9 @@ public class CommentPresenter implements CommentInterface.Presenter {
                     }
 
                     @Override
-                    public void onNext(CommentTimeline commentTimeline) {
-                        CommentPresenter.this.sinceId = commentTimeline.max_id;
-                        commentView.show(commentTimeline);
+                    public void onNext(Comments comments) {
+                        CommentPresenter.this.sinceId = comments.max_id;
+                        commentView.show(comments);
                     }
                 });
         compositeSubscription.add(subscription);

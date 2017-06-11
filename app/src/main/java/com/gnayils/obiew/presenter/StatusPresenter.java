@@ -14,7 +14,7 @@ import com.gnayils.obiew.weibo.VideoInfoParser;
 import com.gnayils.obiew.weibo.api.StatusAPI;
 import com.gnayils.obiew.weibo.api.WeiboAPI;
 import com.gnayils.obiew.weibo.bean.Status;
-import com.gnayils.obiew.weibo.bean.StatusTimeline;
+import com.gnayils.obiew.weibo.bean.Statuses;
 import com.gnayils.obiew.weibo.bean.UploadedPic;
 import com.gnayils.obiew.weibo.bean.User;
 
@@ -70,9 +70,9 @@ public class StatusPresenter implements StatusInterface.Presenter {
                         statusView.showStatusLoadingIndicator(isLoadingLatest, false);
                     }
                 })
-                .doOnNext(new Action1<StatusTimeline>() {
+                .doOnNext(new Action1<Statuses>() {
                     @Override
-                    public void call(StatusTimeline statusTimeline) {
+                    public void call(Statuses statusTimeline) {
                         Log.d(TAG, "VideoURLFinder find start");
                         long startTime = SystemClock.uptimeMillis();
                         try {
@@ -83,9 +83,9 @@ public class StatusPresenter implements StatusInterface.Presenter {
                         Log.d(TAG, "VideoURLFinder find end, took times: " + (SystemClock.uptimeMillis() - startTime));
                     }
                 })
-                .doOnNext(new Action1<StatusTimeline>() {
+                .doOnNext(new Action1<Statuses>() {
                     @Override
-                    public void call(StatusTimeline statusTimeline) {
+                    public void call(Statuses statusTimeline) {
                         Log.d(TAG, "TextDecorator decorate start");
                         long startTime = SystemClock.uptimeMillis();
                         TextDecorator.decorate(statusTimeline);
@@ -93,7 +93,7 @@ public class StatusPresenter implements StatusInterface.Presenter {
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<StatusTimeline>() {
+                .subscribe(new Subscriber<Statuses>() {
 
                     @Override
                     public void onCompleted() {
@@ -107,7 +107,7 @@ public class StatusPresenter implements StatusInterface.Presenter {
                     }
 
                     @Override
-                    public void onNext(StatusTimeline timeline) {
+                    public void onNext(Statuses timeline) {
                         Log.d(TAG, "update statusText timeline successful");
                         homeTimelineSinceId = timeline.max_id;
                         statusView.show(timeline, Status.FEATURE_ALL);
@@ -132,9 +132,9 @@ public class StatusPresenter implements StatusInterface.Presenter {
                         statusView.showStatusLoadingIndicator(isLoadingLatest, false);
                     }
                 })
-                .doOnNext(new Action1<StatusTimeline>() {
+                .doOnNext(new Action1<Statuses>() {
                     @Override
-                    public void call(StatusTimeline statusTimeline) {
+                    public void call(Statuses statusTimeline) {
                         Log.d(TAG, "VideoURLFinder find start");
                         long startTime = SystemClock.uptimeMillis();
                         try {
@@ -145,9 +145,9 @@ public class StatusPresenter implements StatusInterface.Presenter {
                         Log.d(TAG, "VideoURLFinder find end, took times: " + (SystemClock.uptimeMillis() - startTime));
                     }
                 })
-                .doOnNext(new Action1<StatusTimeline>() {
+                .doOnNext(new Action1<Statuses>() {
                     @Override
-                    public void call(StatusTimeline statusTimeline) {
+                    public void call(Statuses statusTimeline) {
                         Log.d(TAG, "TextDecorator decorate start");
                         long startTime = SystemClock.uptimeMillis();
                         TextDecorator.decorate(statusTimeline);
@@ -155,7 +155,7 @@ public class StatusPresenter implements StatusInterface.Presenter {
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<StatusTimeline>() {
+                .subscribe(new Subscriber<Statuses>() {
 
                     @Override
                     public void onCompleted() {
@@ -169,7 +169,7 @@ public class StatusPresenter implements StatusInterface.Presenter {
                     }
 
                     @Override
-                    public void onNext(StatusTimeline timeline) {
+                    public void onNext(Statuses timeline) {
                         Log.d(TAG, "update statusText timeline successful");
                         statusView.show(timeline, feature);
                     }

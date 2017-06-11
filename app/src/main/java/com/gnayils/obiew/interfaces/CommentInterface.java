@@ -1,6 +1,6 @@
 package com.gnayils.obiew.interfaces;
 
-import com.gnayils.obiew.weibo.bean.CommentTimeline;
+import com.gnayils.obiew.weibo.bean.Comments;
 
 /**
  * Created by Gnayils on 12/03/2017.
@@ -10,7 +10,7 @@ public interface CommentInterface {
 
     interface View extends BaseView {
 
-        void show(CommentTimeline commentTimeline);
+        void show(Comments comments);
 
         void showCommentLoadingIndicator(boolean isLoadingLatest, boolean refreshing);
     }

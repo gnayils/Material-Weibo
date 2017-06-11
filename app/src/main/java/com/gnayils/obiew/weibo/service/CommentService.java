@@ -3,7 +3,7 @@ package com.gnayils.obiew.weibo.service;
 import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.api.CommentAPI;
 import com.gnayils.obiew.weibo.api.WeiboAPI;
-import com.gnayils.obiew.weibo.bean.CommentTimeline;
+import com.gnayils.obiew.weibo.bean.Comments;
 import com.gnayils.obiew.weibo.bean.Status;
 
 import rx.Subscription;
@@ -19,7 +19,7 @@ public class CommentService extends BaseService {
 
     private int commentTimelineCurrentPage = 0;
 
-    public void showCommentTimeline(Status status, boolean loadLatest, SubscriberAdapter<CommentTimeline> subscriberAdapter) {
+    public void showCommentTimeline(Status status, boolean loadLatest, SubscriberAdapter<Comments> subscriberAdapter) {
         commentTimelineCurrentPage = loadLatest ? 1 : ++commentTimelineCurrentPage;
         Subscription subscription = WeiboAPI.get(CommentAPI.class)
                 .show(status.id, commentTimelineCurrentPage, Weibo.consts.COMMENT_TIMELINE_ITEM_COUNT_PER_PAGE)

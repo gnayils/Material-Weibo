@@ -2,9 +2,9 @@ package com.gnayils.obiew.weibo.service;
 
 import com.gnayils.obiew.weibo.TextDecorator;
 import com.gnayils.obiew.weibo.VideoInfoParser;
-import com.gnayils.obiew.weibo.bean.CommentTimeline;
-import com.gnayils.obiew.weibo.bean.RepostTimeline;
-import com.gnayils.obiew.weibo.bean.StatusTimeline;
+import com.gnayils.obiew.weibo.bean.Comments;
+import com.gnayils.obiew.weibo.bean.Reposts;
+import com.gnayils.obiew.weibo.bean.Statuses;
 
 import rx.exceptions.Exceptions;
 import rx.functions.Action1;
@@ -15,36 +15,36 @@ import rx.functions.Action1;
 
 public class Actions {
 
-    public static final Action1<StatusTimeline> DECORATE_STATUS_TEXT = new Action1<StatusTimeline>(){
+    public static final Action1<Statuses> DECORATE_STATUS_TEXT = new Action1<Statuses>(){
 
         @Override
-        public void call(StatusTimeline statusTimeline) {
-            TextDecorator.decorate(statusTimeline);
+        public void call(Statuses statuses) {
+            TextDecorator.decorate(statuses);
         }
     };
 
-    public static final Action1<CommentTimeline> DECORATE_COMMENT_TEXT = new Action1<CommentTimeline>(){
+    public static final Action1<Comments> DECORATE_COMMENT_TEXT = new Action1<Comments>(){
 
         @Override
-        public void call(CommentTimeline commentTimeline) {
-            TextDecorator.decorate(commentTimeline);
+        public void call(Comments comments) {
+            TextDecorator.decorate(comments);
         }
     };
 
-    public static final Action1<RepostTimeline> DECORATE_REPOST_TEXT = new Action1<RepostTimeline>(){
+    public static final Action1<Reposts> DECORATE_REPOST_TEXT = new Action1<Reposts>(){
 
         @Override
-        public void call(RepostTimeline repostTimeline) {
-            TextDecorator.decorate(repostTimeline);
+        public void call(Reposts reposts) {
+            TextDecorator.decorate(reposts);
         }
     };
 
-    public static final Action1<StatusTimeline> PARSE_STATUS_VIDEO_INFO = new Action1<StatusTimeline>(){
+    public static final Action1<Statuses> PARSE_STATUS_VIDEO_INFO = new Action1<Statuses>(){
 
         @Override
-        public void call(StatusTimeline statusTimeline) {
+        public void call(Statuses statuses) {
             try {
-                VideoInfoParser.parse(statusTimeline);
+                VideoInfoParser.parse(statuses);
             } catch (Throwable throwable) {
                 throw Exceptions.propagate(throwable);
             }

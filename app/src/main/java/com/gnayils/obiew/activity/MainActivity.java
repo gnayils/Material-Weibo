@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -16,27 +15,31 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.util.Popup;
 import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.view.AvatarView;
+import com.gnayils.obiew.view.ItemView;
 import com.gnayils.obiew.view.StatusTimelineView;
 import com.gnayils.obiew.weibo.Account;
 import com.gnayils.obiew.weibo.Weibo;
+import com.gnayils.obiew.weibo.bean.Group;
 import com.gnayils.obiew.weibo.bean.Status;
-import com.gnayils.obiew.weibo.bean.StatusTimeline;
+import com.gnayils.obiew.weibo.bean.Statuses;
+import com.gnayils.obiew.weibo.service.FriendshipService;
 import com.gnayils.obiew.weibo.service.StatusService;
 import com.gnayils.obiew.weibo.service.SubscriberAdapter;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -48,8 +51,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     SwipeRefreshLayout swipeRefreshLayout;
     @Bind(R.id.status_timeline_view)
     StatusTimelineView statusTimelineView;
-    @Bind(R.id.bottom_navigation_view)
-    BottomNavigationView bottomNavigationView;
 
     @Bind(R.id.image_view_cover)
     ImageView coverImageView;
@@ -66,7 +67,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Bind(R.id.button_follower_count)
     Button followerCountButton;
 
+    @Bind(R.id.linear_layout_friend_groups)
+    LinearLayout friendGroupsLinearLayout;
+    @Bind(R.id.item_view_group_all)
+    ItemView groupAllItemView;
+    @Bind(R.id.item_view_group_mutual)
+    ItemView groupMutualItemView;
+
+    private Group currentGroup;
+    private int currentSelectedGroupViewId;
     private StatusService statusService = new StatusService();
+    private FriendshipService friendshipService = new FriendshipService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,11 +86,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("主页");
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.setDrawerListener(toggle);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
+
         avatarView.avatarCircleImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,16 +114,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                showHomeTimeline(true);
+                showCurrentTimeline(currentSelectedGroupViewId, true);
             }
         });
         statusTimelineView.setOnLoadMoreListener(new StatusTimelineView.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                showHomeTimeline(false);
+                showCurrentTimeline(currentSelectedGroupViewId, false);
             }
         });
-        showHomeTimeline(true);
+        inflateFriendGroupItemViews();
+        onItemViewClick(groupAllItemView);
     }
 
     @Override
@@ -136,8 +148,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getMenuInflater().inflate(R.menu.activity_main_option_menu, menu);
         MenuItem menuItem = menu.findItem(R.id.action_write_status);
         menuItem.setIcon(ViewUtils.tintDrawable(menuItem.getIcon(), Color.WHITE));
-        menuItem = menu.findItem(R.id.action_change_group);
-        menuItem.setIcon(ViewUtils.tintDrawable(menuItem.getIcon(), Color.WHITE));
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -154,38 +164,86 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+    public void onItemViewClick(View view) {
+        drawerLayout.closeDrawer(GravityCompat.START);
+        statusTimelineView.scrollToPosition(0);
+        setFriendGroupViewSelected(view);
+        switch (view.getId()) {
+            case R.id.item_view_group_all:
+                getSupportActionBar().setTitle("全部");
+                break;
+            case R.id.item_view_group_mutual:
+                getSupportActionBar().setTitle("相互关注");
+                break;
+            default:
+                if (view instanceof ItemView && view.getTag() instanceof Group) {
+                    ItemView itemView = (ItemView) view;
+                    currentGroup = (Group) itemView.getTag();
+                    getSupportActionBar().setTitle(currentGroup.name);
+                }
+                break;
+        }
+        showCurrentTimeline(view.getId(), true);
     }
 
-    private void showHomeTimeline(final boolean loadLatest) {
-        statusService.showHomeTimeline(loadLatest, Status.FEATURE_ALL,
-                new SubscriberAdapter<StatusTimeline>() {
+    private void inflateFriendGroupItemViews() {
+        if (Account.groups != null) {
+            View.OnClickListener onGroupItemClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemViewClick(v);
+                }
+            };
+            for (Group group : Account.groups.lists) {
+                ItemView itemView = new ItemView(this);
+                itemView.iconImageView.setImageResource(R.drawable.ic_group);
+                itemView.titleTextView.setText(group.name);
+                itemView.setBackground(ViewUtils.getDrawableByAttrId(this, R.attr.selectableItemBackground));
+                itemView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewUtils.dp2px(this, 48)));
+                itemView.setTag(group);
+                itemView.setOnClickListener(onGroupItemClickListener);
+                friendGroupsLinearLayout.addView(itemView);
+            }
+        }
+    }
 
-                    @Override
-                    public void onSubscribe() {
-                        if (loadLatest) {
-                            swipeRefreshLayout.setRefreshing(true);
-                        }
-                    }
+    private void setFriendGroupViewSelected(View view) {
+        currentSelectedGroupViewId = view.getId();
+        for(int i=0; i<friendGroupsLinearLayout.getChildCount(); i++) {
+            View childView = friendGroupsLinearLayout.getChildAt(i);
+            childView.setSelected(view == childView);
+        }
+    }
 
-                    @Override
-                    public void onUnsubscribe() {
-                        if (loadLatest) {
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
-                    }
+    private void showCurrentTimeline(int viewId, final boolean loadLatest) {
+        SubscriberAdapter subscriberAdapter = new SubscriberAdapter<Statuses>() {
 
-                    @Override
-                    public void onNext(StatusTimeline statusTimeline) {
-                        statusTimelineView.show(statusTimeline);
-                    }
-                });
+            @Override
+            public void onSubscribe() {
+                if (loadLatest) {
+                    swipeRefreshLayout.setRefreshing(true);
+                }
+            }
+
+            @Override
+            public void onUnsubscribe() {
+                if (loadLatest) {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+
+            @Override
+            public void onNext(Statuses statuses) {
+                statusTimelineView.show(loadLatest, statuses);
+            }
+        };
+        if(viewId == R.id.item_view_group_all) {
+            statusService.showHomeTimeline(loadLatest, Status.FEATURE_ALL, subscriberAdapter);
+        } else if(viewId == R.id.item_view_group_mutual) {
+            statusService.showBilateralTimeline(loadLatest, Status.FEATURE_ALL, subscriberAdapter);
+        } else if(currentGroup != null){
+            friendshipService.showGroupTimeline(currentGroup, loadLatest, Status.FEATURE_ALL, subscriberAdapter);
+        }
     }
 
     public static void start(Context context) {

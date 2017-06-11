@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.weibo.bean.Repost;
-import com.gnayils.obiew.weibo.bean.RepostTimeline;
+import com.gnayils.obiew.weibo.bean.Reposts;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,8 +45,8 @@ public class RepostTimelineView extends LoadMoreRecyclerView {
         setAdapter(recyclerViewAdapter);
     }
 
-    public void show(RepostTimeline repostTimeline) {
-        recyclerViewAdapter.add(repostTimeline);
+    public void show(Reposts reposts) {
+        recyclerViewAdapter.add(reposts);
     }
 
 
@@ -74,9 +74,9 @@ public class RepostTimelineView extends LoadMoreRecyclerView {
             ((RepostViewHolder)holder).repostView.show(repost);
         }
 
-        public void add(RepostTimeline repostTimeline) {
+        public void add(Reposts reposts) {
             Set<Repost> repostSet = new TreeSet<>(repostList);
-            repostSet.addAll(repostTimeline.reposts);
+            repostSet.addAll(reposts.reposts);
             repostList.clear();
             repostList.addAll(repostSet);
             notifyDataSetChanged();

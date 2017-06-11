@@ -7,7 +7,7 @@ import java.util.List;
  * Created by Gnayils on 16/11/2016.
  */
 
-public class StatusTimeline implements Serializable {
+public class Statuses implements Serializable {
 
     public boolean hasvisible;
     public long previous_cursor;

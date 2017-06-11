@@ -1,6 +1,6 @@
 package com.gnayils.obiew.weibo.api;
 
-import com.gnayils.obiew.weibo.bean.StatusTimeline;
+import com.gnayils.obiew.weibo.bean.Statuses;
 
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -13,5 +13,5 @@ import rx.Observable;
 public interface SearchAPI {
 
     @GET("2/search/topics.json")
-    Observable<StatusTimeline> topics(@Query("q") String topic, @Query("page") int page, @Query("count") int count);
+    Observable<Statuses> topics(@Query("q") String topic, @Query("page") int page, @Query("count") int count);
 }

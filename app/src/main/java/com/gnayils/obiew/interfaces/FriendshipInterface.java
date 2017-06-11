@@ -19,7 +19,7 @@ public class FriendshipInterface {
 
     public interface Presenter extends BasePresenter {
 
-        void friends(String uid);
+        void friends(long uid);
 
     }
 }

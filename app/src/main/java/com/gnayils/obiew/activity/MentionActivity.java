@@ -1,8 +1,10 @@
 package com.gnayils.obiew.activity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
@@ -10,16 +12,13 @@ import com.gnayils.obiew.R;
 import com.gnayils.obiew.view.LoadMoreRecyclerView;
 import com.gnayils.obiew.view.StatusTimelineView;
 import com.gnayils.obiew.weibo.bean.Statuses;
-import com.gnayils.obiew.weibo.service.SearchService;
+import com.gnayils.obiew.weibo.service.StatusService;
 import com.gnayils.obiew.weibo.service.SubscriberAdapter;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class TopicActivity extends AppCompatActivity {
+public class MentionActivity extends AppCompatActivity {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -28,14 +27,12 @@ public class TopicActivity extends AppCompatActivity {
     @Bind(R.id.status_timeline_view)
     StatusTimelineView statusTimelineView;
 
-    private String topic;
-
-    private SearchService searchService = new SearchService();
+    private StatusService statusService = new StatusService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_topic);
+        setContentView(R.layout.activity_mention);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -43,44 +40,29 @@ public class TopicActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        if (getIntent().getData() != null) {
-            String uri = getIntent().getData().toString();
-            Matcher matcher  = Pattern.compile(getString(R.string.topic_regex)).matcher(uri);
-            if(matcher.find()) {
-                String group = matcher.group();
-                topic = group.substring(1, group.length() - 1);
-            }
-        }
-        if(topic != null && !topic.trim().isEmpty()) {
-            getSupportActionBar().setTitle("#" + topic + "#");
-        }
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                showTopicTimeline(true);
+                showMentionTimeline(true);
             }
         });
         statusTimelineView.setOnLoadMoreListener(new LoadMoreRecyclerView.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                showTopicTimeline(false);
+                showMentionTimeline(false);
             }
         });
-        showTopicTimeline(true);
+        showMentionTimeline(true);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        searchService.unsubscribe();
+        statusService.unsubscribe();
     }
 
-    private void showTopicTimeline(final boolean loadLatest) {
-        if (topic == null && topic.trim().isEmpty()) {
-            swipeRefreshLayout.setRefreshing(false);
-            return;
-        }
-        searchService.showTopicTimeline(loadLatest, topic,
+    private void showMentionTimeline(final boolean loadLatest) {
+        statusService.showMentionTimeline(loadLatest,
                 new SubscriberAdapter<Statuses>() {
 
                     @Override
@@ -102,5 +84,10 @@ public class TopicActivity extends AppCompatActivity {
                         statusTimelineView.show(loadLatest, statuses);
                     }
                 });
+    }
+
+    public static void start(Context context) {
+        Intent intent = new Intent(context, MentionActivity.class);
+        context.startActivity(intent);
     }
 }

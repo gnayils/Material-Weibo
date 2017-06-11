@@ -1,6 +1,6 @@
 package com.gnayils.obiew.interfaces;
 
-import com.gnayils.obiew.weibo.bean.RepostTimeline;
+import com.gnayils.obiew.weibo.bean.Reposts;
 
 /**
  * Created by Gnayils on 18/03/2017.
@@ -11,7 +11,7 @@ public interface RepostInterface {
 
     interface View extends BaseView {
 
-        void show(RepostTimeline repostTimeline);
+        void show(Reposts reposts);
 
         void showRepostLoadingIndicator(boolean isLoadingLatest, boolean refreshing);
 

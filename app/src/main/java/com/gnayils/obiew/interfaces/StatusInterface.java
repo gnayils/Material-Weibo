@@ -1,6 +1,6 @@
 package com.gnayils.obiew.interfaces;
 
-import com.gnayils.obiew.weibo.bean.StatusTimeline;
+import com.gnayils.obiew.weibo.bean.Statuses;
 import com.gnayils.obiew.weibo.bean.User;
 
 /**
@@ -13,7 +13,7 @@ public interface StatusInterface  {
     @Deprecated
     interface View extends BaseView {
 
-        void show(StatusTimeline statusTimeline, int feature);
+        void show(Statuses statuses, int feature);
 
         void showStatusLoadingIndicator(boolean isLoadingLatest, boolean refreshing);
 

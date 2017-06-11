@@ -6,14 +6,13 @@ import com.gnayils.obiew.interfaces.RepostInterface;
 import com.gnayils.obiew.weibo.TextDecorator;
 import com.gnayils.obiew.weibo.api.StatusAPI;
 import com.gnayils.obiew.weibo.api.WeiboAPI;
-import com.gnayils.obiew.weibo.bean.RepostTimeline;
+import com.gnayils.obiew.weibo.bean.Reposts;
 
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -47,14 +46,14 @@ public class RepostPresenter implements RepostInterface.Presenter {
                         repostView.showRepostLoadingIndicator(isLoadingLatest, true);
                     }
                 })
-                .doOnNext(new Action1<RepostTimeline>() {
+                .doOnNext(new Action1<Reposts>() {
                     @Override
-                    public void call(RepostTimeline repostTimeline) {
+                    public void call(Reposts repostTimeline) {
                         TextDecorator.decorate(repostTimeline);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<RepostTimeline>() {
+                .subscribe(new Subscriber<Reposts>() {
                     @Override
                     public void onCompleted() {
                         repostView.showRepostLoadingIndicator(isLoadingLatest, false);
@@ -67,7 +66,7 @@ public class RepostPresenter implements RepostInterface.Presenter {
                     }
 
                     @Override
-                    public void onNext(RepostTimeline repostTimeline) {
+                    public void onNext(Reposts repostTimeline) {
                         RepostPresenter.this.sinceId = repostTimeline.next_cursor;
                         repostView.show(repostTimeline);
                     }

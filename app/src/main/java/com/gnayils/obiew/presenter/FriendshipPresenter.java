@@ -43,7 +43,7 @@ public class FriendshipPresenter implements FriendshipInterface.Presenter {
 
 
     @Override
-    public void friends(String uid) {
+    public void friends(long uid) {
         Subscription subscription = WeiboAPI.get(FriendShipsAPI.class)
                 .friends(uid)
                 .doOnSubscribe(new Action0() {

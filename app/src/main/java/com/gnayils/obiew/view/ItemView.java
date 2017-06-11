@@ -21,8 +21,13 @@ import static com.gnayils.obiew.util.ViewUtils.*;
  */
 public class ItemView extends RelativeLayout {
 
+    public ImageView iconImageView;
+    public TextView titleTextView;
+    public ImageView moreIconImageView;
+    public TextView descriptionTextView;
+
     public ItemView(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public ItemView(Context context, AttributeSet attrs) {
@@ -45,10 +50,17 @@ public class ItemView extends RelativeLayout {
         String description = typedArray.getString(R.styleable.ItemView_description);
         Drawable moreIcon = typedArray.getDrawable(R.styleable.ItemView_moreIcon);
 
-        ImageView iconImageView = new ImageView(context);
+        iconImageView = new ImageView(context);
         iconImageView.setId(View.generateViewId());
         iconImageView.setImageDrawable(icon);
         iconImageView.setImageTintList(ColorStateList.valueOf(iconTint));
+        iconImageView.setImageTintList(new ColorStateList(new int[][]{
+                new int[]{android.R.attr.state_selected},
+                new int[]{}},
+                new int[]{
+                        getResources().getColor(R.color.colorPrimary),
+                        getResources().getColor(R.color.grey_700)
+                }));
         LayoutParams layoutParams = new LayoutParams(dp2px(context, 24), dp2px(context, 24));
         layoutParams.setMargins(dp2px(context, 16), 0, 0, 0);
         layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
@@ -56,9 +68,16 @@ public class ItemView extends RelativeLayout {
         iconImageView.setLayoutParams(layoutParams);
         addView(iconImageView);
 
-        TextView titleTextView = new TextView(context);
+        titleTextView = new TextView(context);
         titleTextView.setTextSize(16);
         titleTextView.setText(title);
+        titleTextView.setTextColor(new ColorStateList(new int[][]{
+                new int[]{android.R.attr.state_selected},
+                new int[]{}},
+                new int[]{
+                        getResources().getColor(R.color.colorPrimary),
+                        getResources().getColor(R.color.grey_700)
+                }));
         layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(dp2px(context, 16), 0, 0, 0);
         layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
@@ -66,7 +85,7 @@ public class ItemView extends RelativeLayout {
         titleTextView.setLayoutParams(layoutParams);
         addView(titleTextView);
 
-        ImageView moreIconImageView = new ImageView(context);
+        moreIconImageView = new ImageView(context);
         moreIconImageView.setId(View.generateViewId());
         moreIconImageView.setImageDrawable(moreIcon);
         layoutParams = new LayoutParams(dp2px(context, 12), dp2px(context, 12));
@@ -76,7 +95,7 @@ public class ItemView extends RelativeLayout {
         moreIconImageView.setLayoutParams(layoutParams);
         addView(moreIconImageView);
 
-        TextView descriptionTextView = new TextView(context);
+        descriptionTextView = new TextView(context);
         descriptionTextView.setTextSize(12);
         descriptionTextView.setTextColor(getResources().getColor(R.color.black_alpha_80));
         descriptionTextView.setText(description);
@@ -88,5 +107,12 @@ public class ItemView extends RelativeLayout {
         addView(descriptionTextView);
 
         typedArray.recycle();
+    }
+
+    @Override
+    public void dispatchSetSelected(boolean selected) {
+        super.dispatchSetSelected(selected);
+        iconImageView.setSelected(selected);
+        titleTextView.setSelected(selected);
     }
 }

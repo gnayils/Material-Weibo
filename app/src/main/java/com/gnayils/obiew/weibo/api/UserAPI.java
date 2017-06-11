@@ -13,7 +13,7 @@ import rx.Observable;
 public interface UserAPI {
 
     @GET("2/users/show.json")
-    Observable<User> showById(@Query("uid") String uid);
+    Observable<User> showById(@Query("uid") long uid);
 
 
     @GET("2/users/show.json")

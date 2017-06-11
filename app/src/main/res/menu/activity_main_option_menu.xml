@@ -7,9 +7,4 @@
         android:title="写微博"
         app:showAsAction="always"/>
 
-    <item android:id="@+id/action_change_group"
-        android:icon="@drawable/ic_group"
-        android:title=""
-        app:showAsAction="ifRoom"/>
-
 </menu>

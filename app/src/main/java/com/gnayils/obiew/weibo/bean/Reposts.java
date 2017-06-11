@@ -8,7 +8,7 @@ import java.util.List;
  * Created by Gnayils on 18/03/2017.
  */
 
-public class RepostTimeline {
+public class Reposts {
 
     public boolean hasvisible;
     public long previous_cursor;

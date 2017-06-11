@@ -22,7 +22,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.util.Popup;
 import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.view.ImageTimelineView;
 import com.gnayils.obiew.view.AvatarView;
@@ -30,13 +29,12 @@ import com.gnayils.obiew.view.LoadMoreRecyclerView;
 import com.gnayils.obiew.view.StatusTimelineView;
 import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.bean.Status;
-import com.gnayils.obiew.weibo.bean.StatusTimeline;
+import com.gnayils.obiew.weibo.bean.Statuses;
 import com.gnayils.obiew.weibo.bean.User;
 import com.gnayils.obiew.weibo.service.StatusService;
 import com.gnayils.obiew.weibo.service.SubscriberAdapter;
 import com.gnayils.obiew.weibo.service.UserService;
 
-import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -219,7 +217,7 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
     }
 
     private void showUserTimeline(final boolean loadLatest, final int feature) {
-        statusService.showUserTimeline(loadLatest, user, feature, new SubscriberAdapter<StatusTimeline>() {
+        statusService.showUserTimeline(loadLatest, user, feature, new SubscriberAdapter<Statuses>() {
             @Override
             public void onSubscribe() {
                 if (loadLatest) {
@@ -235,11 +233,11 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
             }
 
             @Override
-            public void onNext(StatusTimeline statusTimeline) {
+            public void onNext(Statuses statuses) {
                 if (feature == Status.FEATURE_ALL) {
-                    statusTimelineView.show(statusTimeline);
+                    statusTimelineView.show(loadLatest, statuses);
                 } else if (feature == Status.FEATURE_IMAGE) {
-                    imageTimelineView.show(statusTimeline);
+                    imageTimelineView.show(statuses);
                 }
             }
         });

@@ -5,16 +5,12 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.gnayils.obiew.weibo.bean.Status;
-import com.gnayils.obiew.weibo.bean.StatusTimeline;
+import com.gnayils.obiew.weibo.bean.Statuses;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -44,8 +40,8 @@ public class StatusTimelineView extends LoadMoreRecyclerView {
         setAdapter(statusTimelineAdapter);
     }
 
-    public void show(StatusTimeline statusTimeline) {
-        statusTimelineAdapter.addTimeline(statusTimeline);
+    public void show(boolean isLatest, Statuses statuses) {
+        statusTimelineAdapter.addTimeline(isLatest, statuses);
     }
 
     private class StatusTimelineAdapter extends LoadMoreRecyclerView.LoadMoreAdapter {
@@ -73,10 +69,16 @@ public class StatusTimelineView extends LoadMoreRecyclerView {
             ((StatusCardViewHolder)holder).statusCardView.show(status);
         }
 
-        public void addTimeline(StatusTimeline statusTimeline) {
-            Set<Status> statusSet = new TreeSet<Status>(statusList);
-            statusSet.addAll(statusTimeline.statuses);
-            statusList.clear();
+        public void addTimeline(boolean isLatest, Statuses statuses) {
+            Set<Status> statusSet = new TreeSet<>();
+            if(isLatest) {
+                statusList.clear();
+                statusSet.addAll(statuses.statuses);
+            } else {
+                statusSet.addAll(statusList);
+                statusSet.addAll(statuses.statuses);
+                statusList.clear();
+            }
             statusList.addAll(statusSet);
             notifyDataSetChanged();
         }

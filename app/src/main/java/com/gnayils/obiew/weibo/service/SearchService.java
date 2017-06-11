@@ -3,7 +3,7 @@ package com.gnayils.obiew.weibo.service;
 import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.api.SearchAPI;
 import com.gnayils.obiew.weibo.api.WeiboAPI;
-import com.gnayils.obiew.weibo.bean.StatusTimeline;
+import com.gnayils.obiew.weibo.bean.Statuses;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -16,9 +16,9 @@ public class SearchService extends BaseService {
 
     private int topicCurrentPage;
 
-    public void showTopicTimeline(boolean loadLatest, String topic, SubscriberAdapter<StatusTimeline> subscriberAdapter) {
+    public void showTopicTimeline(boolean loadLatest, String topic, SubscriberAdapter<Statuses> subscriberAdapter) {
         topicCurrentPage = loadLatest ? 1 : ++ topicCurrentPage;
-        Subscription subscription = WeiboAPI.get(SearchAPI.class).topics(topic, topicCurrentPage, Weibo.consts.TOPIC_TIMELINE_ITEM_COUNT_PER_PAGE)
+        Subscription subscription = WeiboAPI.get(SearchAPI.class).topics(topic, topicCurrentPage, Weibo.consts.STATUS_TIMELINE_ITEM_COUNT_PER_PAGE)
                 .doOnSubscribe(subscriberAdapter.onSubscribeAction)
                 .doOnUnsubscribe(subscriberAdapter.onUnsubscribeAction)
                 .observeOn(AndroidSchedulers.mainThread())

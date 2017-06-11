@@ -12,11 +12,11 @@ import com.gnayils.obiew.Obiew;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.view.CenteredImageSpan;
 import com.gnayils.obiew.weibo.bean.Comment;
-import com.gnayils.obiew.weibo.bean.CommentTimeline;
+import com.gnayils.obiew.weibo.bean.Comments;
 import com.gnayils.obiew.weibo.bean.Repost;
-import com.gnayils.obiew.weibo.bean.RepostTimeline;
+import com.gnayils.obiew.weibo.bean.Reposts;
 import com.gnayils.obiew.weibo.bean.Status;
-import com.gnayils.obiew.weibo.bean.StatusTimeline;
+import com.gnayils.obiew.weibo.bean.Statuses;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,9 +40,9 @@ public class TextDecorator {
     public static final int SPAN_BACKGROUND_COLOR = Obiew.getAppResources().getColor(R.color.accent_alpha_4D);
     public static final int SOURCE_COLOR = Obiew.getAppResources().getColor(R.color.black_alpha_80);
 
-    public static void decorate(StatusTimeline statusTimeline) {
-        if(statusTimeline != null && statusTimeline.statuses != null) {
-            for(Status status : statusTimeline.statuses) {
+    public static void decorate(Statuses statuses) {
+        if(statuses != null && statuses.statuses != null) {
+            for(Status status : statuses.statuses) {
                 status.setSpannableText(decorate(status.text));
                 status.setSpannableSource(replaceUrlSpan((Spannable) Html.fromHtml(status.source), SOURCE_COLOR, SOURCE_COLOR, SOURCE_COLOR));
                 if(status.retweeted_status != null && status.retweeted_status.text != null && !status.retweeted_status.text.isEmpty()) {
@@ -56,17 +56,17 @@ public class TextDecorator {
         }
     }
 
-    public static void decorate(CommentTimeline commentTimeline) {
-        if(commentTimeline != null && commentTimeline.comments != null) {
-            for(Comment comment : commentTimeline.comments) {
+    public static void decorate(Comments comments) {
+        if(comments != null && comments.comments != null) {
+            for(Comment comment : comments.comments) {
                 comment.setSpannableText(decorate(comment.text));
             }
         }
     }
 
-    public static void decorate(RepostTimeline repostTimeline) {
-        if(repostTimeline != null && repostTimeline.reposts != null) {
-            for(Repost repost : repostTimeline.reposts) {
+    public static void decorate(Reposts reposts) {
+        if(reposts != null && reposts.reposts != null) {
+            for(Repost repost : reposts.reposts) {
                 repost.setSpannableText(decorate(repost.text));
             }
         }

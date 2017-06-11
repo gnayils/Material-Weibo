@@ -5,9 +5,9 @@ import com.gnayils.obiew.R;
 import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.api.StatusAPI;
 import com.gnayils.obiew.weibo.api.WeiboAPI;
-import com.gnayils.obiew.weibo.bean.RepostTimeline;
+import com.gnayils.obiew.weibo.bean.Reposts;
 import com.gnayils.obiew.weibo.bean.Status;
-import com.gnayils.obiew.weibo.bean.StatusTimeline;
+import com.gnayils.obiew.weibo.bean.Statuses;
 import com.gnayils.obiew.weibo.bean.User;
 
 import java.io.File;
@@ -29,15 +29,18 @@ public class StatusService extends BaseService {
 
     private int[] homeTimelineCurrentPages = new int[Status.FEATURES_COUNT];
     private int[] userTimelineCurrentPages = new int[Status.FEATURES_COUNT];
+    private int[] bilateralTimelineCurrentPages = new int[Status.FEATURES_COUNT];
+    private int[] publicTimelineCurrentPages = new int[Status.FEATURES_COUNT];
     private int repostTimelineCurrentPage = 0;
+    private int mentionTimelineCurrentPage = 0;
 
     public StatusService() {
     }
 
-    public void showHomeTimeline(boolean loadLatest, int feature, SubscriberAdapter<StatusTimeline> subscriberAdapter) {
+    public void showHomeTimeline(boolean loadLatest, int feature, SubscriberAdapter<Statuses> subscriberAdapter) {
         homeTimelineCurrentPages[feature] = loadLatest ? 1 : ++homeTimelineCurrentPages[feature];
         Subscription subscription = WeiboAPI.get(StatusAPI.class)
-                .homeTimeline(feature, homeTimelineCurrentPages[feature], Weibo.consts.STATUE_TIMELINE_ITEM_COUNT_PER_PAGE)
+                .homeTimeline(feature, homeTimelineCurrentPages[feature], Weibo.consts.STATUS_TIMELINE_ITEM_COUNT_PER_PAGE)
                 .doOnSubscribe(subscriberAdapter.onSubscribeAction)
                 .doOnUnsubscribe(subscriberAdapter.onUnsubscribeAction)
                 .doOnNext(Actions.PARSE_STATUS_VIDEO_INFO)
@@ -47,10 +50,46 @@ public class StatusService extends BaseService {
         addSubscription(subscription);
     }
 
-    public void showUserTimeline(boolean loadLatest, User user, int feature, SubscriberAdapter<StatusTimeline> subscriberAdapter) {
+    public void showPublicTimeline(boolean loadLatest, int feature, SubscriberAdapter<Statuses> subscriberAdapter) {
+        publicTimelineCurrentPages[feature] = loadLatest ? 1 : ++publicTimelineCurrentPages[feature];
+        Subscription subscription = WeiboAPI.get(StatusAPI.class)
+                .publicTimeline(feature, publicTimelineCurrentPages[feature], Weibo.consts.STATUS_TIMELINE_ITEM_COUNT_PER_PAGE)
+                .doOnSubscribe(subscriberAdapter.onSubscribeAction)
+                .doOnUnsubscribe(subscriberAdapter.onUnsubscribeAction)
+                .doOnNext(Actions.DECORATE_STATUS_TEXT)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriberAdapter);
+        addSubscription(subscription);
+    }
+
+    public void showBilateralTimeline(boolean loadLatest, int feature, SubscriberAdapter<Statuses> subscriberAdapter) {
+        bilateralTimelineCurrentPages[feature] = loadLatest ? 1 : ++bilateralTimelineCurrentPages[feature];
+        Subscription subscription = WeiboAPI.get(StatusAPI.class)
+                .bilateralTimeline(feature, bilateralTimelineCurrentPages[feature], Weibo.consts.STATUS_TIMELINE_ITEM_COUNT_PER_PAGE)
+                .doOnSubscribe(subscriberAdapter.onSubscribeAction)
+                .doOnUnsubscribe(subscriberAdapter.onUnsubscribeAction)
+                .doOnNext(Actions.DECORATE_STATUS_TEXT)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriberAdapter);
+        addSubscription(subscription);
+    }
+
+    public void showMentionTimeline(boolean loadLatest, SubscriberAdapter<Statuses> subscriberAdapter) {
+        mentionTimelineCurrentPage = loadLatest ? 1 : ++mentionTimelineCurrentPage;
+        Subscription subscription = WeiboAPI.get(StatusAPI.class)
+                .mentions(mentionTimelineCurrentPage, Weibo.consts.STATUS_TIMELINE_ITEM_COUNT_PER_PAGE)
+                .doOnSubscribe(subscriberAdapter.onSubscribeAction)
+                .doOnUnsubscribe(subscriberAdapter.onUnsubscribeAction)
+                .doOnNext(Actions.DECORATE_STATUS_TEXT)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriberAdapter);
+        addSubscription(subscription);
+    }
+
+    public void showUserTimeline(boolean loadLatest, User user, int feature, SubscriberAdapter<Statuses> subscriberAdapter) {
         userTimelineCurrentPages[feature] = loadLatest ? 1 : ++userTimelineCurrentPages[feature];
         Subscription subscription = WeiboAPI.get(StatusAPI.class)
-                .userTimeline(user.id, feature, userTimelineCurrentPages[feature], Weibo.consts.STATUE_TIMELINE_ITEM_COUNT_PER_PAGE)
+                .userTimeline(user.id, feature, userTimelineCurrentPages[feature], Weibo.consts.STATUS_TIMELINE_ITEM_COUNT_PER_PAGE)
                 .doOnSubscribe(subscriberAdapter.onSubscribeAction)
                 .doOnUnsubscribe(subscriberAdapter.onUnsubscribeAction)
                 .doOnNext(Actions.PARSE_STATUS_VIDEO_INFO)
@@ -60,8 +99,7 @@ public class StatusService extends BaseService {
         addSubscription(subscription);
     }
 
-
-    public void showRepostTimeline(Status status, boolean loadLatest, SubscriberAdapter<RepostTimeline> subscriberAdapter) {
+    public void showRepostTimeline(Status status, boolean loadLatest, SubscriberAdapter<Reposts> subscriberAdapter) {
         repostTimelineCurrentPage = loadLatest ? 1 : ++repostTimelineCurrentPage;
         Subscription subscription = WeiboAPI.get(StatusAPI.class)
                 .repostTimeline(status.id, repostTimelineCurrentPage, Weibo.consts.REPOST_TIMELINE_ITEM_COUNT_PER_PAGE)
