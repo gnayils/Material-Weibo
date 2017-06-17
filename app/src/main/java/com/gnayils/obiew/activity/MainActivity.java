@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setFriendGroupViewSelected(View view) {
         currentSelectedGroupViewId = view.getId();
-        for(int i=0; i<friendGroupsLinearLayout.getChildCount(); i++) {
+        for(int i = 0; i < friendGroupsLinearLayout.getChildCount(); i++) {
             View childView = friendGroupsLinearLayout.getChildAt(i);
             childView.setSelected(view == childView);
         }

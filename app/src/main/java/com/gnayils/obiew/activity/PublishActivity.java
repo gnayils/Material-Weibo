@@ -85,7 +85,6 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
         setContentView(R.layout.activity_publish);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("发微博");
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -319,7 +318,7 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
 
             @Override
             public void onSubscribe() {
-                progressDialog = Popup.indeterminateProgressDialog("发布微博", "正在发布微博...");
+                progressDialog = Popup.indeterminateProgressDialog("发布微博", "正在发布微博...", true);
             }
 
             @Override

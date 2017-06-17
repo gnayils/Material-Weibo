@@ -2,9 +2,9 @@
 <resources>
 
     <color name="colorPrimary">#3E50B4</color>
-    <color name="colorPrimaryDark">#3646A8</color>
+    <color name="colorPrimaryDark">#313a92</color>
     <color name="colorAccent">#FE3E80</color>
-    <color name="colorAccentDark">#e43d77</color>
+    <color name="colorAccentDark">#d92664</color>
 
     <color name="primary_alpha_1A">#1A3E50B4</color>
     <color name="primary_alpha_33">#333E50B4</color>

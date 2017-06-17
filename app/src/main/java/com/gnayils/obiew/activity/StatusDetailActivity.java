@@ -66,7 +66,6 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
         setContentView(R.layout.activity_status_detail);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("微博正文");
         status = (Status) getIntent().getSerializableExtra(ARGS_KEY_STATUS);
         swipeRefreshLayout.setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
             @Override

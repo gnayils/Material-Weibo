@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
@@ -47,7 +48,7 @@ import butterknife.ButterKnife;
  * Created by Gnayils on 14/05/2017.
  */
 
-public class PlayerActivity extends AppCompatActivity implements ExoPlayer.EventListener{
+public class PlayerActivity extends AppCompatActivity implements ExoPlayer.EventListener {
 
     public static final String TAG = PlayerActivity.class.getSimpleName();
 
@@ -118,11 +119,12 @@ public class PlayerActivity extends AppCompatActivity implements ExoPlayer.Event
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
             getWindow().getDecorView().setSystemUiVisibility(
-                     View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
         }
     }
 
@@ -148,16 +150,19 @@ public class PlayerActivity extends AppCompatActivity implements ExoPlayer.Event
 
     @Override
     public void onLoadingChanged(boolean isLoading) {
-        if(!isLoading) {
-            coverImageView.setVisibility(View.GONE);
-            progressBar.setVisibility(View.GONE);
-        } else {
-            progressBar.setVisibility(View.VISIBLE);
-        }
+
     }
 
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+        if(playbackState == ExoPlayer.STATE_BUFFERING) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else if(playbackState == ExoPlayer.STATE_ENDED) {
+        } else if(playbackState == ExoPlayer.STATE_IDLE) {
+        } else if(playbackState == ExoPlayer.STATE_READY) {
+            coverImageView.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
+        }
 
     }
 
@@ -177,7 +182,7 @@ public class PlayerActivity extends AppCompatActivity implements ExoPlayer.Event
     }
 
     public static void start(Context context, Video video) {
-        if(video != null && video.video_src != null && !video.video_src.isEmpty()) {
+        if (video != null && video.video_src != null && !video.video_src.isEmpty()) {
             Intent intent = new Intent(context, PlayerActivity.class);
             intent.putExtra(ARGS_KEY_VIDEO, video);
             context.startActivity(intent);

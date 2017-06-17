@@ -58,11 +58,11 @@ public class Popup {
         return builder.show();
     }
 
-    public static MaterialDialog indeterminateProgressDialog(String title, String message) {
+    public static MaterialDialog indeterminateProgressDialog(String title, String message, boolean horizontalStyle) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(Obiew.getCurrentActivity()).title(title).content(message)
                 .titleColorRes(R.color.colorPrimary)
                 .progress(true, 0)
-                .progressIndeterminateStyle(true)
+                .progressIndeterminateStyle(horizontalStyle)
                 .canceledOnTouchOutside(false);
         return builder.show();
     }

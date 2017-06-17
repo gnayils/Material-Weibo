@@ -38,6 +38,7 @@ public class AvatarView extends FrameLayout {
         super(context, attrs, defStyleAttr, defStyleRes);
 
         avatarCircleImageView = new CircleImageView(context);
+        avatarCircleImageView.setScaleType(ImageView.ScaleType.FIT_XY);
         avatarCircleImageView.setForegroundResource(ViewUtils.getResourceIdByAttrId(context, R.attr.selectableItemBackground));
         LayoutParams avatarCircleImageViewLayoutParam = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         avatarCircleImageViewLayoutParam.gravity = Gravity.CENTER;
@@ -52,6 +53,9 @@ public class AvatarView extends FrameLayout {
         Drawable avatarImage = typedArray.getDrawable(R.styleable.AvatarView_avatarImage);
         if(avatarImage != null) {
             avatarCircleImageView.setImageDrawable(avatarImage);
+        }
+        if(typedArray.hasValue(R.styleable.AvatarView_avatarTint)) {
+            avatarCircleImageView.setImageTintList(typedArray.getColorStateList(R.styleable.AvatarView_avatarTint));
         }
         Drawable verifiedIcon = typedArray.getDrawable(R.styleable.AvatarView_verifiedIcon);
         if(verifiedIcon != null) {

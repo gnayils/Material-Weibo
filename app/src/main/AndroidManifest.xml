@@ -21,10 +21,8 @@
             android:value="GlideModule" />
 
         <activity android:name=".activity.TestActivity" />
-        <activity android:name=".activity.SplashActivity" />
-        <activity
-            android:name=".activity.LoginActivity"
-            android:label="@string/title_activity_login"
+        <activity android:name=".activity.SplashActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoTitle">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,20 +30,27 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".activity.LoginActivity"
+            android:screenOrientation="portrait"
+            android:label="用户登录"/>
+        <activity
             android:name=".activity.MainActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.PublishActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"
+            android:label="发微博"/>
         <activity
             android:name=".activity.PicturePagerActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme.DarkBackground" />
+            android:theme="@style/AppTheme.DarkBackground"
+            android:label="查看图片"/>
         <activity
             android:name=".activity.StatusDetailActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:label="微博正文"/>
         <activity
             android:name=".activity.UserProfileActivity"
             android:screenOrientation="portrait">

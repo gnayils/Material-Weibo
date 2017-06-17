@@ -1,67 +1,21 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:orientation="vertical">
 
-
-    <LinearLayout
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <FrameLayout
-            android:id="@+id/frame_layout_top_part"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3"
-            android:elevation="6dp"
-            android:layout_marginBottom="32dp">
-
-
-            <FrameLayout
-                android:layout_width="128dp"
-                android:layout_height="128dp"
-                android:layout_gravity="center"
-                android:background="@drawable/bg_oval_white_alpha_80">
-
-                <com.gnayils.obiew.view.AvatarView
-                    android:id="@+id/avatar_view"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_gravity="center"
-                    app:avatarImage="@drawable/ic_avatar"/>
-
-            </FrameLayout>
-
-
-        </FrameLayout>
-
-
-        <FrameLayout
-            android:id="@+id/frame_layout_bottom_part"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="4"
-            android:elevation="6dp"
-            android:layout_marginTop="32dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center_horizontal"
-                android:layout_marginBottom="32dp"
-                android:textColor="@color/while_alpha_80"
-                android:textSize="26dp"
-                android:text="OBIEW"/>
-
-        </FrameLayout>
-
-    </LinearLayout>
-
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:navigationIcon="@drawable/abc_ic_ab_back_material"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     <WebView
         android:id="@+id/web_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-</FrameLayout>
+</LinearLayout>

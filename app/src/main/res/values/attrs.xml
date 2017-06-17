@@ -21,6 +21,7 @@
 
     <declare-styleable name="AvatarView">
         <attr name="avatarImage" format="reference" />
+        <attr name="avatarTint" format="color"/>
         <attr name="verifiedIcon" format="reference" />
     </declare-styleable>
 

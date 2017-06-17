@@ -99,7 +99,6 @@ public class StatusCardView extends CardView {
         RelativeLayout.LayoutParams avatarViewLayoutParams = new RelativeLayout.LayoutParams(dp2px(context, 48), dp2px(context, 48));
         avatarViewLayoutParams.addRule(RelativeLayout.ALIGN_LEFT | RelativeLayout.ALIGN_TOP);
         userAvatarView.setLayoutParams(avatarViewLayoutParams);
-        userAvatarView.avatarCircleImageView.setImageResource(R.drawable.ic_avatar);
         userAvatarView.avatarCircleImageView.setOnClickListener(avatarCircleImageViewOnClickListener);
 
         screenNameTextView = new TextView(context);
