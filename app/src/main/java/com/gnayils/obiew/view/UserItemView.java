@@ -24,12 +24,10 @@ import static com.gnayils.obiew.util.ViewUtils.getDrawableByAttrId;
 
 public class UserItemView extends CardView {
 
-    public User user;
-
-    public RelativeLayout rootView;
-    public AvatarView userAvatarView;
-    public TextView screenNameTextView;
-    public TextView descriptionTextView;
+    public final RelativeLayout rootView;
+    public final AvatarView userAvatarView;
+    public final TextView screenNameTextView;
+    public final TextView descriptionTextView;
 
     public UserItemView(Context context) {
         this(context, null);
@@ -70,11 +68,11 @@ public class UserItemView extends CardView {
         descriptionTextView.setTextColor(getResources().getColor(R.color.black_alpha_80));
         descriptionTextView.setSingleLine();
         descriptionTextView.setEllipsize(TextUtils.TruncateAt.END);
-        RelativeLayout.LayoutParams statusTimeTextViewLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        statusTimeTextViewLayoutParams.setMargins(dp2px(context, 8), 0, 0, dp2px(context, 4));
-        statusTimeTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, userAvatarView.getId());
-        statusTimeTextViewLayoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, userAvatarView.getId());
-        descriptionTextView.setLayoutParams(statusTimeTextViewLayoutParams);
+        RelativeLayout.LayoutParams descriptionTextViewLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        descriptionTextViewLayoutParams.setMargins(dp2px(context, 8), 0, 0, dp2px(context, 4));
+        descriptionTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, userAvatarView.getId());
+        descriptionTextViewLayoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, userAvatarView.getId());
+        descriptionTextView.setLayoutParams(descriptionTextViewLayoutParams);
 
         rootView.addView(userAvatarView);
         rootView.addView(screenNameTextView);
@@ -84,11 +82,10 @@ public class UserItemView extends CardView {
     }
 
     public void show(User user) {
-        this.user = user;
         Glide.with(getContext()).load(user.avatar_large).into(userAvatarView.avatarCircleImageView);
         userAvatarView.verifiedIconImageView.setVisibility(user.verified ? View.VISIBLE : View.INVISIBLE);
         if(user.verified) {
-            screenNameTextView.setTextColor(Obiew.getAppResources().getColor(R.color.colorAccent));
+            screenNameTextView.setTextColor(Obiew.getAppResources().getColor(R.color.colorPrimary));
             switch(user.verified_type) {
                 case 0:
                     userAvatarView.verifiedIconImageView.setImageResource(R.drawable.avatar_vip_golden);

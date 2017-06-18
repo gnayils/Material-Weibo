@@ -3,8 +3,10 @@ package com.gnayils.obiew.view;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -19,8 +21,8 @@ public class AvatarView extends FrameLayout {
 
     public static final float VERIFIED_ICON_IMAGE_VIEW_SIZE_RATIO = 20f / 64f;
 
-    public CircleImageView avatarCircleImageView;
-    public ImageView verifiedIconImageView;
+    public final CircleImageView avatarCircleImageView;
+    public final ImageView verifiedIconImageView;
 
     public AvatarView(Context context) {
         this(context, null);

@@ -35,12 +35,11 @@
             android:label="用户登录"/>
         <activity
             android:name=".activity.MainActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activity.PublishActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"
-            android:label="发微博"/>
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".activity.PicturePagerActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"

@@ -19,12 +19,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.view.CommentTimelineView;
 import com.gnayils.obiew.view.LoadMoreRecyclerView;
 import com.gnayils.obiew.view.RepostTimelineView;
-import com.gnayils.obiew.view.StatusCardView;
+import com.gnayils.obiew.view.StatusView;
 import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.bean.Comments;
 import com.gnayils.obiew.weibo.bean.Reposts;
@@ -39,19 +40,33 @@ import butterknife.ButterKnife;
 public class StatusDetailActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener, SwipeRefreshLayout.OnRefreshListener {
 
     public static final String ARGS_KEY_STATUS = "ARGS_KEY_STATUS";
+    public static final String ARGS_KEY_STATUS_VIEW_EXPANDED = "ARGS_KEY_STATUS_VIEW_EXPANDED";
+    public static final String ARGS_KEY_COMMENT_TAB_SELECTED = "ARGS_KEY_COMMENT_TAB_SELECTED";
 
     private Status status;
 
-    @Bind(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
-    @Bind(R.id.app_bar_layout) AppBarLayout appBarLayout;
-    @Bind(R.id.toolbar) Toolbar toolbar;
-    @Bind(R.id.status_card_view) StatusCardView statusCardView;
-    @Bind(R.id.tab_layout) TabLayout tabLayout;
-    @Bind(R.id.text_view_like_count) TextView likeCountTextView;
-    @Bind(R.id.view_pager) ViewPager viewPager;
-    @Bind(R.id.fab_comment) FloatingActionButton commentFab;
-    @Bind(R.id.fab_repost) FloatingActionButton repostFab;
-    @Bind(R.id.fab_like) FloatingActionButton likeFab;
+    @Bind(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.app_bar_layout)
+    AppBarLayout appBarLayout;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.status_card_view)
+    StatusView statusView;
+    @Bind(R.id.tab_layout)
+    TabLayout tabLayout;
+    @Bind(R.id.text_view_like_count)
+    TextView likeCountTextView;
+    @Bind(R.id.view_pager)
+    ViewPager viewPager;
+    @Bind(R.id.fam_actions)
+    FloatingActionsMenu floatingActionsMenu;
+    @Bind(R.id.fab_comment)
+    FloatingActionButton commentFab;
+    @Bind(R.id.fab_repost)
+    FloatingActionButton repostFab;
+    @Bind(R.id.fab_like)
+    FloatingActionButton likeFab;
 
     private CommentService commentService = new CommentService();
     private StatusService statusService = new StatusService();
@@ -67,6 +82,7 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         status = (Status) getIntent().getSerializableExtra(ARGS_KEY_STATUS);
+        appBarLayout.setExpanded(getIntent().getBooleanExtra(ARGS_KEY_STATUS_VIEW_EXPANDED, true));
         swipeRefreshLayout.setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
             @Override
             public boolean canChildScrollUp(SwipeRefreshLayout parent, @Nullable View child) {
@@ -76,15 +92,16 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
         swipeRefreshLayout.setOnRefreshListener(this);
         appBarLayout.addOnOffsetChangedListener(this);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
                 onBackPressed();
             }
         });
-        statusCardView.setBackgroundColor(Color.TRANSPARENT);
-        statusCardView.commentLayout.setVisibility(View.GONE);
-        statusCardView.show(status);
+        statusView.setBackgroundColor(Color.TRANSPARENT);
+        statusView.commentLayout.setVisibility(View.GONE);
+        statusView.show(status);
         viewPager.setAdapter(new ViewPagerAdapter());
-        viewPager.setCurrentItem(1);
+        viewPager.setCurrentItem(getIntent().getBooleanExtra(ARGS_KEY_COMMENT_TAB_SELECTED, true) ? 1 : 0);
         tabLayout.setupWithViewPager(viewPager);
         likeCountTextView.setText(Weibo.format.commentCount(status.attitudes_count) + " 赞");
         commentTimelineView = new CommentTimelineView(this);
@@ -105,6 +122,26 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
         repostFab.setIconDrawable(ViewUtils.getTintedDrawable(this, R.drawable.ic_repost, Color.WHITE));
         commentFab.setIconDrawable(ViewUtils.getTintedDrawable(this, R.drawable.ic_comment, Color.WHITE));
         likeFab.setIconDrawable(ViewUtils.getTintedDrawable(this, R.drawable.ic_like, Color.WHITE));
+        commentFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                floatingActionsMenu.collapse();
+                PublishActivity.startForCommentPublishment(StatusDetailActivity.this, status);
+            }
+        });
+        repostFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                floatingActionsMenu.collapse();
+                PublishActivity.startForRepostPublishment(StatusDetailActivity.this, status);
+            }
+        });
+        likeFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                floatingActionsMenu.collapse();
+            }
+        });
         onRefresh();
     }
 
@@ -139,11 +176,11 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
     }
 
     private void showCommentTimeline(final boolean loadLatest) {
-        commentService.showCommentTimeline(status, loadLatest, new SubscriberAdapter<Comments>(){
+        commentService.showCommentTimeline(status, loadLatest, new SubscriberAdapter<Comments>() {
 
             @Override
             public void onSubscribe() {
-                if(loadLatest) {
+                if (loadLatest) {
                     swipeRefreshLayout.setRefreshing(true);
                 }
             }
@@ -154,12 +191,12 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
 
             @Override
             public void onNext(Comments comments) {
-                commentTimelineView.show(comments);
+                commentTimelineView.show(loadLatest, comments);
             }
 
             @Override
             public void onUnsubscribe() {
-                if(loadLatest) {
+                if (loadLatest) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
             }
@@ -167,23 +204,23 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
     }
 
     private void showRepostTimeline(final boolean loadLatest) {
-        statusService.showRepostTimeline(status, loadLatest, new SubscriberAdapter<Reposts>(){
+        statusService.showRepostTimeline(status, loadLatest, new SubscriberAdapter<Reposts>() {
 
             @Override
             public void onSubscribe() {
-                if(loadLatest) {
+                if (loadLatest) {
                     swipeRefreshLayout.setRefreshing(true);
                 }
             }
 
             @Override
             public void onNext(Reposts reposts) {
-                repostTimelineView.show(reposts);
+                repostTimelineView.show(loadLatest, reposts);
             }
 
             @Override
             public void onUnsubscribe() {
-                if(loadLatest) {
+                if (loadLatest) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
             }
@@ -209,11 +246,12 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
                     view = commentTimelineView;
                     break;
             }
-            if(view != null) {
+            if (view != null) {
                 collection.addView(view);
             }
             return view;
         }
+
         @Override
         public void destroyItem(ViewGroup collection, int position, Object view) {
             collection.removeView((View) view);
@@ -226,17 +264,26 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch(position) {
-                case 0: return Weibo.format.commentCount(status.reposts_count) + " 转发";
-                case 1: return Weibo.format.commentCount(status.comments_count) + " 评论";
-                default: return null;
+            switch (position) {
+                case 0:
+                    return Weibo.format.commentCount(status.reposts_count) + " 转发";
+                case 1:
+                    return Weibo.format.commentCount(status.comments_count) + " 评论";
+                default:
+                    return null;
             }
         }
     }
 
-    public static void start(Context context, Status status) {
+    public static void start(Context context, Status status, boolean detailViewExpanded, boolean commentTabSelected) {
         Intent intent = new Intent(context, StatusDetailActivity.class);
         intent.putExtra(ARGS_KEY_STATUS, status);
+        intent.putExtra(ARGS_KEY_STATUS_VIEW_EXPANDED, detailViewExpanded);
+        intent.putExtra(ARGS_KEY_COMMENT_TAB_SELECTED, commentTabSelected);
         context.startActivity(intent);
+    }
+
+    public static void start(Context context, Status status) {
+        start(context, status, true, true);
     }
 }

@@ -27,80 +27,134 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <EditText
-            android:id="@+id/edit_text_content"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#75f1f1f1"
-            android:gravity="top"
-            android:inputType="textMultiLine|textNoSuggestions"
-            android:padding="8dp" />
+            android:orientation="vertical">
 
-    </ScrollView>
+            <EditText
+                android:id="@+id/edit_text_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="96dp"
+                android:background="#75f1f1f1"
+                android:gravity="top"
+                android:inputType="textMultiLine|textNoSuggestions"
+                android:padding="8dp" />
 
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <LinearLayout
-            android:id="@+id/layout_selected_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="2dp"
-            android:paddingRight="2dp"
-            android:orientation="horizontal">
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp">
+
+                <LinearLayout
+                    android:id="@+id/layout_selected_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="2dp"
+                    android:paddingRight="2dp" />
+
+            </HorizontalScrollView>
+
+            <RelativeLayout
+                android:id="@+id/relative_layout_status_info"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:layout_margin="8dp"
+                android:background="@color/black_alpha_1A"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/image_view_avatar"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:layout_alignTop="@id/image_view_avatar"/>
+
+                <TextView
+                    android:id="@+id/text_view_screen_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/image_view_avatar"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_toRightOf="@id/image_view_avatar"
+                    android:textColor="@color/black_alpha_CC"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/text_view_status_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/image_view_avatar"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="6dp"
+                    android:layout_toRightOf="@id/image_view_avatar"
+                    android:ellipsize="end"
+                    android:lines="2"
+                    android:textColor="@color/black_alpha_80"
+                    android:textSize="14sp" />
+
+            </RelativeLayout>
 
         </LinearLayout>
-    </HorizontalScrollView>
+
+    </ScrollView>
 
     <LinearLayout
         android:id="@+id/linear_layout_function_bar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:elevation="4dp"
+        android:layout_gravity="bottom"
         android:background="?android:attr/windowBackground"
+        android:elevation="4dp"
+        android:gravity="left"
         android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/image_button_emotion"
-            android:layout_width="0dp"
+            android:layout_width="?attr/actionBarSize"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/ic_emotion"
             android:tint="@color/colorPrimary" />
 
         <ImageButton
             android:id="@+id/image_button_gallery"
-            android:layout_width="0dp"
+            android:layout_width="?attr/actionBarSize"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/ic_gallery"
             android:tint="@color/colorPrimary" />
 
         <ImageButton
             android:id="@+id/image_button_mention"
-            android:layout_width="0dp"
+            android:layout_width="?attr/actionBarSize"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/ic_mention"
             android:tint="@color/colorPrimary" />
 
         <ImageButton
             android:id="@+id/image_button_topic"
-            android:layout_width="0dp"
+            android:layout_width="?attr/actionBarSize"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/ic_topic"
             android:tint="@color/colorPrimary" />
 
-        <ImageButton
-            android:id="@+id/image_button_backspace"
+        <View
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/image_button_backspace"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="match_parent"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_backspace"
             android:tint="@color/grey_600" />
@@ -111,6 +165,7 @@
         android:id="@+id/frame_layout_function_content"
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:layout_gravity="bottom"
         android:visibility="gone" />
 
 </LinearLayout>

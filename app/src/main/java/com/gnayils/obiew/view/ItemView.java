@@ -21,10 +21,10 @@ import static com.gnayils.obiew.util.ViewUtils.*;
  */
 public class ItemView extends RelativeLayout {
 
-    public ImageView iconImageView;
-    public TextView titleTextView;
-    public ImageView moreIconImageView;
-    public TextView descriptionTextView;
+    public final ImageView iconImageView;
+    public final TextView titleTextView;
+    public final ImageView moreIconImageView;
+    public final TextView descriptionTextView;
 
     public ItemView(Context context) {
         this(context, null);

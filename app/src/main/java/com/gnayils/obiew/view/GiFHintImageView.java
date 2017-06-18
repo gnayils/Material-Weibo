@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 
 import com.gnayils.obiew.R;
@@ -17,9 +18,10 @@ import com.gnayils.obiew.util.ViewUtils;
 public class GiFHintImageView extends ForegroundImageView {
 
     private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private Rect backgroundRect;
+    private RectF backgroundRect;
     private int rectWidth;
     private int rectHeight;
+    private int round;
 
     private boolean hintVisible = false;
 
@@ -37,6 +39,7 @@ public class GiFHintImageView extends ForegroundImageView {
         Paint.FontMetrics fontMetrics = paint.getFontMetrics();
         rectWidth = (int) paint.measureText("GIF") + ViewUtils.dp2px(context, 4);
         rectHeight = (int) (Math.abs(fontMetrics.ascent) + fontMetrics.descent);
+        round = ViewUtils.dp2px(context, 2);
     }
 
     @Override
@@ -46,10 +49,11 @@ public class GiFHintImageView extends ForegroundImageView {
             canvas.save();
             Rect drawingRect = new Rect();
             getDrawingRect(drawingRect);
-            backgroundRect = new Rect(drawingRect.right - rectWidth, drawingRect.bottom - rectHeight, drawingRect.right, drawingRect.bottom);
+            backgroundRect = new RectF(drawingRect.right - rectWidth, drawingRect.bottom - rectHeight, drawingRect.right, drawingRect.bottom);
 
-            paint.setColor(getResources().getColor(R.color.colorPrimary));
-            canvas.drawRect(backgroundRect, paint);
+            paint.setColor(getResources().getColor(R.color.colorAccent));
+            paint.setAlpha(180);
+            canvas.drawRoundRect(backgroundRect, round, round, paint);
 
             paint.setColor(Color.WHITE);
             canvas.drawText("GIF", backgroundRect.left + ViewUtils.dp2px(getContext(), 2), backgroundRect.top - paint.getFontMetrics().ascent, paint);

@@ -1017,7 +1017,7 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
 		}
 		
 		/**
-		 * Interpolate between where the image should start and end in order to translate
+		 * Interpolate between where the image should startForStatusPublishment and end in order to translate
 		 * the image so that the point that is touched is what ends up centered at the end
 		 * of the zoom.
 		 * @param t

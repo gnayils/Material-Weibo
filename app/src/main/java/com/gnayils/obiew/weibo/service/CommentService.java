@@ -3,6 +3,7 @@ package com.gnayils.obiew.weibo.service;
 import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.api.CommentAPI;
 import com.gnayils.obiew.weibo.api.WeiboAPI;
+import com.gnayils.obiew.weibo.bean.Comment;
 import com.gnayils.obiew.weibo.bean.Comments;
 import com.gnayils.obiew.weibo.bean.Status;
 
@@ -31,4 +32,13 @@ public class CommentService extends BaseService {
         addSubscription(subscription);
     }
 
+    public void createComment(Status status, String comment, SubscriberAdapter<Comment> subscriberAdapter) {
+        Subscription subscription = WeiboAPI.get(CommentAPI.class)
+                    .create(status.id, comment)
+                    .doOnSubscribe(subscriberAdapter.onSubscribeAction)
+                    .doOnUnsubscribe(subscriberAdapter.onUnsubscribeAction)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(subscriberAdapter);
+        addSubscription(subscription);
+    }
 }

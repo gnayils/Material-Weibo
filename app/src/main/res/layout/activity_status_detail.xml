@@ -42,7 +42,7 @@
                     app:layout_scrollFlags="scroll|exitUntilCollapsed"
                     app:titleEnabled="false">
 
-                    <com.gnayils.obiew.view.StatusCardView
+                    <com.gnayils.obiew.view.StatusView
                         android:id="@+id/status_card_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />

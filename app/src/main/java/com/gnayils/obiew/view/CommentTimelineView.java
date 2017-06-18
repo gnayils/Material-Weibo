@@ -6,9 +6,13 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.gnayils.obiew.R;
+import com.gnayils.obiew.activity.UserProfileActivity;
 import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.weibo.bean.Comment;
 import com.gnayils.obiew.weibo.bean.Comments;
@@ -46,55 +50,83 @@ public class CommentTimelineView extends LoadMoreRecyclerView {
         setAdapter(recyclerViewAdapter);
     }
 
-    public void show(Comments comments) {
-        recyclerViewAdapter.add(comments);
+    public void show(boolean isLatest, Comments comments) {
+        recyclerViewAdapter.add(isLatest, comments);
     }
 
 
-    class RecyclerViewAdapter extends LoadMoreAdapter {
+    static class RecyclerViewAdapter extends LoadMoreAdapter<CommentViewHolder> {
 
         private List<Comment> commentList = new ArrayList<>();
 
-        public RecyclerViewAdapter() {
-
-        }
-
         @Override
-        public int getActualItemCount() {
+        public int getItemsCount() {
             return commentList.size();
         }
 
         @Override
-        public ViewHolder onCreateActualViewHolder(ViewGroup parent, int viewType) {
-            return new CommentViewHolder(new CommentView(parent.getContext()));
+        public CommentViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType) {
+            CommentView commentView = new CommentView(parent.getContext());
+            RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT);
+            commentView.setLayoutParams(layoutParams);
+            commentView.setRadius(0);
+            commentView.setElevation(0);
+            return new CommentViewHolder(commentView);
         }
 
         @Override
-        public void onBindActualViewHolder(ViewHolder holder, int position) {
-            Comment comment = commentList.get(position);
-            ((CommentViewHolder)holder).commentView.show(comment);
+        public void onBindItemViewHolder(final CommentViewHolder holder, int position) {
+            final Comment comment = commentList.get(position);
+            holder.commentView.show(comment);
+            holder.commentView.userAvatarView
+                    .avatarCircleImageView.setOnClickListener(new OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    UserProfileActivity.start(holder.commentView.getContext(), comment.user);
+                }
+            });
         }
 
-        public void add(Comments comments) {
-            Set<Comment> commentSet = new TreeSet<>(commentList);
-            commentSet.addAll(comments.comments);
-            commentList.clear();
+        @Override
+        public CommentViewHolder onCreateFooterViewHolder(ViewGroup parent, int viewType) {
+            return new CommentViewHolder(new DefaultFooterView(parent, parent.getContext()));
+        }
+
+        @Override
+        public void onBindFooterViewHolder(CommentViewHolder holder, int position) {
+            holder.defaultFooterView.progressDrawable.stop();
+            holder.defaultFooterView.progressDrawable.start();
+        }
+
+        public void add(boolean isLatest, Comments comments) {
+            Set<Comment> commentSet = new TreeSet<>();
+            if(isLatest) {
+                commentList.clear();
+                commentSet.addAll(comments.comments);
+            } else {
+                commentSet.addAll(commentList);
+                commentSet.addAll(comments.comments);
+                commentList.clear();
+            }
             commentList.addAll(commentSet);
             notifyDataSetChanged();
         }
     }
 
-    class CommentViewHolder extends RecyclerView.ViewHolder {
+    static class CommentViewHolder extends RecyclerView.ViewHolder {
 
         CommentView commentView;
+        DefaultFooterView defaultFooterView;
 
         CommentViewHolder(CommentView commentView) {
             super(commentView);
             this.commentView = commentView;
-            RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT);
-            this.commentView.setLayoutParams(layoutParams);
-            this.commentView.setRadius(0);
-            this.commentView.setElevation(0);
+        }
+
+        CommentViewHolder(DefaultFooterView defaultFooterView) {
+            super(defaultFooterView);
+            this.defaultFooterView = defaultFooterView;
         }
     }
 }

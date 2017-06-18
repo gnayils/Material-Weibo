@@ -5,7 +5,6 @@ import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -73,63 +72,54 @@ public class LoadMoreRecyclerView extends RecyclerView {
     }
 
 
-    public static abstract class LoadMoreAdapter extends Adapter<ViewHolder> {
+    public static abstract class LoadMoreAdapter<VH extends ViewHolder> extends Adapter<VH> {
 
         private static final int TYPE_ITEM = 0;
         private static final int TYPE_FOOTER = 1;
 
         @Override
         public final int getItemCount() {
-            return getActualItemCount() == 0 ? 0 : getActualItemCount() + 1;
+            return getItemsCount() == 0 ? 0 : getItemsCount() + 1;
         }
 
         @Override
         public final int getItemViewType(int position) {
-            if (position + 1 == getItemCount()) {
-                return TYPE_FOOTER;
-            } else {
+            if(position < getItemsCount()) {
                 return TYPE_ITEM;
+            } else {
+                return TYPE_FOOTER;
             }
         }
 
         @Override
-        public final ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            ViewHolder viewHolder = null;
+        public final VH onCreateViewHolder(ViewGroup parent, int viewType) {
+            VH viewHolder = null;
             if(viewType == TYPE_ITEM) {
-                viewHolder = onCreateActualViewHolder(parent, viewType);
+                viewHolder = onCreateItemViewHolder(parent, viewType);
             } else if (viewType == TYPE_FOOTER) {
-                LoadMoreIndicatorView loadMoreIndicatorView = new LoadMoreIndicatorView(parent, parent.getContext());
-                viewHolder = new LoadingMoreIndicatorViewHolder(loadMoreIndicatorView);
+                viewHolder = onCreateFooterViewHolder(parent, viewType);
             }
             return viewHolder;
         }
 
         @Override
-        public final void onBindViewHolder(final ViewHolder holder, int position) {
-            if(holder instanceof LoadingMoreIndicatorViewHolder) {
-                ((LoadingMoreIndicatorViewHolder)holder).loadMoreIndicatorView.progressDrawable.stop();
-                ((LoadingMoreIndicatorViewHolder)holder).loadMoreIndicatorView.progressDrawable.start();
-            } else {
-                onBindActualViewHolder(holder, position);
+        public final void onBindViewHolder(final VH holder, int position) {
+            if(getItemViewType(position) == TYPE_ITEM){
+                onBindItemViewHolder(holder, position);
+            } else if(getItemViewType(position) == TYPE_FOOTER) {
+                onBindFooterViewHolder(holder, position);
             }
         }
 
-        public abstract int getActualItemCount() ;
+        public abstract int getItemsCount() ;
 
-        public abstract ViewHolder onCreateActualViewHolder(ViewGroup parent, int viewType);
+        public abstract VH onCreateItemViewHolder(ViewGroup parent, int viewType);
 
-        public abstract void onBindActualViewHolder(ViewHolder holder, int position);
+        public abstract void onBindItemViewHolder(VH holder, int position);
 
-    }
+        public abstract VH onCreateFooterViewHolder(ViewGroup parent, int viewType);
 
-    public static class LoadingMoreIndicatorViewHolder extends ViewHolder {
-
-        LoadMoreIndicatorView loadMoreIndicatorView;
-
-        public LoadingMoreIndicatorViewHolder(LoadMoreIndicatorView loadMoreIndicatorView) {
-            super(loadMoreIndicatorView);
-            this.loadMoreIndicatorView = loadMoreIndicatorView;
-        }
+        public abstract void onBindFooterViewHolder(VH holder, int position);
     }
 
     public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
@@ -142,23 +132,23 @@ public class LoadMoreRecyclerView extends RecyclerView {
 
     }
 
-    private static class LoadMoreIndicatorView extends FrameLayout {
+    public static class DefaultFooterView extends FrameLayout {
 
-        private MaterialProgressDrawable progressDrawable;
+        public final MaterialProgressDrawable progressDrawable;
 
-        public LoadMoreIndicatorView(View parent, @NonNull Context context) {
+        public DefaultFooterView(View parent, @NonNull Context context) {
             this(parent, context, null);
         }
 
-        public LoadMoreIndicatorView(View parent, @NonNull Context context, @Nullable AttributeSet attrs) {
+        public DefaultFooterView(View parent, @NonNull Context context, @Nullable AttributeSet attrs) {
             this(parent, context, attrs, 0);
         }
 
-        public LoadMoreIndicatorView(View parent, @NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
+        public DefaultFooterView(View parent, @NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
             this(parent, context, attrs, defStyleAttr, 0);
         }
 
-        public LoadMoreIndicatorView(View parent, @NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr, @StyleRes int defStyleRes) {
+        public DefaultFooterView(View parent, @NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr, @StyleRes int defStyleRes) {
             super(context, attrs, defStyleAttr, defStyleRes);
 
             RecyclerView.LayoutParams frameLayoutLayoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);

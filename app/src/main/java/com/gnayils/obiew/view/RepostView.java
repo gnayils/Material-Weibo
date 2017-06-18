@@ -26,20 +26,11 @@ import static com.gnayils.obiew.util.ViewUtils.getDrawableByAttrId;
 
 public class RepostView extends CardView {
 
-    private Repost repost;
-
-    private RelativeLayout rootView;
-    private AvatarView userAvatarView;
-    private TextView screenNameTextView;
-    private TextView repostTimeTextView;
-    private TextView repostTextTextView;
-
-    public OnClickListener avatarCircleImageViewOnClickListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            UserProfileActivity.start(getContext(), repost.user);
-        }
-    };
+    public final RelativeLayout rootView;
+    public final AvatarView userAvatarView;
+    public final TextView screenNameTextView;
+    public final TextView repostTimeTextView;
+    public final TextView repostTextTextView;
 
     public RepostView(Context context) {
         this(context, null);
@@ -64,7 +55,6 @@ public class RepostView extends CardView {
         RelativeLayout.LayoutParams avatarViewLayoutParams = new RelativeLayout.LayoutParams(dp2px(context, 48), dp2px(context, 48));
         avatarViewLayoutParams.addRule(RelativeLayout.ALIGN_LEFT | RelativeLayout.ALIGN_TOP);
         userAvatarView.setLayoutParams(avatarViewLayoutParams);
-        userAvatarView.avatarCircleImageView.setOnClickListener(avatarCircleImageViewOnClickListener);
 
         screenNameTextView = new TextView(context);
         screenNameTextView.setText("用户名");
@@ -105,7 +95,6 @@ public class RepostView extends CardView {
     }
 
     public void show(Repost repost) {
-        this.repost = repost;
         Glide.with(getContext()).load(repost.user.avatar_large).into(userAvatarView.avatarCircleImageView);
         userAvatarView.verifiedIconImageView.setVisibility(repost.user.verified ? View.VISIBLE : View.INVISIBLE);
         if(repost.user.verified) {

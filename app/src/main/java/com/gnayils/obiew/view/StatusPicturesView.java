@@ -4,11 +4,13 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.activity.PicturePagerActivity;
+import com.gnayils.obiew.fragment.PictureFragment;
 import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.weibo.bean.PicUrls;
 
@@ -20,12 +22,13 @@ import java.util.List;
  * Created by Gnayils on 26/11/2016.
  */
 
-public class StatusPicturesView extends ViewGroup implements View.OnClickListener{
+public class StatusPicturesView extends ViewGroup implements View.OnClickListener {
 
     public final int MARGIN_IN_IMAGES = dp2px(getContext(), 4);
 
     private int imageViewVisibleCount;
     private List<PicUrls> picUrlsList;
+    private OnPictureItemClickListener listener;
 
     public StatusPicturesView(Context context) {
         this(context, null);
@@ -136,11 +139,24 @@ public class StatusPicturesView extends ViewGroup implements View.OnClickListene
         }
     }
 
+    public void setOnPictureItemClickListener(OnPictureItemClickListener listener) {
+        this.listener = listener;
+    }
+
+    public interface OnPictureItemClickListener {
+
+        void onPictureItemClick(StatusPicturesView view, View v, int index);
+
+    }
+
     @Override
     public void onClick(View v) {
+        if(listener == null) {
+            return;
+        }
         for(int i = 0; i < imageViewVisibleCount; i ++) {
             if(v == getChildAt(i)) {
-                PicturePagerActivity.start(getContext(), i, picUrlsList);
+                listener.onPictureItemClick(this, v, i);
                 break;
             }
         }

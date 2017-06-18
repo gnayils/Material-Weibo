@@ -5,9 +5,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.gnayils.obiew.R;
+import com.gnayils.obiew.activity.UserProfileActivity;
 import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.weibo.bean.Repost;
 import com.gnayils.obiew.weibo.bean.Reposts;
@@ -45,55 +47,82 @@ public class RepostTimelineView extends LoadMoreRecyclerView {
         setAdapter(recyclerViewAdapter);
     }
 
-    public void show(Reposts reposts) {
-        recyclerViewAdapter.add(reposts);
+    public void show(boolean isLatest, Reposts reposts) {
+        recyclerViewAdapter.add(isLatest, reposts);
     }
 
 
-    class RecyclerViewAdapter extends LoadMoreAdapter {
+    static class RecyclerViewAdapter extends LoadMoreAdapter<RepostViewHolder> {
 
         private List<Repost> repostList = new ArrayList<>();
 
-        public RecyclerViewAdapter() {
-
-        }
-
         @Override
-        public int getActualItemCount() {
+        public int getItemsCount() {
             return repostList.size();
         }
 
         @Override
-        public ViewHolder onCreateActualViewHolder(ViewGroup parent, int viewType) {
-            return new RepostViewHolder(new RepostView(parent.getContext()));
+        public RepostViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType) {
+            RepostView repostView = new RepostView(parent.getContext());
+            LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+            repostView.setLayoutParams(layoutParams);
+            repostView.setRadius(0);
+            repostView.setElevation(0);
+            return new RepostViewHolder(repostView);
         }
 
         @Override
-        public void onBindActualViewHolder(ViewHolder holder, int position) {
-            Repost repost = repostList.get(position);
-            ((RepostViewHolder)holder).repostView.show(repost);
+        public void onBindItemViewHolder(final RepostViewHolder holder, int position) {
+            final Repost repost = repostList.get(position);
+            holder.repostView.show(repost);
+            holder.repostView.userAvatarView
+                    .avatarCircleImageView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    UserProfileActivity.start(holder.repostView.getContext(), repost.user);
+                }
+            });
         }
 
-        public void add(Reposts reposts) {
-            Set<Repost> repostSet = new TreeSet<>(repostList);
-            repostSet.addAll(reposts.reposts);
-            repostList.clear();
+        @Override
+        public RepostViewHolder onCreateFooterViewHolder(ViewGroup parent, int viewType) {
+            return new RepostViewHolder(new DefaultFooterView(parent, parent.getContext()));
+        }
+
+        @Override
+        public void onBindFooterViewHolder(RepostViewHolder holder, int position) {
+            holder.defaultFooterView.progressDrawable.stop();
+            holder.defaultFooterView.progressDrawable.start();
+        }
+
+        public void add(boolean isLatest, Reposts reposts) {
+            Set<Repost> repostSet = new TreeSet<>();
+            if (isLatest) {
+                repostList.clear();
+                repostSet.addAll(reposts.reposts);
+            } else {
+                repostSet.addAll(repostList);
+                repostSet.addAll(reposts.reposts);
+                repostList.clear();
+            }
             repostList.addAll(repostSet);
             notifyDataSetChanged();
         }
     }
 
-    class RepostViewHolder extends ViewHolder {
+    static class RepostViewHolder extends ViewHolder {
 
         RepostView repostView;
+        DefaultFooterView defaultFooterView;
 
         RepostViewHolder(RepostView repostView) {
             super(repostView);
             this.repostView = repostView;
-            LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-            this.repostView.setLayoutParams(layoutParams);
-            this.repostView.setRadius(0);
-            this.repostView.setElevation(0);
+        }
+
+        RepostViewHolder(DefaultFooterView defaultFooterView) {
+            super(defaultFooterView);
+            this.defaultFooterView = defaultFooterView;
         }
     }
 }

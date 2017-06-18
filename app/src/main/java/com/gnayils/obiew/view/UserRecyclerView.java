@@ -65,8 +65,17 @@ public class UserRecyclerView extends RecyclerView {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            User user = userList.get(position);
+            final User user = userList.get(position);
             ((UserItemViewHolder)holder).userItemView.show(user);
+            ((UserItemViewHolder)holder).userItemView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(onItemClickListener != null) {
+                        onItemClickListener.onItemClick(user);
+                    }
+                }
+            });
+
         }
 
         @Override
@@ -95,14 +104,6 @@ public class UserRecyclerView extends RecyclerView {
             this.userItemView.setLayoutParams(layoutParams);
             this.userItemView.setRadius(0);
             this.userItemView.setElevation(0);
-            this.userItemView.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(onItemClickListener != null) {
-                        onItemClickListener.onItemClick(userItemView.user);
-                    }
-                }
-            });
         }
     }
 

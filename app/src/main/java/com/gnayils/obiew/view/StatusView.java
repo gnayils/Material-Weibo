@@ -25,68 +25,45 @@ import static com.gnayils.obiew.util.ViewUtils.*;
  * Created by Gnayils on 30/01/2017.
  */
 
-public class StatusCardView extends CardView {
+public class StatusView extends CardView {
 
+    public static final String TAG = StatusView.class.getSimpleName();
 
-    public static final String TAG = StatusCardView.class.getSimpleName();
+    public final LinearLayout rootView;
+    public final RelativeLayout userInfoLayout;
+    public final AvatarView userAvatarView;
+    public final TextView screenNameTextView;
+    public final TextView statusTimeTextView;
+    public final TextView statusSourceTextView;
+    public final TextView statusTextTextView;
+    public final StatusPicturesView statusPicturesView;
+    public final VideoPreviewView videoPreviewView;
 
-    public Status status;
+    public final LinearLayout retweetedStatusView;
+    public final TextView retweetedStatusTextTextView;
+    public final StatusPicturesView retweetedStatusPicturesView;
+    public final VideoPreviewView retweetedVideoPreviewView;
 
-    public LinearLayout rootView;
-    public RelativeLayout userInfoLayout;
-    public AvatarView userAvatarView;
-    public TextView screenNameTextView;
-    public TextView statusTimeTextView;
-    public TextView statusSourceTextView;
-    public TextView statusTextTextView;
-    public StatusPicturesView statusPicturesView;
-    public VideoPreviewView videoPreviewView;
+    public final LinearLayout commentLayout;
+    public final CenteredDrawableButton repostButton;
+    public final CenteredDrawableButton commentButton;
+    public final CenteredDrawableButton likeButton;
 
-    public LinearLayout retweetedStatusView;
-    public TextView retweetedStatusTextTextView;
-    public StatusPicturesView retweetedStatusPicturesView;
-    public VideoPreviewView retweetedVideoPreviewView;
-
-    public LinearLayout commentLayout;
-    public CenteredDrawableButton repostButton;
-    public CenteredDrawableButton commentButton;
-    public CenteredDrawableButton likeButton;
-
-    public OnClickListener statusViewOnClickListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (v.getId() == rootView.getId() && status.user != null) {
-                StatusDetailActivity.start(getContext(), status);
-            } else if (v.getId() == retweetedStatusView.getId() && status.retweeted_status.user != null) {
-                StatusDetailActivity.start(getContext(), status.retweeted_status);
-            }
-        }
-    };
-
-    public OnClickListener avatarCircleImageViewOnClickListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            UserProfileActivity.start(getContext(), status.user);
-        }
-    };
-
-
-    public StatusCardView(Context context) {
+    public StatusView(Context context) {
         this(context, null);
     }
 
-    public StatusCardView(Context context, AttributeSet attrs) {
+    public StatusView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public StatusCardView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public StatusView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         rootView = new LinearLayout(context);
         rootView.setId(View.generateViewId());
         rootView.setOrientation(LinearLayout.VERTICAL);
         rootView.setLayoutParams(new CardView.LayoutParams(CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.WRAP_CONTENT));
-        rootView.setOnClickListener(statusViewOnClickListener);
         rootView.setBackground(getDrawableByAttrId(context, R.attr.selectableItemBackground));
 
         userInfoLayout = new RelativeLayout(context);
@@ -96,10 +73,10 @@ public class StatusCardView extends CardView {
 
         userAvatarView = new AvatarView(context);
         userAvatarView.setId(View.generateViewId());
+        userAvatarView.avatarCircleImageView.setId(View.generateViewId());
         RelativeLayout.LayoutParams avatarViewLayoutParams = new RelativeLayout.LayoutParams(dp2px(context, 48), dp2px(context, 48));
         avatarViewLayoutParams.addRule(RelativeLayout.ALIGN_LEFT | RelativeLayout.ALIGN_TOP);
         userAvatarView.setLayoutParams(avatarViewLayoutParams);
-        userAvatarView.avatarCircleImageView.setOnClickListener(avatarCircleImageViewOnClickListener);
 
         screenNameTextView = new TextView(context);
         screenNameTextView.setText("用户名");
@@ -146,18 +123,19 @@ public class StatusCardView extends CardView {
         statusTextTextView.setLayoutParams(statusTextTextViewLayoutParams);
 
         statusPicturesView = new StatusPicturesView(context);
+        statusPicturesView.setId(View.generateViewId());
         statusPicturesView.setPadding(dp2px(context, 8), dp2px(context, 4), dp2px(context, 8), dp2px(context, 4));
         LinearLayout.LayoutParams statusPicturesViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         statusPicturesView.setLayoutParams(statusPicturesViewLayoutParams);
 
         videoPreviewView = new VideoPreviewView(context);
+        videoPreviewView.coverImageView.setId(View.generateViewId());
         videoPreviewView.setPadding(dp2px(context, 8), dp2px(context, 4), dp2px(context, 8), dp2px(context, 4));
         LinearLayout.LayoutParams videoPreviewViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         videoPreviewView.setLayoutParams(videoPreviewViewLayoutParams);
 
         retweetedStatusView = new LinearLayout(context);
         retweetedStatusView.setId(View.generateViewId());
-        retweetedStatusView.setOnClickListener(statusViewOnClickListener);
         retweetedStatusView.setOrientation(LinearLayout.VERTICAL);
         retweetedStatusView.setBackground(createRippleDrawable(getResources().getColor(R.color.grey_200), 0));
 
@@ -171,10 +149,12 @@ public class StatusCardView extends CardView {
         LinearLayout.LayoutParams retweetedStatusTextTextViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         retweetedStatusTextTextView.setLayoutParams(retweetedStatusTextTextViewLayoutParams);
         retweetedStatusPicturesView = new StatusPicturesView(context);
+        retweetedStatusPicturesView.setId(View.generateViewId());
         retweetedStatusPicturesView.setPadding(dp2px(context, 8), dp2px(context, 4), dp2px(context, 8), dp2px(context, 4));
         LinearLayout.LayoutParams retweetedStatusPicturesViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         retweetedStatusPicturesView.setLayoutParams(retweetedStatusPicturesViewLayoutParams);
         retweetedVideoPreviewView = new VideoPreviewView(context);
+        retweetedVideoPreviewView.coverImageView.setId(View.generateViewId());
         retweetedVideoPreviewView.setPadding(dp2px(context, 8), dp2px(context, 4), dp2px(context, 8), dp2px(context, 4));
         LinearLayout.LayoutParams retweetedVideoPreviewViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp2px(context, 200));
         retweetedVideoPreviewView.setLayoutParams(retweetedVideoPreviewViewLayoutParams);
@@ -190,6 +170,7 @@ public class StatusCardView extends CardView {
         hotrankButtonsLayoutParams.weight = 1;
 
         repostButton = new CenteredDrawableButton(context);
+        repostButton.setId(View.generateViewId());
         repostButton.setTextColor(getResources().getColor(R.color.black_alpha_80));
         repostButton.setBackground(getDrawableByAttrId(context, R.attr.selectableItemBackground));
         repostButton.setCompoundDrawablePadding(dp2px(context, 2));
@@ -198,6 +179,7 @@ public class StatusCardView extends CardView {
         repostButton.setLayoutParams(hotrankButtonsLayoutParams);
 
         commentButton = new CenteredDrawableButton(context);
+        commentButton.setId(View.generateViewId());
         commentButton.setTextColor(getResources().getColor(R.color.black_alpha_80));
         commentButton.setCompoundDrawablePadding(dp2px(context, 2));
         commentButton.setBackground(getDrawableByAttrId(context, R.attr.selectableItemBackground));
@@ -228,7 +210,6 @@ public class StatusCardView extends CardView {
     }
 
     public void show(Status status) {
-        this.status = status;
         if (status.user == null) {
             userInfoLayout.setVisibility(View.GONE);
         } else {

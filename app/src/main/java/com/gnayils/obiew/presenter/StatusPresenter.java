@@ -73,7 +73,7 @@ public class StatusPresenter implements StatusInterface.Presenter {
                 .doOnNext(new Action1<Statuses>() {
                     @Override
                     public void call(Statuses statusTimeline) {
-                        Log.d(TAG, "VideoURLFinder find start");
+                        Log.d(TAG, "VideoURLFinder find startForStatusPublishment");
                         long startTime = SystemClock.uptimeMillis();
                         try {
                             VideoInfoParser.parse(statusTimeline);
@@ -86,7 +86,7 @@ public class StatusPresenter implements StatusInterface.Presenter {
                 .doOnNext(new Action1<Statuses>() {
                     @Override
                     public void call(Statuses statusTimeline) {
-                        Log.d(TAG, "TextDecorator decorate start");
+                        Log.d(TAG, "TextDecorator decorate startForStatusPublishment");
                         long startTime = SystemClock.uptimeMillis();
                         TextDecorator.decorate(statusTimeline);
                         Log.d(TAG, "TextDecorator decorate end, took times: " + (SystemClock.uptimeMillis() - startTime));
@@ -135,7 +135,7 @@ public class StatusPresenter implements StatusInterface.Presenter {
                 .doOnNext(new Action1<Statuses>() {
                     @Override
                     public void call(Statuses statusTimeline) {
-                        Log.d(TAG, "VideoURLFinder find start");
+                        Log.d(TAG, "VideoURLFinder find startForStatusPublishment");
                         long startTime = SystemClock.uptimeMillis();
                         try {
                             VideoInfoParser.parse(statusTimeline);
@@ -148,7 +148,7 @@ public class StatusPresenter implements StatusInterface.Presenter {
                 .doOnNext(new Action1<Statuses>() {
                     @Override
                     public void call(Statuses statusTimeline) {
-                        Log.d(TAG, "TextDecorator decorate start");
+                        Log.d(TAG, "TextDecorator decorate startForStatusPublishment");
                         long startTime = SystemClock.uptimeMillis();
                         TextDecorator.decorate(statusTimeline);
                         Log.d(TAG, "TextDecorator decorate end, took times: " + (SystemClock.uptimeMillis() - startTime));
@@ -180,7 +180,7 @@ public class StatusPresenter implements StatusInterface.Presenter {
     public void upload(String statusText, List<String> selectedPicturePath) {
         if(statusText != null && !statusText.trim().isEmpty()) {
             if(selectedPicturePath == null || selectedPicturePath.isEmpty()) {
-                WeiboAPI.get(StatusAPI.class).update(Obiew.getAppResources().getString(R.string.app_key), statusText)
+                WeiboAPI.get(StatusAPI.class).update(statusText)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber<Status>() {
                             @Override
@@ -285,7 +285,7 @@ public class StatusPresenter implements StatusInterface.Presenter {
                     return null;
                 }
             }
-            Subscription subscription = statusAPI.uploadUrlText(Obiew.getAppResources().getString(R.string.app_key), statusText, picIds.substring(0, picIds.length() - 1))
+            Subscription subscription = statusAPI.uploadUrlText(statusText, picIds.substring(0, picIds.length() - 1))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Subscriber<com.gnayils.obiew.weibo.bean.Status>() {
 

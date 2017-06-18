@@ -27,8 +27,8 @@ import com.gnayils.obiew.weibo.bean.Video;
 
 public class VideoPreviewView extends FrameLayout {
 
-    public ForegroundImageView coverImageView;
-    public ForegroundImageView playImageView;
+    public final ForegroundImageView coverImageView;
+    public final ForegroundImageView playImageView;
 
     public Video video;
 
@@ -54,14 +54,6 @@ public class VideoPreviewView extends FrameLayout {
         FrameLayout.LayoutParams coverImageViewLayoutParams = new FrameLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         coverImageViewLayoutParams.gravity = Gravity.CENTER;
         coverImageView.setLayoutParams(coverImageViewLayoutParams);
-        coverImageView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(video != null) {
-                    PlayerActivity.start(getContext(), video);
-                }
-            }
-        });
 
         playImageView = new ForegroundImageView(context);
         playImageView.setScaleType(ImageView.ScaleType.CENTER);

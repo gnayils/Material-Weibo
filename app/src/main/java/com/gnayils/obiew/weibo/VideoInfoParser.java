@@ -109,7 +109,7 @@ public class VideoInfoParser {
                         @Override
                         public void onNext(URLs urls) {
                             urlList.addAll(urls.urls);
-                            Log.d(TAG, "expand url request get the response, perform request thread start to notify: " + Thread.currentThread().getName());
+                            Log.d(TAG, "expand url request get the response, perform request thread startForStatusPublishment to notify: " + Thread.currentThread().getName());
                         }
                     });
             Log.d(TAG, "expand url request has been sent, send request thread begin to wait: " + Thread.currentThread().getName());

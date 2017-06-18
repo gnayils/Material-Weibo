@@ -3,8 +3,10 @@ package com.gnayils.obiew.weibo.service;
 import com.gnayils.obiew.Obiew;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.weibo.Weibo;
+import com.gnayils.obiew.weibo.api.CommentAPI;
 import com.gnayils.obiew.weibo.api.StatusAPI;
 import com.gnayils.obiew.weibo.api.WeiboAPI;
+import com.gnayils.obiew.weibo.bean.Comment;
 import com.gnayils.obiew.weibo.bean.Reposts;
 import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.weibo.bean.Statuses;
@@ -117,7 +119,7 @@ public class StatusService extends BaseService {
             return;
         }
         if (selectedPhotoPaths == null || selectedPhotoPaths.isEmpty()) {
-            WeiboAPI.get(StatusAPI.class).update(Obiew.getAppResources().getString(R.string.app_key), statusText)
+            WeiboAPI.get(StatusAPI.class).update(statusText)
                     .doOnSubscribe(subscriberAdapter.onSubscribeAction)
                     .doOnUnsubscribe(subscriberAdapter.onUnsubscribeAction)
                     .observeOn(AndroidSchedulers.mainThread())
@@ -136,5 +138,15 @@ public class StatusService extends BaseService {
             StatusPublishTask publishStatusTask = new StatusPublishTask(statusText, selectedPhotoPaths, subscriberAdapter);
             publishStatusTask.execute();
         }
+    }
+
+    public void repostStatus(Status status, String repostText, SubscriberAdapter<Comment> subscriberAdapter) {
+        Subscription subscription = WeiboAPI.get(StatusAPI.class)
+                .repost(status.id, repostText)
+                .doOnSubscribe(subscriberAdapter.onSubscribeAction)
+                .doOnUnsubscribe(subscriberAdapter.onUnsubscribeAction)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriberAdapter);
+        addSubscription(subscription);
     }
 }

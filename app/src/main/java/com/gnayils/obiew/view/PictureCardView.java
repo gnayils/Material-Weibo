@@ -18,7 +18,7 @@ import com.gnayils.obiew.util.ViewUtils;
 
 public class PictureCardView extends CardView {
 
-    public GiFHintImageView imageView;
+    public final GiFHintImageView imageView;
 
     public PictureCardView(Context context) {
         this(context, null);

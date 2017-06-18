@@ -24,8 +24,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.bumptech.glide.Glide;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.fragment.EmotionFragment;
 import com.gnayils.obiew.fragment.FriendshipFragment;
@@ -34,8 +37,10 @@ import com.gnayils.obiew.util.Popup;
 import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.weibo.TextDecorator;
 import com.gnayils.obiew.weibo.Weibo;
+import com.gnayils.obiew.weibo.bean.Comment;
 import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.weibo.bean.User;
+import com.gnayils.obiew.weibo.service.CommentService;
 import com.gnayils.obiew.weibo.service.StatusService;
 import com.gnayils.obiew.weibo.service.SubscriberAdapter;
 
@@ -48,12 +53,28 @@ import butterknife.ButterKnife;
 
 public class PublishActivity extends AppCompatActivity implements EmotionFragment.OnEmotionClickListener, GalleryFragment.OnPhotoClickListener, FriendshipFragment.OnFriendClickListener {
 
+    public static final String ARGS_KEY_PUBLISH_TYPE = "ARGS_KEY_PUBLISH_TYPE";
+    public static final String ARGS_KEY_STATUS = "ARGS_KEY_STATUS";
+
+    public static final int PUBLISH_TYPE_STATUS = 0;
+    public static final int PUBLISH_TYPE_REPOST = 1;
+    public static final int PUBLISH_TYPE_COMMENT = 2;
+
+
     private InputMethodManager inputMethodManager;
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.edit_text_content)
     EditText contentEditText;
+    @Bind(R.id.relative_layout_status_info)
+    RelativeLayout statusInfoRelativeLayout;
+    @Bind(R.id.image_view_avatar)
+    ImageView avatarImageView;
+    @Bind(R.id.text_view_screen_name)
+    TextView screenNameTextView;
+    @Bind(R.id.text_view_status_text)
+    TextView statusTextTextView;
     @Bind(R.id.layout_selected_image)
     LinearLayout selectedImageLayout;
     @Bind(R.id.image_button_emotion)
@@ -71,17 +92,21 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
     @Bind(R.id.frame_layout_function_content)
     FrameLayout functionContentLayout;
 
+    private int publishType;
+    private Status status;
+    private List<String> selectedPhotoList = new ArrayList<>();
+
     private EmotionFragment emotionFragment = EmotionFragment.newInstance();
     private GalleryFragment galleryFragment = GalleryFragment.newInstance();
     private FriendshipFragment friendshipFragment = FriendshipFragment.newInstance();
 
-    private List<String> selectedPhotoList = new ArrayList<>();
-
     private StatusService statusService = new StatusService();
+    private CommentService commentService = new CommentService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        publishType = getIntent().getIntExtra(ARGS_KEY_PUBLISH_TYPE, PUBLISH_TYPE_STATUS);
         setContentView(R.layout.activity_publish);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
@@ -214,6 +239,32 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
                 }
             }
         });
+
+        if(publishType == PUBLISH_TYPE_STATUS) {
+            getSupportActionBar().setTitle("发布微博");
+        } else if(publishType == PUBLISH_TYPE_REPOST) {
+            status = (Status) getIntent().getSerializableExtra(ARGS_KEY_STATUS);
+            galleryImageButton.setVisibility(View.GONE);
+            getSupportActionBar().setTitle("转发微博");
+            if(status.user != null) {
+                Status theStatus = status;
+                if(status.retweeted_status != null && status.retweeted_status.user != null) {
+                    contentEditText.setText("//@" + status.user.screen_name + ":" + theStatus.text);
+                    contentEditText.setSelection(0);
+                    theStatus = status.retweeted_status;
+                }
+                if(theStatus != null) {
+                    statusInfoRelativeLayout.setVisibility(View.VISIBLE);
+                    screenNameTextView.setText(theStatus.user.screen_name);
+                    statusTextTextView.setText(TextDecorator.decorate(theStatus.text));
+                    Glide.with(this).load(theStatus.user.avatar_large).into(avatarImageView);
+                }
+            }
+        } else if(publishType == PUBLISH_TYPE_COMMENT) {
+            status = (Status) getIntent().getSerializableExtra(ARGS_KEY_STATUS);
+            galleryImageButton.setVisibility(View.GONE);
+            getSupportActionBar().setTitle("评论微博");
+        }
     }
 
     private void hideSoftKeyBoard() {
@@ -294,7 +345,7 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_publish:
-                publishStatus();
+                publish();
                 break;
             default:
                 break;
@@ -302,52 +353,139 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
         return super.onOptionsItemSelected(item);
     }
 
-    private void publishStatus() {
-        if (contentEditText.getText().toString().isEmpty()) {
+    private void publish() {
+        if (contentEditText.getText().toString().trim().isEmpty()) {
+            Popup.waringDialog("提示", "内容不能为空...");
             return;
         }
         if (contentEditText.getText().toString().length() > Weibo.consts.STATUS_TEXT_MAX_LENGTH) {
+            Popup.waringDialog("提示", "内容不能超过140个字符...");
             return;
         }
         if (selectedPhotoList != null && selectedPhotoList.size() > 9) {
+            Popup.waringDialog("提示", "一次最多只能发送9张图片...");
             return;
         }
-        statusService.publishStatus(contentEditText.getText().toString(), selectedPhotoList, new SubscriberAdapter<Status>() {
 
-            MaterialDialog progressDialog = null;
+        if(publishType == PUBLISH_TYPE_STATUS) {
+            statusService.publishStatus(contentEditText.getText().toString(), selectedPhotoList, new SubscriberAdapter<Status>() {
 
-            @Override
-            public void onSubscribe() {
-                progressDialog = Popup.indeterminateProgressDialog("发布微博", "正在发布微博...", true);
-            }
+                MaterialDialog progressDialog = null;
 
-            @Override
-            public void onError(Throwable e) {
-                if (progressDialog != null) {
-                    progressDialog.dismiss();
+                @Override
+                public void onSubscribe() {
+                    progressDialog = Popup.indeterminateProgressDialog("发布微博", "正在发送微博...", true);
                 }
-                Popup.errorDialog("错误", "微博发布失败: " + e.getMessage());
-            }
 
-            @Override
-            public void onCompleted() {
-                if (progressDialog != null) {
-                    progressDialog.dismiss();
+                @Override
+                public void onError(Throwable e) {
+                    if (progressDialog != null) {
+                        progressDialog.dismiss();
+                    }
+                    Popup.errorDialog("错误", "微博发送失败: " + e.getMessage());
                 }
-                Popup.infoDialog("信息", "微博发布成功")
-                        .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                            @Override
-                            public void onDismiss(DialogInterface dialog) {
-                                PublishActivity.this.finish();
-                            }
-                        });
 
-            }
-        });
+                @Override
+                public void onCompleted() {
+                    if (progressDialog != null) {
+                        progressDialog.dismiss();
+                    }
+                    Popup.infoDialog("信息", "微博发送成功")
+                            .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                @Override
+                                public void onDismiss(DialogInterface dialog) {
+                                    PublishActivity.this.finish();
+                                }
+                            });
+
+                }
+            });
+        } else if(publishType == PUBLISH_TYPE_COMMENT) {
+            commentService.createComment(status, contentEditText.getText().toString(), new SubscriberAdapter<Comment>(){
+
+                MaterialDialog progressDialog = null;
+
+                @Override
+                public void onSubscribe() {
+                    progressDialog = Popup.indeterminateProgressDialog("评论微博", "正在发送评论...", true);
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    if (progressDialog != null) {
+                        progressDialog.dismiss();
+                    }
+                    Popup.errorDialog("错误", "评论发送失败: " + e.getMessage());
+                }
+
+                @Override
+                public void onCompleted() {
+                    if (progressDialog != null) {
+                        progressDialog.dismiss();
+                    }
+                    Popup.infoDialog("信息", "评论发送成功")
+                            .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                @Override
+                                public void onDismiss(DialogInterface dialog) {
+                                    PublishActivity.this.finish();
+                                }
+                            });
+
+                }
+            });
+        } else if(publishType == PUBLISH_TYPE_REPOST) {
+            statusService.repostStatus(status, contentEditText.getText().toString(), new SubscriberAdapter<Comment>(){
+
+                MaterialDialog progressDialog = null;
+
+                @Override
+                public void onSubscribe() {
+                    progressDialog = Popup.indeterminateProgressDialog("转发微博", "正在转发微博...", true);
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    if (progressDialog != null) {
+                        progressDialog.dismiss();
+                    }
+                    Popup.errorDialog("错误", "微博转发失败: " + e.getMessage());
+                }
+
+                @Override
+                public void onCompleted() {
+                    if (progressDialog != null) {
+                        progressDialog.dismiss();
+                    }
+                    Popup.infoDialog("信息", "微博转发成功")
+                            .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                @Override
+                                public void onDismiss(DialogInterface dialog) {
+                                    PublishActivity.this.finish();
+                                }
+                            });
+
+                }
+            });
+        }
     }
 
-    public static void start(Context context) {
+    public static void startForStatusPublishment(Context context) {
         Intent intent = new Intent(context, PublishActivity.class);
+        intent.putExtra(ARGS_KEY_PUBLISH_TYPE, PUBLISH_TYPE_STATUS);
+        context.startActivity(intent);
+    }
+
+    public static void startForCommentPublishment(Context context, Status status) {
+        Intent intent = new Intent(context, PublishActivity.class);
+        intent.putExtra(ARGS_KEY_PUBLISH_TYPE, PUBLISH_TYPE_COMMENT);
+        intent.putExtra(ARGS_KEY_STATUS, status);
+        context.startActivity(intent);
+    }
+
+    public static void startForRepostPublishment(Context context, Status status) {
+        Intent intent = new Intent(context, PublishActivity.class);
+        intent.putExtra(ARGS_KEY_PUBLISH_TYPE, PUBLISH_TYPE_REPOST);
+        intent.putExtra(ARGS_KEY_STATUS, status);
         context.startActivity(intent);
     }
 }

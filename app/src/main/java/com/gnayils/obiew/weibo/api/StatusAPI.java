@@ -1,5 +1,6 @@
 package com.gnayils.obiew.weibo.api;
 
+import com.gnayils.obiew.weibo.bean.Comment;
 import com.gnayils.obiew.weibo.bean.Reposts;
 import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.weibo.bean.Statuses;
@@ -45,7 +46,7 @@ public interface StatusAPI {
 
     @FormUrlEncoded
     @POST("2/statuses/update.json")
-    Observable<Status> update(@Field("source") String source, @Field("status") String status);
+    Observable<Status> update(@Field("status") String status);
 
     @Multipart
     @POST("2/statuses/upload.json")
@@ -57,8 +58,11 @@ public interface StatusAPI {
 
     @FormUrlEncoded
     @POST("2/statuses/upload_url_text.json")
-    Observable<Status> uploadUrlText(@Field("source") String source, @Field("status") String status, @Field("pic_id") String picId);
+    Observable<Status> uploadUrlText(@Field("status") String status, @Field("pic_id") String picId);
 
+    @FormUrlEncoded
+    @POST("2/statuses/repost.json")
+    Observable<Comment> repost(@Query("id") long statusId, @Field("status") String repost);
 
 
     @Deprecated

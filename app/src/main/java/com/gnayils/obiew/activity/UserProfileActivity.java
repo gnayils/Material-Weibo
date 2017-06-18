@@ -237,7 +237,7 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
                 if (feature == Status.FEATURE_ALL) {
                     statusTimelineView.show(loadLatest, statuses);
                 } else if (feature == Status.FEATURE_IMAGE) {
-                    imageTimelineView.show(statuses);
+                    imageTimelineView.show(loadLatest, statuses);
                 }
             }
         });

@@ -26,19 +26,11 @@ import static com.gnayils.obiew.util.ViewUtils.getDrawableByAttrId;
 
 public class CommentView extends CardView {
 
-    private Comment comment;
-
-    private RelativeLayout rootView;
-    private AvatarView userAvatarView;
-    private TextView screenNameTextView;
-    private TextView commentTimeTextView;
-    private TextView commentTextTextView;
-    public OnClickListener avatarCircleImageViewOnClickListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            UserProfileActivity.start(getContext(), comment.user);
-        }
-    };
+    public final RelativeLayout rootView;
+    public final AvatarView userAvatarView;
+    public final TextView screenNameTextView;
+    public final TextView commentTimeTextView;
+    public final TextView commentTextTextView;
 
     public CommentView(Context context) {
         this(context, null);
@@ -63,7 +55,6 @@ public class CommentView extends CardView {
         RelativeLayout.LayoutParams avatarViewLayoutParams = new RelativeLayout.LayoutParams(dp2px(context, 48), dp2px(context, 48));
         avatarViewLayoutParams.addRule(RelativeLayout.ALIGN_LEFT | RelativeLayout.ALIGN_TOP);
         userAvatarView.setLayoutParams(avatarViewLayoutParams);
-        userAvatarView.avatarCircleImageView.setOnClickListener(avatarCircleImageViewOnClickListener);
 
         screenNameTextView = new TextView(context);
         screenNameTextView.setText("用户名");
@@ -104,11 +95,10 @@ public class CommentView extends CardView {
     }
 
     public void show(Comment comment) {
-        this.comment = comment;
         Glide.with(getContext()).load(comment.user.avatar_large).into(userAvatarView.avatarCircleImageView);
         userAvatarView.verifiedIconImageView.setVisibility(comment.user.verified ? View.VISIBLE : View.INVISIBLE);
         if(comment.user.verified) {
-            screenNameTextView.setTextColor(Obiew.getAppResources().getColor(R.color.colorAccent));
+            screenNameTextView.setTextColor(Obiew.getAppResources().getColor(R.color.colorPrimary));
             switch(comment.user.verified_type) {
                 case 0:
                     userAvatarView.verifiedIconImageView.setImageResource(R.drawable.avatar_vip_golden);

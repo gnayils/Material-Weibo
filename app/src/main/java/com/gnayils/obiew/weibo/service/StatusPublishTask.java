@@ -82,7 +82,7 @@ public class StatusPublishTask extends AsyncTask<Void, Void, Status> {
                 return null;
             }
         }
-        Subscription subscription = statusAPI.uploadUrlText(Obiew.getAppResources().getString(R.string.app_key),
+        Subscription subscription = statusAPI.uploadUrlText(
                 statusText, picIds.substring(0, picIds.length() - 1))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<com.gnayils.obiew.weibo.bean.Status>() {

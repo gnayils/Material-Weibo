@@ -43,22 +43,22 @@ public class ImageTimelineView extends LoadMoreRecyclerView {
         setPadding(dp2px(context, 6), 0, dp2px(context, 6), 0);
     }
 
-    public void show(Statuses statuses) {
-        imageTimelineAdapter.addTimeline(statuses);
+    public void show(boolean isLatest, Statuses statuses) {
+        imageTimelineAdapter.addTimeline(isLatest, statuses);
     }
 
-    private class ImageTimelineAdapter extends LoadMoreRecyclerView.LoadMoreAdapter {
+    static class ImageTimelineAdapter extends LoadMoreRecyclerView.LoadMoreAdapter<ImageCardViewHolder> {
 
         List<PicUrls> picUrlsList = new ArrayList<>();
         List<Status> statusList = new ArrayList<>();
 
         @Override
-        public int getActualItemCount() {
+        public int getItemsCount() {
             return picUrlsList.size();
         }
 
         @Override
-        public RecyclerView.ViewHolder onCreateActualViewHolder(ViewGroup parent, int viewType) {
+        public ImageCardViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType) {
             PictureCardView pictureCardView = new PictureCardView(parent.getContext());
             RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
             layoutParams.setMargins(dp2px(pictureCardView.getContext(), 2), dp2px(pictureCardView.getContext(), 4), dp2px(pictureCardView.getContext(), 2), dp2px(pictureCardView.getContext(), 0));
@@ -67,16 +67,32 @@ public class ImageTimelineView extends LoadMoreRecyclerView {
         }
 
         @Override
-        public void onBindActualViewHolder(RecyclerView.ViewHolder holder, int position) {
-            GiFHintImageView imageView = ((ImageCardViewHolder) holder).imageView;
-            imageView.setHintVisible(picUrlsList.get(position).isGif());
-            Glide.with(getContext()).load(picUrlsList.get(position).middle()).asBitmap().into(imageView);
+        public void onBindItemViewHolder(ImageCardViewHolder holder, int position) {
+            holder.imageView.setHintVisible(picUrlsList.get(position).isGif());
+            Glide.with(holder.imageView.getContext()).load(picUrlsList.get(position).middle()).asBitmap().into(holder.imageView);
         }
 
-        public void addTimeline(Statuses statuses) {
-            Set<Status> statusSet = new TreeSet<>(statusList);
-            statusSet.addAll(statuses.statuses);
-            statusList.clear();
+        @Override
+        public ImageCardViewHolder onCreateFooterViewHolder(ViewGroup parent, int viewType) {
+            return new ImageCardViewHolder(new DefaultFooterView(parent, parent.getContext()));
+        }
+
+        @Override
+        public void onBindFooterViewHolder(ImageCardViewHolder holder, int position) {
+            holder.defaultFooterView.progressDrawable.stop();
+            holder.defaultFooterView.progressDrawable.start();
+        }
+
+        public void addTimeline(boolean isLatest, Statuses statuses) {
+            Set<Status> statusSet = new TreeSet<>();
+            if(isLatest) {
+                statusList.clear();
+                statusSet.addAll(statuses.statuses);
+            } else {
+                statusSet.addAll(statusList);
+                statusSet.addAll(statuses.statuses);
+                statusList.clear();
+            }
             statusList.addAll(statusSet);
 
             picUrlsList.clear();
@@ -89,13 +105,19 @@ public class ImageTimelineView extends LoadMoreRecyclerView {
         }
     }
 
-    class ImageCardViewHolder extends RecyclerView.ViewHolder {
+    static class ImageCardViewHolder extends RecyclerView.ViewHolder {
 
         GiFHintImageView imageView;
+        DefaultFooterView defaultFooterView;
 
         ImageCardViewHolder(PictureCardView pictureCardView) {
             super(pictureCardView);
             imageView = pictureCardView.imageView;
+        }
+
+        ImageCardViewHolder(DefaultFooterView defaultFooterView) {
+            super(defaultFooterView);
+            this.defaultFooterView = defaultFooterView;
         }
     }
 }
