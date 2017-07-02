@@ -15,10 +15,10 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/black_alpha_66"
-        android:theme="@style/AppTheme.AppBarOverlay"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         android:elevation="4dp"
         app:navigationIcon="@drawable/abc_ic_ab_back_material"
-        app:popupTheme="@style/AppTheme.PopupOverlay" />
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
 </FrameLayout>
 

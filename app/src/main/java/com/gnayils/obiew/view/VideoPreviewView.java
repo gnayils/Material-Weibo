@@ -16,7 +16,6 @@ import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.activity.PlayerActivity;
 import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.weibo.bean.URL;
 import com.gnayils.obiew.weibo.bean.Video;

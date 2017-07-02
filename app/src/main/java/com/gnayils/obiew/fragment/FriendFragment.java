@@ -4,17 +4,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.SpannableString;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.interfaces.BasePresenter;
-import com.gnayils.obiew.interfaces.FriendshipInterface;
-import com.gnayils.obiew.presenter.FriendshipPresenter;
-import com.gnayils.obiew.util.Popup;
 import com.gnayils.obiew.view.UserRecyclerView;
 import com.gnayils.obiew.weibo.Account;
 import com.gnayils.obiew.weibo.bean.User;
@@ -25,10 +20,10 @@ import com.gnayils.obiew.weibo.service.SubscriberAdapter;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class FriendshipFragment extends Fragment {
+public class FriendFragment extends Fragment {
 
-    @Bind(R.id.user_recycler_view)
-    protected UserRecyclerView userRecyclerView;
+    @Bind(R.id.recycler_view)
+    protected UserRecyclerView recyclerView;
     @Bind(R.id.progress_bar)
     protected ProgressBar progressBar;
 
@@ -36,11 +31,11 @@ public class FriendshipFragment extends Fragment {
 
     private FriendshipService friendshipService = new FriendshipService();
 
-    public FriendshipFragment() {
+    public FriendFragment() {
     }
 
-    public static FriendshipFragment newInstance() {
-        FriendshipFragment fragment = new FriendshipFragment();
+    public static FriendFragment newInstance() {
+        FriendFragment fragment = new FriendFragment();
         return fragment;
     }
 
@@ -56,9 +51,9 @@ public class FriendshipFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_users, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_friend, container, false);
         ButterKnife.bind(this, rootView);
-        userRecyclerView.setOnItemClickListener(new UserRecyclerView.OnItemClickListener() {
+        recyclerView.setOnItemClickListener(new UserRecyclerView.OnItemClickListener() {
             @Override
             public void onItemClick(User user) {
                 if(listener != null) {
@@ -74,7 +69,7 @@ public class FriendshipFragment extends Fragment {
 
             @Override
             public void onNext(Users users) {
-                userRecyclerView.show(users.users);
+                recyclerView.show(users.users);
             }
 
             @Override

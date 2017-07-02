@@ -13,4 +13,7 @@
     <dimen name="emotion_size_in_text">18dp</dimen>
     <dimen name="emotion_size_in_drawer">32dp</dimen>
 
+    <!-- set the size of FloatingActionButton that comes from getbase libs-->
+    <dimen name="fab_icon_size">16dp</dimen>
+
 </resources>

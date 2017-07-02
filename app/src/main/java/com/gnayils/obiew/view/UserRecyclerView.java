@@ -50,7 +50,7 @@ public class UserRecyclerView extends RecyclerView {
     }
 
 
-    class RecyclerViewAdapter extends Adapter<ViewHolder> {
+    class RecyclerViewAdapter extends Adapter<UserItemViewHolder> {
 
         private List<User> userList = new ArrayList<>();
 
@@ -59,15 +59,15 @@ public class UserRecyclerView extends RecyclerView {
         }
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public UserItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             return new UserItemViewHolder(new UserItemView(parent.getContext()));
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
+        public void onBindViewHolder(UserItemViewHolder holder, int position) {
             final User user = userList.get(position);
-            ((UserItemViewHolder)holder).userItemView.show(user);
-            ((UserItemViewHolder)holder).userItemView.setOnClickListener(new OnClickListener() {
+            holder.userItemView.show(user);
+            holder.userItemView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(onItemClickListener != null) {
@@ -93,7 +93,7 @@ public class UserRecyclerView extends RecyclerView {
         this.onItemClickListener = onItemClickListener;
     }
 
-    class UserItemViewHolder extends ViewHolder {
+    static class UserItemViewHolder extends ViewHolder {
 
         UserItemView userItemView;
 

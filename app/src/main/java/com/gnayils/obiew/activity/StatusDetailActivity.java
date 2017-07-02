@@ -1,5 +1,9 @@
 package com.gnayils.obiew.activity;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -16,15 +20,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.gnayils.obiew.R;
+import com.gnayils.obiew.util.Popup;
 import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.view.CommentTimelineView;
 import com.gnayils.obiew.view.LoadMoreRecyclerView;
 import com.gnayils.obiew.view.RepostTimelineView;
+import com.gnayils.obiew.view.StatusPicturesView;
 import com.gnayils.obiew.view.StatusView;
 import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.bean.Comments;
@@ -37,7 +46,7 @@ import com.gnayils.obiew.weibo.service.SubscriberAdapter;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class StatusDetailActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener, SwipeRefreshLayout.OnRefreshListener {
+public class StatusDetailActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener, SwipeRefreshLayout.OnRefreshListener, View.OnClickListener, StatusPicturesView.OnPictureItemClickListener {
 
     public static final String ARGS_KEY_STATUS = "ARGS_KEY_STATUS";
     public static final String ARGS_KEY_STATUS_VIEW_EXPANDED = "ARGS_KEY_STATUS_VIEW_EXPANDED";
@@ -51,7 +60,7 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
     AppBarLayout appBarLayout;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.status_card_view)
+    @Bind(R.id.status_view)
     StatusView statusView;
     @Bind(R.id.tab_layout)
     TabLayout tabLayout;
@@ -59,6 +68,8 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
     TextView likeCountTextView;
     @Bind(R.id.view_pager)
     ViewPager viewPager;
+    @Bind(R.id.content_scrim)
+    View contentScrimView;
     @Bind(R.id.fam_actions)
     FloatingActionsMenu floatingActionsMenu;
     @Bind(R.id.fab_comment)
@@ -106,7 +117,6 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
         likeCountTextView.setText(Weibo.format.commentCount(status.attitudes_count) + " 赞");
         commentTimelineView = new CommentTimelineView(this);
         repostTimelineView = new RepostTimelineView(this);
-
         commentTimelineView.setOnLoadMoreListener(new LoadMoreRecyclerView.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
@@ -119,9 +129,49 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
                 showRepostTimeline(false);
             }
         });
+
+        statusView.userAvatarView.avatarCircleImageView.setOnClickListener(this);
+        statusView.retweetedStatusView.setOnClickListener(this);
+        statusView.statusPicturesView.setOnPictureItemClickListener(this);
+        statusView.retweetedStatusPicturesView.setOnPictureItemClickListener(this);
+        statusView.videoPreviewView.coverImageView.setOnClickListener(this);
+        statusView.retweetedVideoPreviewView.coverImageView.setOnClickListener(this);
+
         repostFab.setIconDrawable(ViewUtils.getTintedDrawable(this, R.drawable.ic_repost, Color.WHITE));
         commentFab.setIconDrawable(ViewUtils.getTintedDrawable(this, R.drawable.ic_comment, Color.WHITE));
         likeFab.setIconDrawable(ViewUtils.getTintedDrawable(this, R.drawable.ic_like, Color.WHITE));
+        floatingActionsMenu.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
+            @Override
+            public void onMenuExpanded() {
+                ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(contentScrimView, "alpha", 0, 1).setDuration(200);
+                objectAnimator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        contentScrimView.setVisibility(View.VISIBLE);
+                    }
+                });
+                objectAnimator.start();
+            }
+
+            @Override
+            public void onMenuCollapsed() {
+                ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(contentScrimView, "alpha", 1, 0).setDuration(200);
+                objectAnimator.addListener(new AnimatorListenerAdapter() {
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        contentScrimView.setVisibility(View.GONE);
+                    }
+                });
+                objectAnimator.start();
+            }
+        });
+        contentScrimView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                floatingActionsMenu.collapse();
+            }
+        });
         commentFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -162,6 +212,18 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
         menuItem = menu.findItem(R.id.action_share);
         menuItem.setIcon(ViewUtils.tintDrawable(menuItem.getIcon(), Color.WHITE));
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_collect:
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -225,6 +287,30 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
                 }
             }
         });
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v == statusView.userAvatarView.avatarCircleImageView) {
+            UserProfileActivity.start(v.getContext(), status.user);
+        } else if (v == statusView.retweetedStatusView) {
+            if (status.retweeted_status.user != null) {
+                StatusDetailActivity.start(v.getContext(), status.retweeted_status);
+            }
+        } else if (v == statusView.videoPreviewView.coverImageView) {
+            PlayerActivity.start(v.getContext(), status.videoUrls.video);
+        } else if (v == statusView.retweetedVideoPreviewView.coverImageView) {
+            PlayerActivity.start(v.getContext(), status.retweeted_status.videoUrls.video);
+        }
+    }
+
+    @Override
+    public void onPictureItemClick(StatusPicturesView view, View v, int index) {
+        if (view == statusView.statusPicturesView) {
+            PicturePagerActivity.start(v.getContext(), index, status.pic_urls);
+        } else if (view == statusView.retweetedStatusPicturesView) {
+            PicturePagerActivity.start(v.getContext(), index, status.retweeted_status.pic_urls);
+        }
     }
 
     class ViewPagerAdapter extends PagerAdapter {

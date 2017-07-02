@@ -2,9 +2,16 @@ package com.gnayils.obiew.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.SystemClock;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
@@ -16,6 +23,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,11 +33,18 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.fragment.PictureFragment;
+import com.gnayils.obiew.util.Popup;
 import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.weibo.bean.PicUrls;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
@@ -41,6 +56,8 @@ import butterknife.ButterKnife;
  */
 
 public class PicturePagerActivity extends AppCompatActivity {
+
+    public static final String TAG = PicturePagerActivity.class.getSimpleName();
 
     public static final String ARGS_KEY_CURRENT_PICTURE_POSITION = "ARGS_KEY_CURRENT_PICTURE_POSITION";
     public static final String ARGS_KEY_PICTURE_URLS = "ARGS_KEY_PICTURE_URLS";
@@ -93,11 +110,62 @@ public class PicturePagerActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
+                savePicture();
                 break;
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void savePicture() {
+        PicUrls picUrls = pictureUrls.get(viewPager.getCurrentItem());
+        Glide.with(this).load(picUrls.large()).asBitmap()
+                .toBytes(Bitmap.CompressFormat.JPEG, 88)
+                .into(new SimpleTarget<byte[]>() {
+                    @Override
+                    public void onResourceReady(final byte[] resource, GlideAnimation<? super byte[]> glideAnimation) {
+                        new AsyncTask<Void, Void, String>() {
+                            @Override
+                            protected String doInBackground(Void... params) {
+                                String fileName = System.currentTimeMillis() + ".jpg";
+                                File file = new File(Environment.getExternalStorageDirectory() + File.separator + getString(R.string.app_name) + File.separator + fileName);
+                                File dir = file.getParentFile();
+                                BufferedOutputStream bufferedOutputStream = null;
+                                try {
+                                    if (!dir.mkdirs() && (!dir.exists() || !dir.isDirectory())) {
+                                        throw new IOException("Cannot ensure parent directory for file " + file);
+                                    }
+                                    bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(file));
+                                    bufferedOutputStream.write(resource);
+                                    bufferedOutputStream.flush();
+                                    String result = MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), fileName, null);
+                                    MediaScannerConnection.scanFile(PicturePagerActivity.this, new String[]{result}, new String[]{"image/jpeg"}, null);
+                                    return result;
+                                } catch (Exception e) {
+                                    Log.e(TAG, "save image failed", e);
+                                } finally {
+                                    if (bufferedOutputStream != null) {
+                                        try {
+                                            bufferedOutputStream.close();
+                                        } catch (IOException e) {
+                                        }
+                                    }
+                                }
+                                return null;
+                            }
+
+                            @Override
+                            protected void onPostExecute(String result) {
+                                if(result != null && !result.isEmpty()) {
+                                    Popup.toast("保存成功");
+                                } else {
+                                    Popup.toast("保存失败");
+                                }
+                            }
+                        }.execute();
+                    }
+                });
     }
 
     class PagerAdapter extends FragmentStatePagerAdapter {

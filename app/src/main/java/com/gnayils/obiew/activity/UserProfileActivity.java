@@ -9,6 +9,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -96,7 +98,13 @@ public class UserProfileActivity extends AppCompatActivity implements AppBarLayo
         swipeRefreshLayout.setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
             @Override
             public boolean canChildScrollUp(SwipeRefreshLayout parent, @Nullable View child) {
-                return 0 > appBarCurrentVerticalOffset;
+                if(0 > appBarCurrentVerticalOffset) {
+                    return true;
+                }
+                View currentView = tabLayout.getSelectedTabPosition() == 0 ? statusTimelineView
+                        : tabLayout.getSelectedTabPosition() == 1 ? imageTimelineView
+                        : null;
+                return currentView != null && ViewCompat.canScrollVertically(currentView, -1);
             }
         });
         appBarLayout.addOnOffsetChangedListener(this);

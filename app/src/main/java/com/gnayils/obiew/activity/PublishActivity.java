@@ -1,13 +1,11 @@
 package com.gnayils.obiew.activity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.SpannableString;
@@ -17,6 +15,7 @@ import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -31,7 +30,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.fragment.EmotionFragment;
-import com.gnayils.obiew.fragment.FriendshipFragment;
+import com.gnayils.obiew.fragment.FriendFragment;
 import com.gnayils.obiew.fragment.GalleryFragment;
 import com.gnayils.obiew.util.Popup;
 import com.gnayils.obiew.util.ViewUtils;
@@ -51,7 +50,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 
-public class PublishActivity extends AppCompatActivity implements EmotionFragment.OnEmotionClickListener, GalleryFragment.OnPhotoClickListener, FriendshipFragment.OnFriendClickListener {
+public class PublishActivity extends AppCompatActivity implements EmotionFragment.OnEmotionClickListener, GalleryFragment.OnPhotoClickListener, FriendFragment.OnFriendClickListener {
 
     public static final String ARGS_KEY_PUBLISH_TYPE = "ARGS_KEY_PUBLISH_TYPE";
     public static final String ARGS_KEY_STATUS = "ARGS_KEY_STATUS";
@@ -89,8 +88,8 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
     ImageButton backspaceImageButton;
     @Bind(R.id.linear_layout_function_bar)
     LinearLayout functionBarLayout;
-    @Bind(R.id.frame_layout_function_content)
-    FrameLayout functionContentLayout;
+    @Bind(R.id.frame_layout_fragment)
+    FrameLayout fragmentContainer;
 
     private int publishType;
     private Status status;
@@ -98,10 +97,11 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
 
     private EmotionFragment emotionFragment = EmotionFragment.newInstance();
     private GalleryFragment galleryFragment = GalleryFragment.newInstance();
-    private FriendshipFragment friendshipFragment = FriendshipFragment.newInstance();
+    private FriendFragment friendFragment = FriendFragment.newInstance();
 
     private StatusService statusService = new StatusService();
     private CommentService commentService = new CommentService();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,8 +182,11 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
                 galleryImageButton.setSelected(false);
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.frame_layout_function_content, emotionFragment)
+                        .replace(R.id.frame_layout_fragment, emotionFragment)
                         .commit();
+                ViewGroup.LayoutParams layoutParams =  fragmentContainer.getLayoutParams();
+                layoutParams.height = ViewUtils.dp2px(v.getContext(), 200);
+                fragmentContainer.setLayoutParams(layoutParams);
                 hideSoftKeyBoard();
             }
         });
@@ -195,8 +198,11 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
                 emotionImageButton.setSelected(false);
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.frame_layout_function_content, galleryFragment)
+                        .replace(R.id.frame_layout_fragment, galleryFragment)
                         .commit();
+                ViewGroup.LayoutParams layoutParams =  fragmentContainer.getLayoutParams();
+                layoutParams.height = ViewUtils.dp2px(v.getContext(), 360);
+                fragmentContainer.setLayoutParams(layoutParams);
                 hideSoftKeyBoard();
             }
         });
@@ -208,8 +214,11 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
                 emotionImageButton.setSelected(false);
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.frame_layout_function_content, friendshipFragment)
+                        .replace(R.id.frame_layout_fragment, friendFragment)
                         .commit();
+                ViewGroup.LayoutParams layoutParams =  fragmentContainer.getLayoutParams();
+                layoutParams.height = ViewUtils.dp2px(v.getContext(), 360);
+                fragmentContainer.setLayoutParams(layoutParams);
                 hideSoftKeyBoard();
             }
         });
@@ -268,21 +277,21 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
     }
 
     private void hideSoftKeyBoard() {
-        if (functionContentLayout.getVisibility() == View.GONE) {
+        if (fragmentContainer.getVisibility() == View.GONE) {
             inputMethodManager.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
             getWindow().getDecorView().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    functionContentLayout.setVisibility(View.VISIBLE);
+                    fragmentContainer.setVisibility(View.VISIBLE);
                 }
             }, 100);
         }
     }
 
     private void hideFunctionContent() {
-        if (functionContentLayout.getVisibility() == View.VISIBLE) {
+        if (fragmentContainer.getVisibility() == View.VISIBLE) {
             functionBarLayout.setVisibility(View.INVISIBLE);
-            functionContentLayout.setVisibility(View.GONE);
+            fragmentContainer.setVisibility(View.GONE);
             inputMethodManager.showSoftInput(contentEditText, 0);
             getWindow().getDecorView().postDelayed(new Runnable() {
                 @Override
@@ -295,8 +304,8 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
 
     @Override
     public void onBackPressed() {
-        if (functionContentLayout.getVisibility() == View.VISIBLE) {
-            functionContentLayout.setVisibility(View.GONE);
+        if (fragmentContainer.getVisibility() == View.VISIBLE) {
+            fragmentContainer.setVisibility(View.GONE);
         } else {
             super.onBackPressed();
         }
@@ -315,14 +324,12 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
         if (selectedPhotoList.size() < 9) {
             ImageView imageView = new ImageView(this);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(getApplicationContext().getContentResolver(),
-                    id, MediaStore.Images.Thumbnails.MINI_KIND, null);
-            imageView.setImageBitmap(bitmap);
             LinearLayout.LayoutParams imageViewLayoutParam = new LinearLayout.LayoutParams(ViewUtils.dp2px(this, 96), ViewUtils.dp2px(this, 96));
             imageViewLayoutParam.setMargins(ViewUtils.dp2px(this, 2), 0, ViewUtils.dp2px(this, 2), 0);
             imageView.setLayoutParams(imageViewLayoutParam);
             selectedImageLayout.addView(imageView);
             selectedPhotoList.add(data);
+            Glide.with(this).load(data).asBitmap().into(imageView);
         }
     }
 
@@ -382,7 +389,7 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
                     if (progressDialog != null) {
                         progressDialog.dismiss();
                     }
-                    Popup.errorDialog("错误", "微博发送失败: " + e.getMessage());
+                    Popup.toast("微博发送失败: " + e.getMessage());
                 }
 
                 @Override
@@ -390,14 +397,8 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
                     if (progressDialog != null) {
                         progressDialog.dismiss();
                     }
-                    Popup.infoDialog("信息", "微博发送成功")
-                            .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                                @Override
-                                public void onDismiss(DialogInterface dialog) {
-                                    PublishActivity.this.finish();
-                                }
-                            });
-
+                    Popup.toast("微博发送成功");
+                    PublishActivity.this.finish();
                 }
             });
         } else if(publishType == PUBLISH_TYPE_COMMENT) {
@@ -415,7 +416,7 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
                     if (progressDialog != null) {
                         progressDialog.dismiss();
                     }
-                    Popup.errorDialog("错误", "评论发送失败: " + e.getMessage());
+                    Popup.toast("评论发送失败: " + e.getMessage());
                 }
 
                 @Override
@@ -423,14 +424,8 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
                     if (progressDialog != null) {
                         progressDialog.dismiss();
                     }
-                    Popup.infoDialog("信息", "评论发送成功")
-                            .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                                @Override
-                                public void onDismiss(DialogInterface dialog) {
-                                    PublishActivity.this.finish();
-                                }
-                            });
-
+                    Popup.toast("评论发送成功");
+                    PublishActivity.this.finish();
                 }
             });
         } else if(publishType == PUBLISH_TYPE_REPOST) {
@@ -448,7 +443,7 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
                     if (progressDialog != null) {
                         progressDialog.dismiss();
                     }
-                    Popup.errorDialog("错误", "微博转发失败: " + e.getMessage());
+                    Popup.toast("微博转发失败: " + e.getMessage());
                 }
 
                 @Override
@@ -456,14 +451,8 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
                     if (progressDialog != null) {
                         progressDialog.dismiss();
                     }
-                    Popup.infoDialog("信息", "微博转发成功")
-                            .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                                @Override
-                                public void onDismiss(DialogInterface dialog) {
-                                    PublishActivity.this.finish();
-                                }
-                            });
-
+                    Popup.toast("微博转发成功");
+                    PublishActivity.this.finish();
                 }
             });
         }

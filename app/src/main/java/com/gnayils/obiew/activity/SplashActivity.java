@@ -1,7 +1,11 @@
 package com.gnayils.obiew.activity;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +13,7 @@ import android.util.Size;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.util.ViewUtils;
@@ -25,6 +30,8 @@ public class SplashActivity extends AppCompatActivity {
     @Bind(R.id.button_login)
     Button loginButton;
 
+    @Bind(R.id.content_view)
+    LinearLayout contentView;
     @Bind(R.id.frame_layout_bottom_part)
     FrameLayout bottomPartFrameLayout;
     @Bind(R.id.frame_layout_top_part)
@@ -42,6 +49,17 @@ public class SplashActivity extends AppCompatActivity {
                 LoginActivity.start(SplashActivity.this);
             }
         });
+
+        /*
+        ObjectAnimator objectAnimator = ObjectAnimator.ofObject(contentView, "backgroundColor",
+                new ArgbEvaluator(),
+                getResources().getColor(R.color.colorPrimaryDark),
+                Color.parseColor("#4A148C"));
+        objectAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        objectAnimator.setRepeatMode(ValueAnimator.REVERSE);
+        objectAnimator.setDuration(800);
+        objectAnimator.start();
+        */
     }
 
     @Override
