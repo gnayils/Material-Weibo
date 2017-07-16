@@ -59,7 +59,7 @@
             android:textSize="18dp"
             android:textColor="@color/while_alpha_B3"
             android:background="@drawable/bg_rect_ripple_round_sides"
-            android:backgroundTint="@color/colorPrimary"/>
+            android:backgroundTint="?attr/colorPrimary"/>
 
     </FrameLayout>
 

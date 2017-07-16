@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.gnayils.obiew.Obiew;
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.activity.UserProfileActivity;
+import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.WeiboSpanMovementMethod;
 import com.gnayils.obiew.weibo.bean.Comment;
@@ -69,7 +69,7 @@ public class CommentView extends CardView {
         commentTimeTextView.setText("15分钟前");
         commentTimeTextView.setId(View.generateViewId());
         commentTimeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        commentTimeTextView.setTextColor(getResources().getColor(R.color.black_alpha_80));
+        commentTimeTextView.setTextColor(ViewUtils.getColorByAttrId(context, R.attr.themeColorSecondaryText));
         RelativeLayout.LayoutParams statusTimeTextViewLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         statusTimeTextViewLayoutParams.setMargins(dp2px(context, 8), 0, 0, dp2px(context, 4));
         statusTimeTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, userAvatarView.getId());
@@ -92,13 +92,15 @@ public class CommentView extends CardView {
         rootView.addView(commentTextTextView);
 
         addView(rootView);
+
+        getBackground().setTint(ViewUtils.getColorByAttrId(context, R.attr.themeColorViewBackground));
     }
 
     public void show(Comment comment) {
         Glide.with(getContext()).load(comment.user.avatar_large).into(userAvatarView.avatarCircleImageView);
         userAvatarView.verifiedIconImageView.setVisibility(comment.user.verified ? View.VISIBLE : View.INVISIBLE);
         if(comment.user.verified) {
-            screenNameTextView.setTextColor(Obiew.getAppResources().getColor(R.color.colorPrimary));
+            screenNameTextView.setTextColor(ViewUtils.getColorByAttrId(getContext(), R.attr.themeColorPrimaryInverse));
             switch(comment.user.verified_type) {
                 case 0:
                     userAvatarView.verifiedIconImageView.setImageResource(R.drawable.avatar_vip_golden);
@@ -111,7 +113,7 @@ public class CommentView extends CardView {
                     break;
             }
         } else {
-            screenNameTextView.setTextColor(Obiew.getAppResources().getColor(R.color.black_alpha_CC));
+            screenNameTextView.setTextColor(ViewUtils.getColorByAttrId(getContext(), R.attr.themeColorPrimaryText));
         }
         screenNameTextView.setText(comment.user.screen_name);
         commentTimeTextView.setText(Weibo.format.date(comment.created_at));

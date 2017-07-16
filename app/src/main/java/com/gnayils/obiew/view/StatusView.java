@@ -1,6 +1,8 @@
 package com.gnayils.obiew.view;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -12,8 +14,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.gnayils.obiew.Obiew;
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.activity.StatusDetailActivity;
-import com.gnayils.obiew.activity.UserProfileActivity;
 import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.bean.Status;
@@ -60,6 +60,7 @@ public class StatusView extends CardView {
     public StatusView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
+
         rootView = new LinearLayout(context);
         rootView.setId(View.generateViewId());
         rootView.setOrientation(LinearLayout.VERTICAL);
@@ -91,7 +92,7 @@ public class StatusView extends CardView {
         statusTimeTextView.setText("15分钟前");
         statusTimeTextView.setId(View.generateViewId());
         statusTimeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        statusTimeTextView.setTextColor(getResources().getColor(R.color.black_alpha_80));
+        statusTimeTextView.setTextColor(ViewUtils.getColorByAttrId(context, R.attr.themeColorSecondaryText));
         RelativeLayout.LayoutParams statusTimeTextViewLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         statusTimeTextViewLayoutParams.setMargins(dp2px(context, 8), 0, 0, dp2px(context, 4));
         statusTimeTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, userAvatarView.getId());
@@ -101,7 +102,7 @@ public class StatusView extends CardView {
         statusSourceTextView = new TextView(context);
         statusSourceTextView.setText("微博 weibo.com");
         statusSourceTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        statusSourceTextView.setTextColor(getResources().getColor(R.color.black_alpha_80));
+        statusSourceTextView.setTextColor(ViewUtils.getColorByAttrId(context, R.attr.themeColorSecondaryText));
         RelativeLayout.LayoutParams sourceTextViewLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         sourceTextViewLayoutParams.setMargins(dp2px(context, 8), 0, 0, 0);
         sourceTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, statusTimeTextView.getId());
@@ -137,7 +138,7 @@ public class StatusView extends CardView {
         retweetedStatusView = new LinearLayout(context);
         retweetedStatusView.setId(View.generateViewId());
         retweetedStatusView.setOrientation(LinearLayout.VERTICAL);
-        retweetedStatusView.setBackground(createRippleDrawable(getResources().getColor(R.color.grey_200), 0));
+        retweetedStatusView.setBackground(createRippleDrawable(ViewUtils.getColorByAttrId(context, R.attr.themeColorWindowBackground), 0));
 
         LinearLayout.LayoutParams retweetedStatusViewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         retweetedStatusView.setLayoutParams(retweetedStatusViewLayoutParams);
@@ -171,28 +172,29 @@ public class StatusView extends CardView {
 
         repostButton = new CenteredDrawableButton(context);
         repostButton.setId(View.generateViewId());
-        repostButton.setTextColor(getResources().getColor(R.color.black_alpha_80));
+        repostButton.setTextColor(ViewUtils.getColorByAttrId(getContext(), R.attr.themeColorSecondaryText));
         repostButton.setBackground(getDrawableByAttrId(context, R.attr.selectableItemBackground));
         repostButton.setCompoundDrawablePadding(dp2px(context, 2));
         repostButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        repostButton.setCompoundDrawablesWithIntrinsicBounds(ViewUtils.getTintedDrawable(context, R.drawable.ic_repost, getResources().getColor(R.color.grey_600)), null, null, null);
+        repostButton.setCompoundDrawablesWithIntrinsicBounds(ViewUtils.getTintedDrawable(context, R.drawable.ic_repost, ViewUtils.getColorByAttrId(getContext(), R.attr.themeColorSecondaryText)), null, null, null);
         repostButton.setLayoutParams(hotrankButtonsLayoutParams);
 
         commentButton = new CenteredDrawableButton(context);
         commentButton.setId(View.generateViewId());
-        commentButton.setTextColor(getResources().getColor(R.color.black_alpha_80));
+        commentButton.setTextColor(ViewUtils.getColorByAttrId(getContext(), R.attr.themeColorSecondaryText));
         commentButton.setCompoundDrawablePadding(dp2px(context, 2));
         commentButton.setBackground(getDrawableByAttrId(context, R.attr.selectableItemBackground));
         commentButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        commentButton.setCompoundDrawablesWithIntrinsicBounds(ViewUtils.getTranslucentDrawable(context, R.drawable.ic_comment, getResources().getColor(R.color.grey_600)), null, null, null);
+        commentButton.setCompoundDrawablesWithIntrinsicBounds(ViewUtils.getTintedDrawable(context, R.drawable.ic_comment, ViewUtils.getColorByAttrId(getContext(), R.attr.themeColorSecondaryText)), null, null, null);
         commentButton.setLayoutParams(hotrankButtonsLayoutParams);
 
         likeButton = new CenteredDrawableButton(context);
-        likeButton.setTextColor(getResources().getColor(R.color.black_alpha_80));
+        likeButton.setTextColor(ViewUtils.getColorByAttrId(getContext(), R.attr.themeColorSecondaryText));
         likeButton.setCompoundDrawablePadding(dp2px(context, 2));
         likeButton.setBackground(getDrawableByAttrId(context, R.attr.selectableItemBackground));
         likeButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        likeButton.setCompoundDrawablesWithIntrinsicBounds(ViewUtils.getTranslucentDrawable(context, R.drawable.ic_like, getResources().getColor(R.color.grey_600)), null, null, null);
+
+        likeButton.setCompoundDrawablesWithIntrinsicBounds(ViewUtils.getTintedDrawable(context, R.drawable.ic_like, ViewUtils.getColorByAttrId(getContext(), R.attr.themeColorSecondaryText)), null, null, null);
         likeButton.setLayoutParams(hotrankButtonsLayoutParams);
 
         commentLayout.addView(repostButton);
@@ -207,6 +209,8 @@ public class StatusView extends CardView {
         rootView.addView(commentLayout);
 
         addView(rootView);
+
+        getBackground().setTint(ViewUtils.getColorByAttrId(context, R.attr.themeColorViewBackground));
     }
 
     public void show(Status status) {
@@ -217,7 +221,7 @@ public class StatusView extends CardView {
             Glide.with(getContext()).load(status.user.avatar_large).into(userAvatarView.avatarCircleImageView);
             userAvatarView.verifiedIconImageView.setVisibility(status.user.verified ? View.VISIBLE : View.INVISIBLE);
             if (status.user.verified) {
-                screenNameTextView.setTextColor(Obiew.getAppResources().getColor(R.color.colorPrimaryDark));
+                screenNameTextView.setTextColor(ViewUtils.getColorByAttrId(getContext(), R.attr.themeColorPrimaryInverse));
                 switch (status.user.verified_type) {
                     case 0:
                         userAvatarView.verifiedIconImageView.setImageResource(R.drawable.avatar_vip_golden);
@@ -230,7 +234,7 @@ public class StatusView extends CardView {
                         break;
                 }
             } else {
-                screenNameTextView.setTextColor(Obiew.getAppResources().getColor(R.color.black_alpha_CC));
+                screenNameTextView.setTextColor(ViewUtils.getColorByAttrId(getContext(), R.attr.themeColorPrimaryText));
             }
             screenNameTextView.setText(status.user.screen_name);
             statusSourceTextView.setText(status.getSpannableSource());

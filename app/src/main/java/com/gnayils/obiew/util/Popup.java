@@ -1,8 +1,10 @@
 package com.gnayils.obiew.util;
 
+import android.graphics.PorterDuff;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.gnayils.obiew.Obiew;
 import com.gnayils.obiew.R;
 
@@ -18,8 +20,10 @@ public class Popup {
 
     public static MaterialDialog errorDialog(String title, String message) {
         return new MaterialDialog.Builder(Obiew.getCurrentActivity()).title(title).content(message)
-                .titleColorRes(R.color.colorPrimary)
-                .icon(ViewUtils.getTintedDrawable(Obiew.getAppContext(), R.drawable.ic_error, Obiew.getAppResources().getColor(R.color.colorPrimary)))
+                .titleColor(ViewUtils.getColorByAttrId(Obiew.getAppContext(), R.attr.themeColorPrimaryInverse))
+                .backgroundColor(ViewUtils.getColorByAttrId(Obiew.getAppContext(), R.attr.themeColorViewBackground))
+                .positiveColor(ViewUtils.getColorByAttrId(Obiew.getAppContext(), R.attr.themeColorAccentInverse))
+                .icon(ViewUtils.getTintedDrawable(Obiew.getAppContext(), R.drawable.ic_error, ViewUtils.getColorByAttrId(Obiew.getAppContext(), R.attr.themeColorPrimaryInverse)))
                 .positiveText("确定")
                 .canceledOnTouchOutside(false)
                 .show();
@@ -27,8 +31,10 @@ public class Popup {
 
     public static MaterialDialog waringDialog(String title, String message) {
         return new MaterialDialog.Builder(Obiew.getCurrentActivity()).title(title).content(message)
-                .titleColorRes(R.color.colorPrimary)
-                .icon(ViewUtils.getTintedDrawable(Obiew.getAppContext(), R.drawable.ic_warning, Obiew.getAppResources().getColor(R.color.colorPrimary)))
+                .titleColor(ViewUtils.getColorByAttrId(Obiew.getAppContext(), R.attr.themeColorPrimaryInverse))
+                .backgroundColor(ViewUtils.getColorByAttrId(Obiew.getAppContext(), R.attr.themeColorViewBackground))
+                .positiveColor(ViewUtils.getColorByAttrId(Obiew.getAppContext(), R.attr.themeColorAccentInverse))
+                .icon(ViewUtils.getTintedDrawable(Obiew.getAppContext(), R.drawable.ic_warning, ViewUtils.getColorByAttrId(Obiew.getAppContext(), R.attr.themeColorPrimaryInverse)))
                 .positiveText("确定")
                 .canceledOnTouchOutside(false)
                 .show();
@@ -36,16 +42,21 @@ public class Popup {
 
     public static MaterialDialog infoDialog(String title, String message) {
         return new MaterialDialog.Builder(Obiew.getCurrentActivity()).title(title).content(message)
-                .titleColorRes(R.color.colorPrimary)
-                .icon(ViewUtils.getTintedDrawable(Obiew.getAppContext(), R.drawable.ic_info, Obiew.getAppResources().getColor(R.color.colorPrimary)))
+                .titleColor(ViewUtils.getColorByAttrId(Obiew.getAppContext(), R.attr.themeColorPrimaryInverse))
+                .backgroundColor(ViewUtils.getColorByAttrId(Obiew.getAppContext(), R.attr.themeColorViewBackground))
+                .positiveColor(ViewUtils.getColorByAttrId(Obiew.getAppContext(), R.attr.themeColorAccentInverse))
+                .icon(ViewUtils.getTintedDrawable(Obiew.getAppContext(), R.drawable.ic_info, ViewUtils.getColorByAttrId(Obiew.getAppContext(), R.attr.themeColorPrimaryInverse)))
                 .positiveText("确定")
                 .show();
     }
 
     public static MaterialDialog confirmDialog(String title, String message, String positiveText, MaterialDialog.SingleButtonCallback onPositiveCallback, String negativeText, MaterialDialog.SingleButtonCallback onNegativeCallback) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(Obiew.getCurrentActivity()).title(title).content(message)
-                .titleColorRes(R.color.colorPrimary)
-                .icon(ViewUtils.getTintedDrawable(Obiew.getAppContext(), R.drawable.ic_info, Obiew.getAppResources().getColor(R.color.colorPrimary)))
+                .titleColor(ViewUtils.getColorByAttrId(Obiew.getAppContext(), R.attr.themeColorPrimaryInverse))
+                .backgroundColor(ViewUtils.getColorByAttrId(Obiew.getAppContext(), R.attr.themeColorViewBackground))
+                .positiveColor(ViewUtils.getColorByAttrId(Obiew.getAppContext(), R.attr.themeColorAccentInverse))
+                .negativeColor(ViewUtils.getColorByAttrId(Obiew.getAppContext(), R.attr.themeColorAccentInverse))
+                .icon(ViewUtils.getTintedDrawable(Obiew.getAppContext(), R.drawable.ic_info, ViewUtils.getColorByAttrId(Obiew.getAppContext(), R.attr.themeColorPrimaryInverse)))
                 .canceledOnTouchOutside(false);
         if(positiveText != null && !positiveText.trim().isEmpty()) {
             builder.positiveText(positiveText);
@@ -60,11 +71,16 @@ public class Popup {
 
     public static MaterialDialog indeterminateProgressDialog(String title, String message, boolean horizontalStyle) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(Obiew.getCurrentActivity()).title(title).content(message)
-                .titleColorRes(R.color.colorPrimary)
+                .titleColor(ViewUtils.getColorByAttrId(Obiew.getAppContext(), R.attr.themeColorPrimaryInverse))
+                .backgroundColor(ViewUtils.getColorByAttrId(Obiew.getAppContext(), R.attr.themeColorViewBackground))
+                .positiveColor(ViewUtils.getColorByAttrId(Obiew.getAppContext(), R.attr.themeColorAccentInverse))
                 .progress(true, 0)
                 .progressIndeterminateStyle(horizontalStyle)
                 .canceledOnTouchOutside(false);
-        return builder.show();
+        MaterialDialog materialDialog = builder.build();
+        materialDialog.getProgressBar().getProgressDrawable().setColorFilter(ViewUtils.getColorByAttrId(Obiew.getAppContext(), R.attr.themeColorAccentInverse), PorterDuff.Mode.SRC_IN);
+        materialDialog.show();
+        return materialDialog;
     }
 
 }

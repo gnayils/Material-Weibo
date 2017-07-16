@@ -18,7 +18,7 @@ import com.gnayils.obiew.weibo.service.SubscriberAdapter;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MentionActivity extends AppCompatActivity {
+public class MentionActivity extends BaseActivity {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;

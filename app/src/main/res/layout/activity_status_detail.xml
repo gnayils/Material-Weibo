@@ -16,8 +16,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:navigationIcon="@drawable/abc_ic_ab_back_material"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            app:navigationIcon="@drawable/abc_ic_ab_back_material"/>
 
     </android.support.design.widget.AppBarLayout>
 
@@ -57,6 +56,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="?attr/themeColorViewBackground"
                         app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                         <android.support.design.widget.TabLayout
@@ -65,9 +65,9 @@
                             android:layout_height="?attr/actionBarSize"
                             android:layout_alignParentLeft="true"
                             app:tabGravity="fill"
-                            app:tabIndicatorColor="?attr/colorAccent"
+                            app:tabIndicatorColor="?attr/themeColorAccentInverse"
                             app:tabIndicatorHeight="4dp"
-                            app:tabSelectedTextColor="?attr/colorAccent"
+                            app:tabSelectedTextColor="?attr/themeColorAccentInverse"
                             app:tabTextAppearance="@style/AppTheme.TabLayoutTextAppearance" />
 
                         <TextView
@@ -78,7 +78,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginRight="16dp"
                             android:text="0 赞"
-                            android:textColor="?android:attr/colorAccent"
+                            android:textColor="?attr/colorAccent"
                             android:textSize="16sp" />
 
                     </RelativeLayout>
@@ -110,29 +110,29 @@
             android:layout_gravity="right|bottom"
             android:layout_marginBottom="4dp"
             android:layout_marginRight="6dp"
-            app:fab_addButtonColorNormal="@color/colorAccent"
-            app:fab_addButtonColorPressed="@color/colorAccentDark">
+            app:fab_addButtonColorNormal="?attr/colorAccent"
+            app:fab_addButtonColorPressed="?attr/themeColorAccentDark">
 
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab_repost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:fab_colorNormal="@color/colorAccent"
-                app:fab_colorPressed="@color/colorAccentDark"/>
+                app:fab_colorNormal="?attr/colorAccent"
+                app:fab_colorPressed="?attr/themeColorAccentDark"/>
 
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab_comment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:fab_colorNormal="@color/colorAccent"
-                app:fab_colorPressed="@color/colorAccentDark"/>
+                app:fab_colorNormal="?attr/colorAccent"
+                app:fab_colorPressed="?attr/themeColorAccentDark"/>
 
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab_like"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:fab_colorNormal="@color/colorAccent"
-                app:fab_colorPressed="@color/colorAccentDark"/>
+                app:fab_colorNormal="?attr/colorAccent"
+                app:fab_colorPressed="?attr/themeColorAccentDark"/>
 
         </com.getbase.floatingactionbutton.FloatingActionsMenu>
     </FrameLayout>

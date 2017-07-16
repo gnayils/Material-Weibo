@@ -1,10 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="colorPrimary">#3E50B4</color>
-    <color name="colorPrimaryDark">#313a92</color>
-    <color name="colorAccent">#FE3E80</color>
-    <color name="colorAccentDark">#d92664</color>
+    <color name="primaryColor">#3E50B4</color>
+    <color name="primaryDarkColor">#313a92</color>
+    <color name="accentColor">#FE3E80</color>
+    <color name="accentDarkColor">#d92664</color>
+    <color name="primaryInverseColor">#3E50B4</color>
+    <color name="accentInverseColor">#FE3E80</color>
+    <color name="primaryTextColor">@color/black_alpha_CC</color>
+    <color name="secondaryTextColor">@color/black_alpha_80</color>
+    <color name="primaryTextInverseColor">@color/while_alpha_CC</color>
+    <color name="secondaryTextInverseColor">@color/while_alpha_80</color>
+    <color name="divideLineColor">@color/black_alpha_33</color>
+    <color name="viewBackgroundColor">@android:color/white</color>
+    <color name="windowBackgroundColor">@color/grey_200</color>
+
+
+    <color name="nightPrimaryColor">#0d1126</color>
+    <color name="nightPrimaryDarkColor">#080a1a</color>
+    <color name="nightAccentColor">#4d1326</color>
+    <color name="nightAccentDarkColor">#340d1a</color>
+    <color name="nightPrimaryInverseColor">#b35770ff</color>
+    <color name="nightAccentInverseColor">@color/accent_alpha_B3</color>
+    <color name="nightPrimaryTextColor">@color/while_alpha_99</color>
+    <color name="nightSecondaryTextColor">@color/while_alpha_66</color>
+    <color name="nightPrimaryTextInverseColor">@color/black_alpha_99</color>
+    <color name="nightSecondaryTextInverseColor">@color/black_alpha_66</color>
+    <color name="nightDivideLineColor">@color/while_alpha_1A</color>
+    <color name="nightViewBackgroundColor">#343434</color>
+    <color name="nightWindowBackgroundColor">#262626</color>
+
 
     <color name="primary_alpha_1A">#1A3E50B4</color>
     <color name="primary_alpha_33">#333E50B4</color>

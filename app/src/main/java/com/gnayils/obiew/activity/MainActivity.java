@@ -4,12 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,7 +21,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.gnayils.obiew.Obiew;
 import com.gnayils.obiew.R;
+import com.gnayils.obiew.Settings;
 import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.view.AvatarView;
 import com.gnayils.obiew.view.ItemView;
@@ -35,10 +37,13 @@ import com.gnayils.obiew.weibo.service.FriendshipService;
 import com.gnayils.obiew.weibo.service.StatusService;
 import com.gnayils.obiew.weibo.service.SubscriberAdapter;
 
+import java.io.Serializable;
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -53,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Bind(R.id.image_view_cover)
     ImageView coverImageView;
+    @Bind(R.id.image_view_night_mode)
+    ImageView nightModeImageView;
     @Bind(R.id.avatar_view)
     AvatarView avatarView;
     @Bind(R.id.text_view_screen_name)
@@ -105,6 +112,26 @@ public class MainActivity extends AppCompatActivity {
             Glide.with(this).load(coverImageUrl).into(coverImageView);
         }
         Glide.with(this).load(Account.user.avatar_large).into(avatarView.avatarCircleImageView);
+        nightModeImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.closeDrawer(GravityCompat.START);
+                Settings.toggleTheme();
+                getApplication().getTheme().applyStyle(Settings.getThemeResource(), true);
+                getWindow().getDecorView().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Statuses statuses = new Statuses();
+                        statuses.statuses = statusTimelineView.getStatuses();
+                        getIntent().putExtra("statues", statuses);
+                        getIntent().putExtra("currentGroup", currentGroup);
+                        getIntent().putExtra("currentSelectedGroupViewId", currentSelectedGroupViewId);
+                        recreate();
+                    }
+                }, 500);
+
+            }
+        });
         screenNameTextView.setText(Account.user.screen_name);
         descriptionTextView.setText(Account.user.description == null || Account.user.description.isEmpty() ? "暂无介绍" : Account.user.description);
         statusCountButton.setText(Account.user.statuses_count + "\n微博");
@@ -123,7 +150,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         inflateFriendGroupItemViews();
-        onItemViewClick(groupAllItemView);
+        if(getIntent().getExtras() == null) {
+            onItemViewClick(groupAllItemView);
+        } else {
+            Statuses statuses = (Statuses) getIntent().getSerializableExtra("statues");
+            statusTimelineView.show(true, statuses);
+            currentSelectedGroupViewId = getIntent().getIntExtra("currentSelectedGroupViewId", R.id.item_view_group_all);
+            currentGroup = (Group) getIntent().getSerializableExtra("currentGroup");
+            if(currentSelectedGroupViewId == R.id.item_view_group_all) {
+                getSupportActionBar().setTitle("全部");
+                findViewById(currentSelectedGroupViewId).setSelected(true);
+            } else if(currentSelectedGroupViewId == R.id.item_view_group_mutual) {
+                getSupportActionBar().setTitle("相互关注");
+                findViewById(currentSelectedGroupViewId).setSelected(true);
+            } else if(currentGroup != null) {
+                getSupportActionBar().setTitle(currentGroup.name);
+                for(int i = 0; i<friendGroupsLinearLayout.getChildCount(); i++) {
+                    View view = friendGroupsLinearLayout.getChildAt(i);
+                    if(view.getTag() instanceof Group && ((Group)view.getTag()).id == currentGroup.id) {
+                        view.setSelected(true);
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     @Override

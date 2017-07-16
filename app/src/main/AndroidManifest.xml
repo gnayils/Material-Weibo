@@ -21,10 +21,16 @@
             android:name="com.gnayils.obiew.glide.MyGlideModule"
             android:value="GlideModule" />
 
-        <activity android:name=".activity.TestActivity" />
-        <activity android:name=".activity.SplashActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoTitle">
+        <activity
+            android:name=".activity.TestActivity"
+            android:screenOrientation="portrait" >
+
+        </activity>
+
+
+        <activity
+            android:name=".activity.SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -45,7 +51,7 @@
             android:name=".activity.PicturePagerActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme.DarkBackground"
+            android:theme="@style/AppTheme.Dark"
             android:label="查看图片"/>
         <activity
             android:name=".activity.StatusDetailActivity"
@@ -64,7 +70,7 @@
             android:name=".activity.PlayerActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme.DarkBackground" />
+            android:theme="@style/AppTheme.Dark" />
         <activity
             android:name=".activity.TopicActivity"
             android:screenOrientation="portrait">

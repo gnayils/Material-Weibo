@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gnayils.obiew.R;
+import com.gnayils.obiew.util.ViewUtils;
 
 import static com.gnayils.obiew.util.ViewUtils.*;
 
@@ -23,7 +24,6 @@ public class ItemView extends RelativeLayout {
 
     public final ImageView iconImageView;
     public final TextView titleTextView;
-    public final ImageView moreIconImageView;
     public final TextView descriptionTextView;
 
     public ItemView(Context context) {
@@ -48,18 +48,19 @@ public class ItemView extends RelativeLayout {
         int iconTint = typedArray.getColor(R.styleable.ItemView_iconTint, Color.DKGRAY);
         String title = typedArray.getString(R.styleable.ItemView_title);
         String description = typedArray.getString(R.styleable.ItemView_description);
-        Drawable moreIcon = typedArray.getDrawable(R.styleable.ItemView_moreIcon);
 
         iconImageView = new ImageView(context);
         iconImageView.setId(View.generateViewId());
         iconImageView.setImageDrawable(icon);
         iconImageView.setImageTintList(ColorStateList.valueOf(iconTint));
-        iconImageView.setImageTintList(new ColorStateList(new int[][]{
-                new int[]{android.R.attr.state_selected},
-                new int[]{}},
+        iconImageView.setImageTintList(new ColorStateList(
+                new int[][]{
+                    new int[]{android.R.attr.state_selected},
+                    new int[]{}
+                },
                 new int[]{
-                        getResources().getColor(R.color.colorPrimary),
-                        getResources().getColor(R.color.grey_700)
+                        ViewUtils.getColorByAttrId(context, R.attr.themeColorPrimaryInverse),
+                        ViewUtils.getColorByAttrId(context, R.attr.themeColorSecondaryText)
                 }));
         LayoutParams layoutParams = new LayoutParams(dp2px(context, 24), dp2px(context, 24));
         layoutParams.setMargins(dp2px(context, 16), 0, 0, 0);
@@ -75,8 +76,8 @@ public class ItemView extends RelativeLayout {
                 new int[]{android.R.attr.state_selected},
                 new int[]{}},
                 new int[]{
-                        getResources().getColor(R.color.colorPrimary),
-                        getResources().getColor(R.color.grey_700)
+                        ViewUtils.getColorByAttrId(context, R.attr.themeColorPrimaryInverse),
+                        ViewUtils.getColorByAttrId(context, R.attr.themeColorSecondaryText)
                 }));
         layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(dp2px(context, 16), 0, 0, 0);
@@ -85,24 +86,13 @@ public class ItemView extends RelativeLayout {
         titleTextView.setLayoutParams(layoutParams);
         addView(titleTextView);
 
-        moreIconImageView = new ImageView(context);
-        moreIconImageView.setId(View.generateViewId());
-        moreIconImageView.setImageDrawable(moreIcon);
-        layoutParams = new LayoutParams(dp2px(context, 12), dp2px(context, 12));
-        layoutParams.setMargins(0, 0, dp2px(context, 16), 0);
-        layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
-        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        moreIconImageView.setLayoutParams(layoutParams);
-        addView(moreIconImageView);
-
         descriptionTextView = new TextView(context);
         descriptionTextView.setTextSize(12);
-        descriptionTextView.setTextColor(getResources().getColor(R.color.black_alpha_80));
+        descriptionTextView.setTextColor(ViewUtils.getColorByAttrId(context, R.attr.themeColorSecondaryText));
         descriptionTextView.setText(description);
         layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(0, 0, dp2px(context, 16), 0);
         layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
-        layoutParams.addRule(RelativeLayout.LEFT_OF, moreIconImageView.getId());
         descriptionTextView.setLayoutParams(layoutParams);
         addView(descriptionTextView);
 

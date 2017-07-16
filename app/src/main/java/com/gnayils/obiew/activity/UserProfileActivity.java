@@ -47,7 +47,7 @@ import butterknife.ButterKnife;
  * Created by Gnayils on 26/03/2017.
  */
 
-public class UserProfileActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener, SwipeRefreshLayout.OnRefreshListener {
+public class UserProfileActivity extends BaseActivity implements AppBarLayout.OnOffsetChangedListener, SwipeRefreshLayout.OnRefreshListener {
 
     public static final String ARGS_KEY_USER = "ARGS_KEY_USER";
 

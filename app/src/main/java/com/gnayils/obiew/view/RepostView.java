@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.gnayils.obiew.Obiew;
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.activity.UserProfileActivity;
+import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.WeiboSpanMovementMethod;
 import com.gnayils.obiew.weibo.bean.Repost;
@@ -69,7 +69,7 @@ public class RepostView extends CardView {
         repostTimeTextView.setText("15分钟前");
         repostTimeTextView.setId(View.generateViewId());
         repostTimeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        repostTimeTextView.setTextColor(getResources().getColor(R.color.black_alpha_80));
+        repostTimeTextView.setTextColor(ViewUtils.getColorByAttrId(context, R.attr.themeColorSecondaryText));
         RelativeLayout.LayoutParams statusTimeTextViewLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         statusTimeTextViewLayoutParams.setMargins(dp2px(context, 8), 0, 0, dp2px(context, 4));
         statusTimeTextViewLayoutParams.addRule(RelativeLayout.RIGHT_OF, userAvatarView.getId());
@@ -92,13 +92,15 @@ public class RepostView extends CardView {
         rootView.addView(repostTextTextView);
 
         addView(rootView);
+
+        getBackground().setTint(ViewUtils.getColorByAttrId(getContext(), R.attr.themeColorViewBackground));
     }
 
     public void show(Repost repost) {
         Glide.with(getContext()).load(repost.user.avatar_large).into(userAvatarView.avatarCircleImageView);
         userAvatarView.verifiedIconImageView.setVisibility(repost.user.verified ? View.VISIBLE : View.INVISIBLE);
         if(repost.user.verified) {
-            screenNameTextView.setTextColor(Obiew.getAppResources().getColor(R.color.colorAccent));
+            screenNameTextView.setTextColor(ViewUtils.getColorByAttrId(getContext(), R.attr.themeColorPrimaryInverse));
             switch(repost.user.verified_type) {
                 case 0:
                     userAvatarView.verifiedIconImageView.setImageResource(R.drawable.avatar_vip_golden);
@@ -111,7 +113,7 @@ public class RepostView extends CardView {
                     break;
             }
         } else {
-            screenNameTextView.setTextColor(Obiew.getAppResources().getColor(R.color.black_alpha_CC));
+            screenNameTextView.setTextColor(ViewUtils.getColorByAttrId(getContext(), R.attr.themeColorPrimaryText));
         }
         screenNameTextView.setText(repost.user.screen_name);
         repostTimeTextView.setText(Weibo.format.date(repost.created_at));

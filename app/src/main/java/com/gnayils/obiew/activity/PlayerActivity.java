@@ -48,7 +48,7 @@ import butterknife.ButterKnife;
  * Created by Gnayils on 14/05/2017.
  */
 
-public class PlayerActivity extends AppCompatActivity implements ExoPlayer.EventListener {
+public class PlayerActivity extends BaseActivity implements ExoPlayer.EventListener {
 
     public static final String TAG = PlayerActivity.class.getSimpleName();
 

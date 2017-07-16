@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.gnayils.obiew.Obiew;
 import com.gnayils.obiew.R;
+import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.weibo.bean.User;
 
 import static com.gnayils.obiew.util.ViewUtils.dp2px;
@@ -65,7 +66,7 @@ public class UserItemView extends CardView {
         descriptionTextView.setText("简介");
         descriptionTextView.setId(View.generateViewId());
         descriptionTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        descriptionTextView.setTextColor(getResources().getColor(R.color.black_alpha_80));
+        descriptionTextView.setTextColor(ViewUtils.getColorByAttrId(context, R.attr.themeColorSecondaryText));
         descriptionTextView.setSingleLine();
         descriptionTextView.setEllipsize(TextUtils.TruncateAt.END);
         RelativeLayout.LayoutParams descriptionTextViewLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -79,13 +80,15 @@ public class UserItemView extends CardView {
         rootView.addView(descriptionTextView);
 
         addView(rootView);
+
+        getBackground().setTint(ViewUtils.getColorByAttrId(context, R.attr.themeColorViewBackground));
     }
 
     public void show(User user) {
         Glide.with(getContext()).load(user.avatar_large).into(userAvatarView.avatarCircleImageView);
         userAvatarView.verifiedIconImageView.setVisibility(user.verified ? View.VISIBLE : View.INVISIBLE);
         if(user.verified) {
-            screenNameTextView.setTextColor(Obiew.getAppResources().getColor(R.color.colorPrimary));
+            screenNameTextView.setTextColor(ViewUtils.getColorByAttrId(getContext(), R.attr.themeColorPrimaryInverse));
             switch(user.verified_type) {
                 case 0:
                     userAvatarView.verifiedIconImageView.setImageResource(R.drawable.avatar_vip_golden);
@@ -98,7 +101,7 @@ public class UserItemView extends CardView {
                     break;
             }
         } else {
-            screenNameTextView.setTextColor(Obiew.getAppResources().getColor(R.color.black_alpha_CC));
+            screenNameTextView.setTextColor(ViewUtils.getColorByAttrId(getContext(), R.attr.themeColorPrimaryText));
         }
         screenNameTextView.setText(user.screen_name);
         descriptionTextView.setText(user.description);

@@ -40,7 +40,7 @@ public class RepostTimelineView extends LoadMoreRecyclerView {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), linearLayoutManager.getOrientation());
         dividerItemDecoration.setDrawable(ViewUtils.createDividerDrawable(getContext(), ViewUtils.dp2px(getContext(), 1),
-                getResources().getColor(android.R.color.white), getResources().getColor(R.color.black_alpha_1A), ViewUtils.dp2px(getContext(), 64)));
+                ViewUtils.getColorByAttrId(context, R.attr.themeColorViewBackground), ViewUtils.getColorByAttrId(context, R.attr.themeColorDivideLine), ViewUtils.dp2px(getContext(), 64)));
         addItemDecoration(dividerItemDecoration);
         setLayoutManager(linearLayoutManager);
         recyclerViewAdapter = new RecyclerViewAdapter();

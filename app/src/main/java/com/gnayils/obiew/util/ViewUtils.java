@@ -2,6 +2,7 @@ package com.gnayils.obiew.util;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -56,17 +57,24 @@ public class ViewUtils {
     }
 
     public static Drawable getDrawableByAttrId(Context context, int attrId) {
-        TypedArray typedArray = context.obtainStyledAttributes(R.style.AppTheme, new int[] { attrId });
+        TypedArray typedArray = context.obtainStyledAttributes(new int[] { attrId });
         Drawable drawable = typedArray.getDrawable(0);
         typedArray.recycle();
         return drawable;
     }
 
     public static int getResourceIdByAttrId(Context context, int attrId) {
-        TypedArray typedArray = context.obtainStyledAttributes(R.style.AppTheme, new int[] { attrId });
+        TypedArray typedArray = context.obtainStyledAttributes(new int[] { attrId });
         int resourceId = typedArray.getResourceId(0, 0);
         typedArray.recycle();
         return resourceId;
+    }
+
+    public static int getColorByAttrId(Context context, int attrId) {
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = context.getTheme();
+        theme.resolveAttribute(attrId, typedValue, true);
+        return typedValue.data;
     }
 
     public static Drawable getTranslucentDrawable(Context context, int drawableResId, int alpha) {
@@ -77,7 +85,7 @@ public class ViewUtils {
     }
 
     public static Drawable getTintedDrawable(Context context, int drawableResId, int color) {
-        return getTintedDrawable(context, drawableResId, color, PorterDuff.Mode.SRC_ATOP);
+        return getTintedDrawable(context, drawableResId, color, PorterDuff.Mode.SRC_IN);
     }
 
     public static Drawable getTintedDrawable(Context context, int drawableResId, int color, PorterDuff.Mode mode) {
@@ -86,7 +94,7 @@ public class ViewUtils {
     }
 
     public static Drawable tintDrawable(Drawable drawable, int color) {
-        return tintDrawable(drawable, color, PorterDuff.Mode.SRC_ATOP);
+        return tintDrawable(drawable, color, PorterDuff.Mode.SRC_IN);
     }
 
     public static Drawable tintDrawable(Drawable drawable, int color, PorterDuff.Mode mode) {

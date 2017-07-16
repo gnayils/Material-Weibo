@@ -25,7 +25,7 @@
                 android:layout_height="320dp"
                 android:fitsSystemWindows="true"
                 app:titleEnabled="true"
-                app:contentScrim="@color/colorPrimary"
+                app:contentScrim="?attr/colorPrimary"
                 app:layout_scrollFlags="scroll|snap|enterAlwaysCollapsed|enterAlways"
                 app:expandedTitleGravity="center"
                 app:expandedTitleMarginTop="12dp"
@@ -139,7 +139,6 @@
                     android:layout_height="?attr/actionBarSize"
                     android:background="@android:color/transparent"
                     app:navigationIcon="@drawable/abc_ic_ab_back_material"
-                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                     app:layout_collapseMode="pin"/>
 
             </android.support.design.widget.CollapsingToolbarLayout>
@@ -158,12 +157,12 @@
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/colorPrimary"
+                android:background="?attr/colorPrimary"
                 app:tabGravity="center"
-                app:tabIndicatorColor="?attr/colorAccent"
+                app:tabIndicatorColor="?attr/themeColorAccentInverse"
                 app:tabIndicatorHeight="4dp"
-                app:tabSelectedTextColor="?attr/colorAccent"
-                app:tabTextColor="?android:attr/textColorPrimaryInverse"
+                app:tabSelectedTextColor="?attr/themeColorAccentInverse"
+                app:tabTextColor="@color/primaryTextInverseColor"
                 app:tabTextAppearance="@style/AppTheme.TabLayoutTextAppearance"/>
 
             <android.support.v4.view.ViewPager

@@ -1,16 +1,13 @@
 package com.gnayils.obiew.activity;
 
-import android.animation.ArgbEvaluator;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Size;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -23,7 +20,7 @@ import com.gnayils.obiew.weibo.Account;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends BaseActivity {
 
     @Bind(R.id.avatar_view)
     AvatarView avatarView;
@@ -40,6 +37,8 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
         inflateBackground();
@@ -86,8 +85,8 @@ public class SplashActivity extends AppCompatActivity {
 
         GradientDrawable gradientDrawable = new GradientDrawable();
         gradientDrawable.setColors(new int[]{
-                getResources().getColor(R.color.colorPrimaryDark),
-                getResources().getColor(R.color.colorPrimary)
+                ViewUtils.getColorByAttrId(this, R.attr.themeColorPrimaryDark),
+                ViewUtils.getColorByAttrId(this, R.attr.themeColorPrimary)
         });
         gradientDrawable.setOrientation(GradientDrawable.Orientation.TOP_BOTTOM);
         gradientDrawable.setCornerRadii(new float[]{
@@ -99,8 +98,8 @@ public class SplashActivity extends AppCompatActivity {
         gradientDrawable = new GradientDrawable();
         gradientDrawable.setOrientation(GradientDrawable.Orientation.TOP_BOTTOM);
         gradientDrawable.setColors(new int[]{
-                getResources().getColor(R.color.colorPrimary),
-                getResources().getColor(R.color.colorPrimaryDark)
+                ViewUtils.getColorByAttrId(this, R.attr.themeColorPrimary),
+                ViewUtils.getColorByAttrId(this, R.attr.themeColorPrimaryDark)
         });
         gradientDrawable.setCornerRadii(new float[]{
                 size.getWidth() / 2, size.getWidth() / 4, size.getWidth() / 2, size.getWidth() / 4, 0, 0, 0, 0

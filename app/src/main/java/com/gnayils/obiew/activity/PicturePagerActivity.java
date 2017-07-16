@@ -55,7 +55,7 @@ import butterknife.ButterKnife;
  * Created by Gnayils on 04/03/2017.
  */
 
-public class PicturePagerActivity extends AppCompatActivity {
+public class PicturePagerActivity extends BaseActivity {
 
     public static final String TAG = PicturePagerActivity.class.getSimpleName();
 

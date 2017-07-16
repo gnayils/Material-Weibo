@@ -51,7 +51,7 @@ public class GiFHintImageView extends ForegroundImageView {
             getDrawingRect(drawingRect);
             backgroundRect = new RectF(drawingRect.right - rectWidth, drawingRect.bottom - rectHeight, drawingRect.right, drawingRect.bottom);
 
-            paint.setColor(getResources().getColor(R.color.colorAccent));
+            paint.setColor(getResources().getColor(R.color.accentColor));
             paint.setAlpha(180);
             canvas.drawRoundRect(backgroundRect, round, round, paint);
 

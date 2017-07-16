@@ -11,10 +11,9 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
+        android:background="?attr/colorPrimary"
         android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
 
     <android.support.v4.widget.DrawerLayout
@@ -78,6 +77,18 @@
                                 android:layout_gravity="center"
                                 android:scaleType="centerCrop"
                                 android:src="@drawable/bg_cover_default" />
+                            
+                            <ImageView
+                                android:id="@+id/image_view_night_mode"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:padding="6dp"
+                                android:layout_gravity="top|right"
+                                android:layout_margin="8dp"
+                                android:src="@drawable/ic_night"
+                                android:tintMode="src_in"
+                                android:tint="@color/while_alpha_CC"
+                                android:background="?attr/selectableItemBackground"/>
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -218,7 +229,7 @@
                             android:layout_marginLeft="16dp"
                             android:layout_marginTop="8dp"
                             android:text="分组"
-                            android:textColor="@color/black_alpha_80"
+                            android:textColor="?attr/themeColorPrimaryText"
                             android:textSize="16sp" />
 
                         <LinearLayout
@@ -234,7 +245,6 @@
                                 android:background="?attr/selectableItemBackground"
                                 android:onClick="onItemViewClick"
                                 app:icon="@drawable/ic_all"
-                                app:iconTint="@color/grey_700"
                                 app:title="全部" />
 
                             <com.gnayils.obiew.view.ItemView
@@ -244,7 +254,6 @@
                                 android:background="?attr/selectableItemBackground"
                                 android:onClick="onItemViewClick"
                                 app:icon="@drawable/ic_mutual"
-                                app:iconTint="@color/grey_700"
                                 app:title="相互关注" />
 
                         </LinearLayout>
@@ -252,7 +261,7 @@
                         <com.gnayils.obiew.view.DividingLine
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            app:lineColor="@color/grey_300" />
+                            app:lineColor="?attr/themeColorDivideLine" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -261,7 +270,7 @@
                             android:layout_marginLeft="16dp"
                             android:layout_marginTop="8dp"
                             android:text="其它"
-                            android:textColor="@color/black_alpha_80"
+                            android:textColor="?attr/themeColorSecondaryText"
                             android:textSize="16sp" />
 
                         <com.gnayils.obiew.view.ItemView
@@ -269,7 +278,6 @@
                             android:layout_height="48dp"
                             android:background="?attr/selectableItemBackground"
                             app:icon="@drawable/ic_setting"
-                            app:iconTint="@color/grey_700"
                             app:title="设置" />
 
                         <com.gnayils.obiew.view.ItemView
@@ -277,7 +285,6 @@
                             android:layout_height="48dp"
                             android:background="?attr/selectableItemBackground"
                             app:icon="@drawable/ic_exit"
-                            app:iconTint="@color/grey_700"
                             app:title="退出当前账号" />
 
                     </LinearLayout>

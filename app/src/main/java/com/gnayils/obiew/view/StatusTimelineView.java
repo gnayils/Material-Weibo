@@ -50,6 +50,10 @@ public class StatusTimelineView extends LoadMoreRecyclerView {
         statusTimelineAdapter.add(isLatest, statuses);
     }
 
+    public List<Status> getStatuses() {
+        return statusTimelineAdapter.getStatuses();
+    }
+
     static class StatusTimelineAdapter extends LoadMoreRecyclerView.LoadMoreAdapter<StatusViewHolder> implements OnClickListener, StatusPicturesView.OnPictureItemClickListener {
 
         List<Status> statusList = new ArrayList<Status>();
@@ -114,6 +118,10 @@ public class StatusTimelineView extends LoadMoreRecyclerView {
             }
             statusList.addAll(statusSet);
             notifyDataSetChanged();
+        }
+
+        public List<Status> getStatuses() {
+            return statusList;
         }
 
         @Override

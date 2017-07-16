@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class TopicActivity extends AppCompatActivity {
+public class TopicActivity extends BaseActivity {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;

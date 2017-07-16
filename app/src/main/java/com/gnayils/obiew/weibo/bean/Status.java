@@ -89,7 +89,7 @@ public class Status implements Comparable<Status>, Serializable {
 
     public Spannable getSpannableSource() {
         if (spannableSource == null) {
-            spannableSource = TextDecorator.replaceUrlSpan((Spannable) Html.fromHtml(source), TextDecorator.SOURCE_COLOR, TextDecorator.SOURCE_COLOR, TextDecorator.SOURCE_COLOR);
+            spannableSource = TextDecorator.decorateSource(source);
         }
         return spannableSource;
     }

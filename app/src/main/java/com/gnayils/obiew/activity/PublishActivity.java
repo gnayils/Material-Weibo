@@ -3,16 +3,16 @@ package com.gnayils.obiew.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
@@ -43,6 +43,7 @@ import com.gnayils.obiew.weibo.service.CommentService;
 import com.gnayils.obiew.weibo.service.StatusService;
 import com.gnayils.obiew.weibo.service.SubscriberAdapter;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +51,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 
-public class PublishActivity extends AppCompatActivity implements EmotionFragment.OnEmotionClickListener, GalleryFragment.OnPhotoClickListener, FriendFragment.OnFriendClickListener {
+public class PublishActivity extends BaseActivity implements EmotionFragment.OnEmotionClickListener, GalleryFragment.OnPhotoClickListener, FriendFragment.OnFriendClickListener {
 
     public static final String ARGS_KEY_PUBLISH_TYPE = "ARGS_KEY_PUBLISH_TYPE";
     public static final String ARGS_KEY_STATUS = "ARGS_KEY_STATUS";
@@ -132,21 +133,63 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         contentEditText.setOnClickListener(new View.OnClickListener() {
+
+            boolean isHandleColorSet = false;
+
             @Override
             public void onClick(View v) {
                 emotionImageButton.setSelected(false);
                 galleryImageButton.setSelected(false);
                 hideFunctionContent();
+                /**
+                 * Workaround that reset the color of cursor's handle
+                 */
+                if(!isHandleColorSet) {
+                    try {
+                        final Field mEditorField = TextView.class.getDeclaredField("mEditor");
+                        mEditorField.setAccessible(true);
+                        final Object mEditor = mEditorField.get(contentEditText);
+
+                        final Field mSelectHandleCenterField = mEditor.getClass().getDeclaredField("mSelectHandleCenter");
+                        mSelectHandleCenterField.setAccessible(true);
+                        Drawable mSelectHandleCenter = ((Drawable) mSelectHandleCenterField.get(mEditor));
+                        mSelectHandleCenter.setColorFilter(ViewUtils.getColorByAttrId(PublishActivity.this, R.attr.themeColorAccentInverse), PorterDuff.Mode.SRC_IN);
+                        isHandleColorSet = true;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         });
 
         contentEditText.addTextChangedListener(new TextWatcher() {
 
             boolean changedByUser = true;
+            boolean isCursorColorSet = false;
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                /**
+                 * Workaround that reset the color of cursor
+                 */
+                if(!isCursorColorSet) {
+                    try {
+                        final Field mEditorField = TextView.class.getDeclaredField("mEditor");
+                        mEditorField.setAccessible(true);
+                        final Object mEditor = mEditorField.get(contentEditText);
+                        Field mCursorDrawableField = mEditor.getClass().getDeclaredField("mCursorDrawable");
+                        mCursorDrawableField.setAccessible(true);
+                        Drawable[] mCursorDrawable = ((Drawable[])mCursorDrawableField.get(mEditor));
+                        for(Drawable drawable : mCursorDrawable) {
+                            if(drawable != null) {
+                                drawable.setColorFilter(ViewUtils.getColorByAttrId(PublishActivity.this, R.attr.themeColorAccentInverse), PorterDuff.Mode.SRC_IN);
+                            }
+                        }
+                        isCursorColorSet = true;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
 
             @Override
@@ -167,6 +210,7 @@ public class PublishActivity extends AppCompatActivity implements EmotionFragmen
                 } else {
                     changedByUser = true;
                 }
+
             }
 
             @Override

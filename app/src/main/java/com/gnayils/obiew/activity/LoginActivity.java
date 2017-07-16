@@ -40,7 +40,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
 
     public static final String TAG = LoginActivity.class.getSimpleName();
 

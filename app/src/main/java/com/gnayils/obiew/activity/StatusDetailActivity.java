@@ -46,7 +46,7 @@ import com.gnayils.obiew.weibo.service.SubscriberAdapter;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class StatusDetailActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener, SwipeRefreshLayout.OnRefreshListener, View.OnClickListener, StatusPicturesView.OnPictureItemClickListener {
+public class StatusDetailActivity extends BaseActivity implements AppBarLayout.OnOffsetChangedListener, SwipeRefreshLayout.OnRefreshListener, View.OnClickListener, StatusPicturesView.OnPictureItemClickListener {
 
     public static final String ARGS_KEY_STATUS = "ARGS_KEY_STATUS";
     public static final String ARGS_KEY_STATUS_VIEW_EXPANDED = "ARGS_KEY_STATUS_VIEW_EXPANDED";
@@ -108,7 +108,7 @@ public class StatusDetailActivity extends AppCompatActivity implements AppBarLay
                 onBackPressed();
             }
         });
-        statusView.setBackgroundColor(Color.TRANSPARENT);
+        statusView.setRadius(0);
         statusView.commentLayout.setVisibility(View.GONE);
         statusView.show(status);
         viewPager.setAdapter(new ViewPagerAdapter());
