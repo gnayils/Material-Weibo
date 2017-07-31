@@ -17,6 +17,7 @@ import com.gnayils.obiew.Settings;
 public class BaseActivity extends AppCompatActivity {
 
     public static final String TAG = BaseActivity.class.getSimpleName();
+    public static final String ARGS_KEY_RECREATED = "ARGS_KEY_RECREATED";
 
     private int themeResource;
 
@@ -38,11 +39,16 @@ public class BaseActivity extends AppCompatActivity {
 
     public void recreate() {
         Intent intent = getIntent();
+        intent.putExtra(ARGS_KEY_RECREATED, true);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         finish();
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
+    public boolean isRecreated() {
+        return getIntent().getBooleanExtra(ARGS_KEY_RECREATED, false);
     }
 
     private boolean haveNoTheme() {

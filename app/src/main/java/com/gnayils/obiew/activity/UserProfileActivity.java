@@ -24,12 +24,14 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.gnayils.obiew.R;
+import com.gnayils.obiew.util.Popup;
 import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.view.ImageTimelineView;
 import com.gnayils.obiew.view.AvatarView;
 import com.gnayils.obiew.view.LoadMoreRecyclerView;
 import com.gnayils.obiew.view.StatusTimelineView;
 import com.gnayils.obiew.weibo.Weibo;
+import com.gnayils.obiew.weibo.bean.PicUrls;
 import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.weibo.bean.Statuses;
 import com.gnayils.obiew.weibo.bean.User;
@@ -37,6 +39,10 @@ import com.gnayils.obiew.weibo.service.StatusService;
 import com.gnayils.obiew.weibo.service.SubscriberAdapter;
 import com.gnayils.obiew.weibo.service.UserService;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -93,7 +99,8 @@ public class UserProfileActivity extends BaseActivity implements AppBarLayout.On
         setContentView(R.layout.activity_user_profile);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-
+        swipeRefreshLayout.setColorSchemeColors(ViewUtils.getColorByAttrId(this, R.attr.themeColorSecondaryText));
+        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(ViewUtils.getColorByAttrId(this, R.attr.themeColorViewBackground));
         swipeRefreshLayout.setProgressViewOffset(false, -swipeRefreshLayout.getProgressCircleDiameter(), ViewUtils.getStatusBarHeight(this) * 2);
         swipeRefreshLayout.setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
             @Override
@@ -241,11 +248,32 @@ public class UserProfileActivity extends BaseActivity implements AppBarLayout.On
             }
 
             @Override
+            public void onError(Throwable e) {
+                if (feature == Status.FEATURE_ALL) {
+                    Popup.toast("加载微博失败: " + e.getMessage());
+                } else if (feature == Status.FEATURE_IMAGE) {
+                    Popup.toast("加载相册失败: " + e.getMessage());
+
+                }
+            }
+
+            @Override
             public void onNext(Statuses statuses) {
                 if (feature == Status.FEATURE_ALL) {
-                    statusTimelineView.show(loadLatest, statuses);
+                    statusTimelineView.appendData(loadLatest, statuses.statuses);
                 } else if (feature == Status.FEATURE_IMAGE) {
-                    imageTimelineView.show(loadLatest, statuses);
+                    List<PicUrls> picUrlsList = new ArrayList<>();
+                    if(statuses.statuses != null) {
+                        for (Status status : statuses.statuses) {
+                            if (status.pic_urls != null) {
+                                for(PicUrls picUrls : status.pic_urls) {
+                                    picUrls.status = status;
+                                    picUrlsList.add(picUrls);
+                                }
+                            }
+                        }
+                    }
+                    imageTimelineView.appendData(loadLatest, picUrlsList);
                 }
             }
         });

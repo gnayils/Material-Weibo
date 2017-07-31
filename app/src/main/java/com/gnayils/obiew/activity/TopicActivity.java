@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.gnayils.obiew.R;
+import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.view.LoadMoreRecyclerView;
 import com.gnayils.obiew.view.StatusTimelineView;
 import com.gnayils.obiew.weibo.bean.Statuses;
@@ -60,6 +61,8 @@ public class TopicActivity extends BaseActivity {
                 showTopicTimeline(true);
             }
         });
+        swipeRefreshLayout.setColorSchemeColors(ViewUtils.getColorByAttrId(this, R.attr.themeColorSecondaryText));
+        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(ViewUtils.getColorByAttrId(this, R.attr.themeColorViewBackground));
         statusTimelineView.setOnLoadMoreListener(new LoadMoreRecyclerView.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
@@ -99,7 +102,7 @@ public class TopicActivity extends BaseActivity {
 
                     @Override
                     public void onNext(Statuses statuses) {
-                        statusTimelineView.show(loadLatest, statuses);
+                        statusTimelineView.appendData(loadLatest, statuses.statuses);
                     }
                 });
     }

@@ -19,8 +19,8 @@ public class Weibo {
     public static class consts {
 
         public static final int STATUS_TIMELINE_ITEM_COUNT_PER_PAGE = 20;
-        public static final int COMMENT_TIMELINE_ITEM_COUNT_PER_PAGE = 50;
-        public static final int REPOST_TIMELINE_ITEM_COUNT_PER_PAGE = 50;
+        public static final int COMMENT_TIMELINE_ITEM_COUNT_PER_PAGE = 20;
+        public static final int REPOST_TIMELINE_ITEM_COUNT_PER_PAGE = 20;
 
 
         public static final int STATUS_TEXT_MAX_LENGTH = 140;

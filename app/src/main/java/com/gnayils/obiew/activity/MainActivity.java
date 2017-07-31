@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -122,7 +123,7 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void run() {
                         Statuses statuses = new Statuses();
-                        statuses.statuses = statusTimelineView.getStatuses();
+                        statuses.statuses = statusTimelineView.getAdapterDataSet();
                         getIntent().putExtra("statues", statuses);
                         getIntent().putExtra("currentGroup", currentGroup);
                         getIntent().putExtra("currentSelectedGroupViewId", currentSelectedGroupViewId);
@@ -137,6 +138,8 @@ public class MainActivity extends BaseActivity {
         statusCountButton.setText(Account.user.statuses_count + "\n微博");
         followCountButton.setText(Weibo.format.followerCount(Account.user.friends_count) + "\n关注");
         followerCountButton.setText(Weibo.format.followerCount(Account.user.followers_count) + "\n粉丝");
+        swipeRefreshLayout.setColorSchemeColors(ViewUtils.getColorByAttrId(this, R.attr.themeColorSecondaryText));
+        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(ViewUtils.getColorByAttrId(this, R.attr.themeColorViewBackground));
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -150,11 +153,9 @@ public class MainActivity extends BaseActivity {
             }
         });
         inflateFriendGroupItemViews();
-        if(getIntent().getExtras() == null) {
-            onItemViewClick(groupAllItemView);
-        } else {
+        if(isRecreated()) {
             Statuses statuses = (Statuses) getIntent().getSerializableExtra("statues");
-            statusTimelineView.show(true, statuses);
+            statusTimelineView.appendData(true, statuses.statuses);
             currentSelectedGroupViewId = getIntent().getIntExtra("currentSelectedGroupViewId", R.id.item_view_group_all);
             currentGroup = (Group) getIntent().getSerializableExtra("currentGroup");
             if(currentSelectedGroupViewId == R.id.item_view_group_all) {
@@ -173,6 +174,8 @@ public class MainActivity extends BaseActivity {
                     }
                 }
             }
+        } else {
+            onItemViewClick(groupAllItemView);
         }
     }
 
@@ -254,6 +257,8 @@ public class MainActivity extends BaseActivity {
                 friendGroupsLinearLayout.addView(itemView);
             }
         }
+        groupAllItemView.setSelected(true);
+        currentSelectedGroupViewId = groupAllItemView.getId();
     }
 
     private void setFriendGroupViewSelected(View view) {
@@ -283,7 +288,7 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onNext(Statuses statuses) {
-                statusTimelineView.show(loadLatest, statuses);
+                statusTimelineView.appendData(loadLatest, statuses.statuses);
             }
         };
         if(viewId == R.id.item_view_group_all) {

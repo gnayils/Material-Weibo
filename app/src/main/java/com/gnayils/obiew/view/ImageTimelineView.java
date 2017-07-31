@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
+import com.gnayils.obiew.weibo.Weibo;
 import com.gnayils.obiew.weibo.bean.PicUrls;
 import com.gnayils.obiew.weibo.bean.Status;
 import com.gnayils.obiew.weibo.bean.Statuses;
@@ -23,9 +24,7 @@ import static com.gnayils.obiew.util.ViewUtils.dp2px;
  * Created by Gnayils on 17/04/2017.
  */
 
-public class ImageTimelineView extends LoadMoreRecyclerView {
-
-    private ImageTimelineAdapter imageTimelineAdapter;
+public class ImageTimelineView extends LoadMoreRecyclerView<PicUrls, PictureCardView> {
 
     public ImageTimelineView(Context context) {
         this(context, null);
@@ -38,86 +37,21 @@ public class ImageTimelineView extends LoadMoreRecyclerView {
     public ImageTimelineView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         setLayoutManager(new GridLayoutManager(context, 3));
-        imageTimelineAdapter = new ImageTimelineAdapter();
-        setAdapter(imageTimelineAdapter);
         setPadding(dp2px(context, 6), 0, dp2px(context, 6), 0);
     }
 
-    public void show(boolean isLatest, Statuses statuses) {
-        imageTimelineAdapter.addTimeline(isLatest, statuses);
+    @Override
+    public PictureCardView createView(ViewGroup parent, int viewType) {
+        PictureCardView pictureCardView = new PictureCardView(parent.getContext());
+        RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        layoutParams.setMargins(dp2px(pictureCardView.getContext(), 2), dp2px(pictureCardView.getContext(), 4), dp2px(pictureCardView.getContext(), 2), dp2px(pictureCardView.getContext(), 0));
+        pictureCardView.setLayoutParams(layoutParams);
+        return pictureCardView;
     }
 
-    static class ImageTimelineAdapter extends LoadMoreRecyclerView.LoadMoreAdapter<ImageCardViewHolder> {
-
-        List<PicUrls> picUrlsList = new ArrayList<>();
-        List<Status> statusList = new ArrayList<>();
-
-        @Override
-        public int getItemsCount() {
-            return picUrlsList.size();
-        }
-
-        @Override
-        public ImageCardViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType) {
-            PictureCardView pictureCardView = new PictureCardView(parent.getContext());
-            RecyclerView.LayoutParams layoutParams = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-            layoutParams.setMargins(dp2px(pictureCardView.getContext(), 2), dp2px(pictureCardView.getContext(), 4), dp2px(pictureCardView.getContext(), 2), dp2px(pictureCardView.getContext(), 0));
-            pictureCardView.setLayoutParams(layoutParams);
-            return new ImageCardViewHolder(pictureCardView);
-        }
-
-        @Override
-        public void onBindItemViewHolder(ImageCardViewHolder holder, int position) {
-            holder.imageView.setHintVisible(picUrlsList.get(position).isGif());
-            Glide.with(holder.imageView.getContext()).load(picUrlsList.get(position).middle()).asBitmap().into(holder.imageView);
-        }
-
-        @Override
-        public ImageCardViewHolder onCreateFooterViewHolder(ViewGroup parent, int viewType) {
-            return new ImageCardViewHolder(new DefaultFooterView(parent, parent.getContext()));
-        }
-
-        @Override
-        public void onBindFooterViewHolder(ImageCardViewHolder holder, int position) {
-            holder.defaultFooterView.progressDrawable.stop();
-            holder.defaultFooterView.progressDrawable.start();
-        }
-
-        public void addTimeline(boolean isLatest, Statuses statuses) {
-            Set<Status> statusSet = new TreeSet<>();
-            if(isLatest) {
-                statusList.clear();
-                statusSet.addAll(statuses.statuses);
-            } else {
-                statusSet.addAll(statusList);
-                statusSet.addAll(statuses.statuses);
-                statusList.clear();
-            }
-            statusList.addAll(statusSet);
-
-            picUrlsList.clear();
-            for(Status status : statusList) {
-                if(status.pic_urls != null) {
-                    picUrlsList.addAll(status.pic_urls);
-                }
-            }
-            notifyDataSetChanged();
-        }
-    }
-
-    static class ImageCardViewHolder extends RecyclerView.ViewHolder {
-
-        GiFHintImageView imageView;
-        DefaultFooterView defaultFooterView;
-
-        ImageCardViewHolder(PictureCardView pictureCardView) {
-            super(pictureCardView);
-            imageView = pictureCardView.imageView;
-        }
-
-        ImageCardViewHolder(DefaultFooterView defaultFooterView) {
-            super(defaultFooterView);
-            this.defaultFooterView = defaultFooterView;
-        }
+    @Override
+    public void bindView(PictureCardView pictureCardView, PicUrls picUrls, int position) {
+        pictureCardView.imageView.setHintVisible(picUrls.isGif());
+        Glide.with(getContext()).load(picUrls.middle()).asBitmap().into(pictureCardView.imageView);
     }
 }

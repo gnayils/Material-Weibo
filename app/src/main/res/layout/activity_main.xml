@@ -40,7 +40,8 @@
                         android:id="@+id/status_timeline_view"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scrollbars="vertical" />
+                        android:scrollbars="vertical"
+                        android:nestedScrollingEnabled="false" />
 
                 </android.support.v4.widget.SwipeRefreshLayout>
 
@@ -77,18 +78,18 @@
                                 android:layout_gravity="center"
                                 android:scaleType="centerCrop"
                                 android:src="@drawable/bg_cover_default" />
-                            
+
                             <ImageView
                                 android:id="@+id/image_view_night_mode"
                                 android:layout_width="36dp"
                                 android:layout_height="36dp"
-                                android:padding="6dp"
                                 android:layout_gravity="top|right"
                                 android:layout_margin="8dp"
+                                android:background="?attr/selectableItemBackground"
+                                android:padding="6dp"
                                 android:src="@drawable/ic_night"
-                                android:tintMode="src_in"
                                 android:tint="@color/while_alpha_CC"
-                                android:background="?attr/selectableItemBackground"/>
+                                android:tintMode="src_in" />
 
                             <LinearLayout
                                 android:layout_width="match_parent"

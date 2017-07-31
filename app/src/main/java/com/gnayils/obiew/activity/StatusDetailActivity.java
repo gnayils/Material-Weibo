@@ -24,6 +24,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
@@ -101,6 +102,8 @@ public class StatusDetailActivity extends BaseActivity implements AppBarLayout.O
             }
         });
         swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setColorSchemeColors(ViewUtils.getColorByAttrId(this, R.attr.themeColorSecondaryText));
+        swipeRefreshLayout.setProgressBackgroundColorSchemeColor(ViewUtils.getColorByAttrId(this, R.attr.themeColorViewBackground));
         appBarLayout.addOnOffsetChangedListener(this);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -249,11 +252,12 @@ public class StatusDetailActivity extends BaseActivity implements AppBarLayout.O
 
             @Override
             public void onError(Throwable e) {
+                Popup.toast("加载评论失败: " + e.getMessage());
             }
 
             @Override
             public void onNext(Comments comments) {
-                commentTimelineView.show(loadLatest, comments);
+                commentTimelineView.appendData(loadLatest, comments.comments);
             }
 
             @Override
@@ -276,8 +280,13 @@ public class StatusDetailActivity extends BaseActivity implements AppBarLayout.O
             }
 
             @Override
+            public void onError(Throwable e) {
+                Popup.toast("加载转发失败: " + e.getMessage());
+            }
+
+            @Override
             public void onNext(Reposts reposts) {
-                repostTimelineView.show(loadLatest, reposts);
+                repostTimelineView.appendData(loadLatest, reposts.reposts);
             }
 
             @Override
