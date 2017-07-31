@@ -90,12 +90,7 @@ public class PicturePagerActivity extends BaseActivity {
         ViewGroup.MarginLayoutParams toolbarLayoutLayoutParam = (ViewGroup.MarginLayoutParams) toolbar.getLayoutParams();
         toolbarLayoutLayoutParam.setMargins(0, ViewUtils.getStatusBarHeight(this), 0, 0);
         viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
-        viewPager.post(new Runnable() {
-            @Override
-            public void run() {
-                viewPager.setCurrentItem(currentPicturePosition);
-            }
-        });
+        viewPager.setCurrentItem(currentPicturePosition);
     }
 
     @Override
