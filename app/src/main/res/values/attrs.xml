@@ -42,4 +42,17 @@
         <attr name="android:foreground" />
     </declare-styleable>
 
+    <declare-styleable name="SwipeBackLayout">
+        <attr name="edgeSize" format="dimension"/>
+        <attr name="edgeFlag">
+            <enum name="left" value="0" />
+            <enum name="right" value="1" />
+            <enum name="bottom" value="2" />
+            <enum name="all" value="3" />
+        </attr>
+        <attr name="shadowLeft" format="reference"/>
+        <attr name="shadowRight" format="reference"/>
+        <attr name="shadowBottom" format="reference"/>
+    </declare-styleable>
+
 </resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.gnayils.obiew.view.SwipeBackLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe_back_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:edgeSize="50dp"
+    app:shadowLeft="@drawable/shadow_left"
+    app:shadowRight="@drawable/shadow_right"
+    app:shadowBottom="@drawable/shadow_bottom"/>
+    

@@ -7,8 +7,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 
+import com.gnayils.obiew.R;
 import com.gnayils.obiew.Settings;
+import com.gnayils.obiew.view.SwipeBackLayout;
 
 /**
  * Created by Gnayils on 09/07/2017.
@@ -20,6 +23,7 @@ public class BaseActivity extends AppCompatActivity {
     public static final String ARGS_KEY_RECREATED = "ARGS_KEY_RECREATED";
 
     private int themeResource;
+    protected SwipeBackLayout swipeBackLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -27,6 +31,13 @@ public class BaseActivity extends AppCompatActivity {
             setTheme(themeResource = Settings.getThemeResource());
         }
         super.onCreate(savedInstanceState);
+        swipeBackLayout = (SwipeBackLayout) LayoutInflater.from(this).inflate(R.layout.view_swipe_back, null);
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        swipeBackLayout.attachToActivity(this);
     }
 
     @Override

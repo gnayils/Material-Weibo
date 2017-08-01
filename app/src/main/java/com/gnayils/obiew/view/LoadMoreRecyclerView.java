@@ -2,6 +2,7 @@ package com.gnayils.obiew.view;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.os.AsyncTask;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -222,6 +223,7 @@ public abstract class LoadMoreRecyclerView<B extends Comparable, V extends View>
 
             noMoreDataTextView = new TextView(context);
             noMoreDataTextView.setText("已加载全部数据");
+            noMoreDataTextView.setGravity(Gravity.CENTER);
             noMoreDataTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
             noMoreDataTextView.setTextColor(ViewUtils.getColorByAttrId(context, R.attr.themeColorSecondaryText));
             FrameLayout.LayoutParams textViewLayoutParams =new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
