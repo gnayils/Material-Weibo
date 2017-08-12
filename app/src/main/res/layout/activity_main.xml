@@ -282,9 +282,11 @@
                             app:title="设置" />
 
                         <com.gnayils.obiew.view.ItemView
+                            android:id="@+id/item_view_logout"
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
                             android:background="?attr/selectableItemBackground"
+                            android:onClick="onItemViewClick"
                             app:icon="@drawable/ic_exit"
                             app:title="退出当前账号" />
 

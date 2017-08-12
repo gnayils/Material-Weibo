@@ -10,7 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.Settings;
+import com.gnayils.obiew.Preferences;
 import com.gnayils.obiew.view.SwipeBackLayout;
 
 /**
@@ -28,7 +28,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         if(haveNoTheme()) {
-            setTheme(themeResource = Settings.getThemeResource());
+            setTheme(themeResource = Preferences.getThemeResource());
         }
         super.onCreate(savedInstanceState);
         swipeBackLayout = (SwipeBackLayout) LayoutInflater.from(this).inflate(R.layout.view_swipe_back, null);
@@ -43,7 +43,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(haveNoTheme() && Settings.getThemeResource() != themeResource) {
+        if(haveNoTheme() && Preferences.getThemeResource() != themeResource) {
             recreate();
         }
     }

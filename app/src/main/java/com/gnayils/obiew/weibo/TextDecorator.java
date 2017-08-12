@@ -1,7 +1,5 @@
 package com.gnayils.obiew.weibo;
 
-import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.text.Html;
 import android.text.Spannable;
@@ -9,11 +7,10 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
-import android.util.TypedValue;
 
 import com.gnayils.obiew.Obiew;
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.Settings;
+import com.gnayils.obiew.Preferences;
 import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.view.CenteredImageSpan;
 import com.gnayils.obiew.weibo.bean.Comment;
@@ -157,8 +154,8 @@ public class TextDecorator {
     }
 
     private static void ensureThemeColor() {
-        if(themeResource != Settings.getThemeResource()) {
-            themeResource = Settings.getThemeResource();
+        if(themeResource != Preferences.getThemeResource()) {
+            themeResource = Preferences.getThemeResource();
             spanPressedColor = ViewUtils.getColorByAttrId(Obiew.getAppContext(), R.attr.themeColorAccentInverse);
             spanNormalColor = ViewUtils.getColorByAttrId(Obiew.getAppContext(), R.attr.themeColorAccentInverse);
             sourceColor = ViewUtils.getColorByAttrId(Obiew.getAppContext(), R.attr.themeColorSecondaryText);

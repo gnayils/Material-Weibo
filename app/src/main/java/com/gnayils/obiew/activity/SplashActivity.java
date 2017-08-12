@@ -1,5 +1,8 @@
 package com.gnayils.obiew.activity;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.GradientDrawable;
@@ -106,5 +109,13 @@ public class SplashActivity extends BaseActivity {
         });
         gradientDrawable.setShape(GradientDrawable.RECTANGLE);
         bottomPartFrameLayout.setBackground(gradientDrawable);
+    }
+
+    public static void start(Context context) {
+        Intent intent = new Intent(context, SplashActivity.class);
+        if (!(context instanceof Activity)) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        }
+        context.startActivity(intent);
     }
 }

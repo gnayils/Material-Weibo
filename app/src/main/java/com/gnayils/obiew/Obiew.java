@@ -20,7 +20,7 @@ public class Obiew extends Application implements Application.ActivityLifecycleC
     public void onCreate() {
         super.onCreate();
         obiew = this;
-        getTheme().applyStyle(Settings.getThemeResource(), true);
+        getTheme().applyStyle(Preferences.getThemeResource(), true);
         registerActivityLifecycleCallbacks(this);
         EmotionDB.initialize(this);
     }

@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -24,7 +22,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.gnayils.obiew.Obiew;
 import com.gnayils.obiew.R;
-import com.gnayils.obiew.Settings;
+import com.gnayils.obiew.Preferences;
+import com.gnayils.obiew.util.Popup;
 import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.view.AvatarView;
 import com.gnayils.obiew.view.ItemView;
@@ -37,9 +36,6 @@ import com.gnayils.obiew.weibo.bean.Statuses;
 import com.gnayils.obiew.weibo.service.FriendshipService;
 import com.gnayils.obiew.weibo.service.StatusService;
 import com.gnayils.obiew.weibo.service.SubscriberAdapter;
-
-import java.io.Serializable;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -118,8 +114,8 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 drawerLayout.closeDrawer(GravityCompat.START);
-                Settings.toggleTheme();
-                getApplication().getTheme().applyStyle(Settings.getThemeResource(), true);
+                Preferences.toggleTheme();
+                getApplication().getTheme().applyStyle(Preferences.getThemeResource(), true);
                 getWindow().getDecorView().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -227,6 +223,11 @@ public class MainActivity extends BaseActivity {
                 break;
             case R.id.item_view_group_mutual:
                 getSupportActionBar().setTitle("相互关注");
+                break;
+            case R.id.item_view_logout:
+                Account.clearCache(this);
+                SplashActivity.start(this);
+                finish();
                 break;
             default:
                 if (view instanceof ItemView && view.getTag() instanceof Group) {

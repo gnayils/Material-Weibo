@@ -1,12 +1,13 @@
 package com.gnayils.obiew;
 
+import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 /**
  * Created by Gnayils on 09/07/2017.
  */
 
-public class Settings {
+public class Preferences {
 
     public static final int STYLE_LIGHT_THEME = 0;
     public static final int STYLE_NIGHT_THEME = 1;
@@ -32,6 +33,18 @@ public class Settings {
 
     public static int getThemeResource() {
         return THEME_RESOURCES[getThemeStyle()];
+    }
+
+    public static String[] getAccount() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(Obiew.getAppContext());
+        return new String[]{sharedPreferences.getString("username", null), sharedPreferences.getString("password", null)};
+    }
+
+    public static void saveAccount(String username, String password) {
+        PreferenceManager.getDefaultSharedPreferences(Obiew.getAppContext())
+                .edit()
+                .putString("username", username).putString("password", password)
+                .commit();
     }
 
 }
