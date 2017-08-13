@@ -45,6 +45,19 @@
 
                 </android.support.v4.widget.SwipeRefreshLayout>
 
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fab_write_status"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="bottom|right"
+                    android:scaleType="center"
+                    android:tintMode="src_atop"
+                    android:tint="@android:color/white"
+                    android:src="@drawable/ic_edit"
+                    android:layout_margin="16dp"
+                    android:clickable="true" />
+
             </FrameLayout>
 
         </LinearLayout>
@@ -229,35 +242,41 @@
                             android:layout_marginBottom="8dp"
                             android:layout_marginLeft="16dp"
                             android:layout_marginTop="8dp"
-                            android:text="分组"
-                            android:textColor="?attr/themeColorPrimaryText"
+                            android:text="消息"
+                            android:textColor="?attr/themeColorSecondaryText"
                             android:textSize="16sp" />
 
-                        <LinearLayout
-                            android:id="@+id/linear_layout_friend_groups"
+                        <com.gnayils.obiew.view.ItemView
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackground"
+                            app:icon="@drawable/ic_mention"
+                            app:iconTint="@color/grey_700"
+                            app:title="\@我的" />
 
-                            <com.gnayils.obiew.view.ItemView
-                                android:id="@+id/item_view_group_all"
-                                android:layout_width="match_parent"
-                                android:layout_height="48dp"
-                                android:background="?attr/selectableItemBackground"
-                                android:onClick="onItemViewClick"
-                                app:icon="@drawable/ic_all"
-                                app:title="全部" />
+                        <com.gnayils.obiew.view.ItemView
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackground"
+                            app:icon="@drawable/ic_comment"
+                            app:iconTint="@color/grey_700"
+                            app:title="评论" />
 
-                            <com.gnayils.obiew.view.ItemView
-                                android:id="@+id/item_view_group_mutual"
-                                android:layout_width="match_parent"
-                                android:layout_height="48dp"
-                                android:background="?attr/selectableItemBackground"
-                                android:onClick="onItemViewClick"
-                                app:icon="@drawable/ic_mutual"
-                                app:title="相互关注" />
+                        <com.gnayils.obiew.view.ItemView
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackground"
+                            app:icon="@drawable/ic_like"
+                            app:iconTint="@color/grey_700"
+                            app:title="赞" />
 
-                        </LinearLayout>
+                        <com.gnayils.obiew.view.ItemView
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackground"
+                            app:icon="@drawable/ic_rss_feed"
+                            app:iconTint="@color/grey_700"
+                            app:title="订阅消息" />
 
                         <com.gnayils.obiew.view.DividingLine
                             android:layout_width="match_parent"

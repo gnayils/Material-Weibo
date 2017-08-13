@@ -17,6 +17,8 @@ import com.gnayils.obiew.util.Popup;
 import com.gnayils.obiew.view.MaterialCircleImageView;
 import com.gnayils.obiew.view.MaterialProgressDrawable;
 
+import java.util.Arrays;
+
 /**
  * Created by Gnayils on 19/11/2016.
  */
@@ -57,5 +59,14 @@ public class TestActivity extends BaseActivity {
 
     public void popupProgressDialog(View v) {
         Popup.indeterminateProgressDialog("title", "progress message", true);
+    }
+
+    public void popupListChooseDialog(View v) {
+        Popup.singleChooseDialog("item list", 0, Arrays.asList("a", "b", "c"), new MaterialDialog.ListCallbackSingleChoice() {
+            @Override
+            public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+                return true;
+            }
+        });
     }
 }

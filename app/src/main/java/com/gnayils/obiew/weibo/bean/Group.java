@@ -21,5 +21,4 @@ public class Group implements Serializable {
     public User user;
     public String created_at;
     public List<?> tags;
-
 }

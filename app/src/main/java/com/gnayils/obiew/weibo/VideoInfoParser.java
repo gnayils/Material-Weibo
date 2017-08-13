@@ -146,6 +146,7 @@ public class VideoInfoParser {
             JsonElement jsonElement = gson.toJsonTree(map);
             Log.d(TAG, "jsonElement: \n" + jsonElement.toString());
             Video video = gson.fromJson(jsonElement, Video.class);
+            video.video_src = "http:" + video.video_src;
             url.video = video;
         } catch (Exception e) {
             Log.e(TAG, "load video information failed from the url: " + url.url_long, e);

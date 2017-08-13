@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -19,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.gnayils.obiew.Obiew;
 import com.gnayils.obiew.R;
@@ -37,10 +40,16 @@ import com.gnayils.obiew.weibo.service.FriendshipService;
 import com.gnayils.obiew.weibo.service.StatusService;
 import com.gnayils.obiew.weibo.service.SubscriberAdapter;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements MaterialDialog.ListCallbackSingleChoice {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -52,6 +61,8 @@ public class MainActivity extends BaseActivity {
     SwipeRefreshLayout swipeRefreshLayout;
     @Bind(R.id.status_timeline_view)
     StatusTimelineView statusTimelineView;
+    @Bind(R.id.fab_write_status)
+    FloatingActionButton floatingActionButton;
 
     @Bind(R.id.image_view_cover)
     ImageView coverImageView;
@@ -70,15 +81,9 @@ public class MainActivity extends BaseActivity {
     @Bind(R.id.button_follower_count)
     Button followerCountButton;
 
-    @Bind(R.id.linear_layout_friend_groups)
-    LinearLayout friendGroupsLinearLayout;
-    @Bind(R.id.item_view_group_all)
-    ItemView groupAllItemView;
-    @Bind(R.id.item_view_group_mutual)
-    ItemView groupMutualItemView;
+    private List<Map.Entry<String, Group>> groupList = new ArrayList<>();
+    private int currentSelectedGroupIndex = 0;
 
-    private Group currentGroup;
-    private int currentSelectedGroupViewId;
     private StatusService statusService = new StatusService();
     private FriendshipService friendshipService = new FriendshipService();
 
@@ -95,6 +100,12 @@ public class MainActivity extends BaseActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PublishActivity.startForStatusPublishment(MainActivity.this);
+            }
+        });
         avatarView.avatarCircleImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,8 +133,7 @@ public class MainActivity extends BaseActivity {
                         Statuses statuses = new Statuses();
                         statuses.statuses = statusTimelineView.getAdapterDataSet();
                         getIntent().putExtra("statues", statuses);
-                        getIntent().putExtra("currentGroup", currentGroup);
-                        getIntent().putExtra("currentSelectedGroupViewId", currentSelectedGroupViewId);
+                        getIntent().putExtra("currentSelectedGroupIndex", currentSelectedGroupIndex);
                         recreate();
                     }
                 }, 500);
@@ -140,39 +150,32 @@ public class MainActivity extends BaseActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                showCurrentTimeline(currentSelectedGroupViewId, true);
+                showCurrentTimeline(currentSelectedGroupIndex, true);
             }
         });
         statusTimelineView.setOnLoadMoreListener(new StatusTimelineView.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                showCurrentTimeline(currentSelectedGroupViewId, false);
+                showCurrentTimeline(currentSelectedGroupIndex, false);
             }
         });
-        inflateFriendGroupItemViews();
+
+        for(String name : new String[]{"全部", "相互关注"}) {
+            groupList.add(new AbstractMap.SimpleEntry<String, Group>(name, null) {@Override public String toString() { return getKey(); } });
+        }
+        if(Account.groups != null && Account.groups.lists != null) {
+            for(Group group : Account.groups.lists) {
+                groupList.add(new AbstractMap.SimpleEntry<String, Group>(group.name, group) {@Override public String toString() { return getKey(); } });
+            }
+        }
+
         if(isRecreated()) {
             Statuses statuses = (Statuses) getIntent().getSerializableExtra("statues");
             statusTimelineView.appendData(true, statuses.statuses);
-            currentSelectedGroupViewId = getIntent().getIntExtra("currentSelectedGroupViewId", R.id.item_view_group_all);
-            currentGroup = (Group) getIntent().getSerializableExtra("currentGroup");
-            if(currentSelectedGroupViewId == R.id.item_view_group_all) {
-                getSupportActionBar().setTitle("全部");
-                findViewById(currentSelectedGroupViewId).setSelected(true);
-            } else if(currentSelectedGroupViewId == R.id.item_view_group_mutual) {
-                getSupportActionBar().setTitle("相互关注");
-                findViewById(currentSelectedGroupViewId).setSelected(true);
-            } else if(currentGroup != null) {
-                getSupportActionBar().setTitle(currentGroup.name);
-                for(int i = 0; i<friendGroupsLinearLayout.getChildCount(); i++) {
-                    View view = friendGroupsLinearLayout.getChildAt(i);
-                    if(view.getTag() instanceof Group && ((Group)view.getTag()).id == currentGroup.id) {
-                        view.setSelected(true);
-                        break;
-                    }
-                }
-            }
+            currentSelectedGroupIndex = getIntent().getIntExtra("currentSelectedGroupIndex", 0);
+            getSupportActionBar().setTitle(groupList.get(currentSelectedGroupIndex).getKey());
         } else {
-            onItemViewClick(groupAllItemView);
+            onSelection(null, null, 0, null);
         }
     }
 
@@ -195,7 +198,7 @@ public class MainActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_main_option_menu, menu);
-        MenuItem menuItem = menu.findItem(R.id.action_write_status);
+        MenuItem menuItem = menu.findItem(R.id.action_change_group);
         menuItem.setIcon(ViewUtils.tintDrawable(menuItem.getIcon(), Color.WHITE));
         return super.onCreateOptionsMenu(menu);
     }
@@ -204,8 +207,8 @@ public class MainActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.action_write_status:
-                PublishActivity.startForStatusPublishment(MainActivity.this);
+            case R.id.action_change_group:
+                Popup.singleChooseDialog("好友分组", currentSelectedGroupIndex, groupList, this);
                 break;
             default:
                 break;
@@ -213,65 +216,29 @@ public class MainActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+        currentSelectedGroupIndex = which;
+        statusTimelineView.scrollToPosition(0);
+        getSupportActionBar().setTitle(groupList.get(which).getKey());
+        showCurrentTimeline(which, true);
+        return true;
+    }
+
     public void onItemViewClick(View view) {
         drawerLayout.closeDrawer(GravityCompat.START);
-        statusTimelineView.scrollToPosition(0);
-        setFriendGroupViewSelected(view);
         switch (view.getId()) {
-            case R.id.item_view_group_all:
-                getSupportActionBar().setTitle("全部");
-                break;
-            case R.id.item_view_group_mutual:
-                getSupportActionBar().setTitle("相互关注");
-                break;
             case R.id.item_view_logout:
                 Account.clearCache(this);
                 SplashActivity.start(this);
                 finish();
                 break;
             default:
-                if (view instanceof ItemView && view.getTag() instanceof Group) {
-                    ItemView itemView = (ItemView) view;
-                    currentGroup = (Group) itemView.getTag();
-                    getSupportActionBar().setTitle(currentGroup.name);
-                }
                 break;
         }
-        showCurrentTimeline(view.getId(), true);
     }
 
-    private void inflateFriendGroupItemViews() {
-        if (Account.groups != null) {
-            View.OnClickListener onGroupItemClickListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onItemViewClick(v);
-                }
-            };
-            for (Group group : Account.groups.lists) {
-                ItemView itemView = new ItemView(this);
-                itemView.iconImageView.setImageResource(R.drawable.ic_group);
-                itemView.titleTextView.setText(group.name);
-                itemView.setBackground(ViewUtils.getDrawableByAttrId(this, R.attr.selectableItemBackground));
-                itemView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewUtils.dp2px(this, 48)));
-                itemView.setTag(group);
-                itemView.setOnClickListener(onGroupItemClickListener);
-                friendGroupsLinearLayout.addView(itemView);
-            }
-        }
-        groupAllItemView.setSelected(true);
-        currentSelectedGroupViewId = groupAllItemView.getId();
-    }
-
-    private void setFriendGroupViewSelected(View view) {
-        currentSelectedGroupViewId = view.getId();
-        for(int i = 0; i < friendGroupsLinearLayout.getChildCount(); i++) {
-            View childView = friendGroupsLinearLayout.getChildAt(i);
-            childView.setSelected(view == childView);
-        }
-    }
-
-    private void showCurrentTimeline(int viewId, final boolean loadLatest) {
+    private void showCurrentTimeline(int groupIndex, final boolean loadLatest) {
         SubscriberAdapter subscriberAdapter = new SubscriberAdapter<Statuses>() {
 
             @Override
@@ -293,12 +260,12 @@ public class MainActivity extends BaseActivity {
                 statusTimelineView.appendData(loadLatest, statuses.statuses);
             }
         };
-        if(viewId == R.id.item_view_group_all) {
+        if("全部".equals(groupList.get(groupIndex).getKey())) {
             statusService.showHomeTimeline(loadLatest, Status.FEATURE_ALL, subscriberAdapter);
-        } else if(viewId == R.id.item_view_group_mutual) {
+        } else if("相互关注".equals(groupList.get(groupIndex).getKey())) {
             statusService.showBilateralTimeline(loadLatest, Status.FEATURE_ALL, subscriberAdapter);
-        } else if(currentGroup != null){
-            friendshipService.showGroupTimeline(currentGroup, loadLatest, Status.FEATURE_ALL, subscriberAdapter);
+        } else if(groupList.get(groupIndex).getValue() != null){
+            friendshipService.showGroupTimeline(groupList.get(groupIndex).getValue(), loadLatest, Status.FEATURE_ALL, subscriberAdapter);
         }
     }
 
