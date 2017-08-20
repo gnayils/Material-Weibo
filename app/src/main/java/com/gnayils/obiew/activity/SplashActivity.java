@@ -77,7 +77,7 @@ public class SplashActivity extends BaseActivity {
                     MainActivity.start(SplashActivity.this);
                     SplashActivity.this.finish();
                 }
-            }, 500);
+            }, 1500);
         } else {
             loginButton.setVisibility(View.VISIBLE);
         }
