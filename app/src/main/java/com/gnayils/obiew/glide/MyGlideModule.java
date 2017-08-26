@@ -18,7 +18,11 @@ public class MyGlideModule implements GlideModule {
 
     @Override
     public void applyOptions(Context context, GlideBuilder builder) {
-
+        MemorySizeCalculator calculator = new MemorySizeCalculator(context);
+        int defaultMemoryCacheSize = calculator.getMemoryCacheSize();
+        int defaultBitmapPoolSize = calculator.getBitmapPoolSize();
+        builder.setMemoryCache(new LruResourceCache(defaultMemoryCacheSize / 2));
+        builder.setBitmapPool(new LruBitmapPool(defaultBitmapPoolSize / 2));
     }
 
     @Override
