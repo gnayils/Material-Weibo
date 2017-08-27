@@ -81,6 +81,7 @@ public class VideoPreviewView extends FrameLayout {
 
     public void show(URL url) {
         if(url == null || url.video == null) {
+            coverImageView.setImageResource(0);
             setVisibility(View.GONE);
         } else {
             setVisibility(View.VISIBLE);

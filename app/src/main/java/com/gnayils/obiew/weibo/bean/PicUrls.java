@@ -6,6 +6,7 @@ import com.gnayils.obiew.weibo.Weibo;
 
 import java.io.Serializable;
 import java.text.ParseException;
+import java.util.Objects;
 
 /**
  * Created by Gnayils on 19/03/2017.
@@ -35,6 +36,22 @@ public class PicUrls implements Serializable, Comparable<PicUrls> {
             return thumbnail_pic.toLowerCase().endsWith(".gif");
         }
         return false;
+    }
+
+    @Override
+    public boolean equals(Object another) {
+        if (another == this) {
+            return true;
+        } else if (!(another instanceof Status)) {
+            return false;
+        }
+        PicUrls anotherPicUrls = (PicUrls) another;
+        return Objects.equals(thumbnail_pic, anotherPicUrls.thumbnail_pic);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(thumbnail_pic);
     }
 
 

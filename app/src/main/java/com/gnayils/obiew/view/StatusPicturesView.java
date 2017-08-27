@@ -11,12 +11,14 @@ import com.bumptech.glide.Glide;
 import com.gnayils.obiew.R;
 import com.gnayils.obiew.activity.PicturePagerActivity;
 import com.gnayils.obiew.fragment.PictureFragment;
+import com.gnayils.obiew.util.Popup;
 import com.gnayils.obiew.util.ViewUtils;
 import com.gnayils.obiew.weibo.bean.PicUrls;
 
 import static com.gnayils.obiew.util.ViewUtils.*;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Gnayils on 26/11/2016.
@@ -57,27 +59,32 @@ public class StatusPicturesView extends ViewGroup implements View.OnClickListene
     }
 
     public void setPictureUrls(List<PicUrls> picUrlsList) {
-        if(picUrlsList == null) {
+        if(picUrlsList == null || picUrlsList.isEmpty()) {
+            for (int i = 0; i < getChildCount(); i++) {
+                GiFHintImageView child = (GiFHintImageView) getChildAt(i);
+                child.setImageResource(0);
+            }
             setVisibility(View.GONE);
             return;
         }
         if(picUrlsList.size() > getChildCount()) {
             setVisibility(View.GONE);
-            throw new IllegalArgumentException("picture videoUrls too much for the StatusPicturesView");
+            Popup.toast("Too much picture url for the StatusPicturesView");
+            return;
         }
         this.picUrlsList = picUrlsList;
         for (int i = 0; i < getChildCount(); i++) {
-            View child = getChildAt(i);
-            child.setVisibility(View.GONE);
+            GiFHintImageView imageView = (GiFHintImageView)getChildAt(i);
             if(i < picUrlsList.size()) {
                 PicUrls picUrls = picUrlsList.get(i);
-                child.setVisibility(View.VISIBLE);
-                GiFHintImageView imageView = (GiFHintImageView)child;
+                imageView.setVisibility(View.VISIBLE);
                 imageView.setHintVisible(picUrls.isGif());
                 Glide.with(getContext()).load(picUrls.middle()).asBitmap().into(imageView);
+            } else {
+                imageView.setImageResource(0);
+                imageView.setVisibility(View.GONE);
             }
         }
-
         imageViewVisibleCount = 0;
         for (int i = 0; i < getChildCount(); i++) {
             imageViewVisibleCount += getChildAt(i).getVisibility() == View.VISIBLE ? 1 : 0;

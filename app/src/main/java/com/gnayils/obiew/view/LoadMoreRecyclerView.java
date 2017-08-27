@@ -150,19 +150,17 @@ public abstract class LoadMoreRecyclerView<B extends Comparable, V extends View>
         }
 
         public void appendData(boolean isLatest, List<T> data) {
-            if(data == null || data.size() == 0 ) {
+            if(isLatest) {
+                dataSet.clear();
+            }
+            if(data == null || data.size() == 0) {
                 hasMoreData = false;
             } else {
                 hasMoreData = true;
                 Set<T> tempSet = new TreeSet<>();
-                if (isLatest) {
-                    dataSet.clear();
-                    tempSet.addAll(data);
-                } else {
-                    tempSet.addAll(dataSet);
-                    tempSet.addAll(data);
-                    dataSet.clear();
-                }
+                tempSet.addAll(dataSet);
+                tempSet.addAll(data);
+                dataSet.clear();
                 dataSet.addAll(tempSet);
             }
             notifyDataSetChanged();

@@ -234,6 +234,7 @@ public class StatusView extends CardView {
                         break;
                 }
             } else {
+                userAvatarView.verifiedIconImageView.setImageResource(0);
                 screenNameTextView.setTextColor(ViewUtils.getColorByAttrId(getContext(), R.attr.themeColorPrimaryText));
             }
             screenNameTextView.setText(status.user.screen_name);
